@@ -1,4 +1,4 @@
-# nanoFramework.Tarantool
+# Welcome to the .NET nanoFramework nanoFramework.Tarantool repository
 
 This repository contains the client library for working with [Tarantool](https://www.tarantool.io/en/) NoSQL database for .NET nanoFramework.
 
