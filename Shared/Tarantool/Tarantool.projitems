@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>479007e1-6d58-4a98-88d5-922341ca7521</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Tarantool</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Client\Box.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Client\Connections\LogicalConnection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Client\Connections\LogicalConnectionManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Client\Connections\NetworkStreamPhysicalConnection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Client\Extensions\FeatureExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Client\Index.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Client\Interfaces\IBox.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Client\Interfaces\IIndex.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Client\Interfaces\ILogicalConnection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Client\Interfaces\IPhysicalConnection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Client\Interfaces\IRequestWriter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Client\Interfaces\IResponseReader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Client\Interfaces\ISchema.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Client\Interfaces\ISpace.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Client\Interfaces\ISpaceField.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Client\Interfaces\ITarantoolConnection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Client\RequestIdCounter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Client\Schema.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Client\Space.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Client\Stream\RequestWriter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Client\Stream\ResponseReader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\AuthenticationPacketConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\BoxInfoConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\CallPacketConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\DeletePacketConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\EmptyResponseConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\ErrorResponsePacketConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\EvalPacketConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\ExecuteSqlRequestConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\FieldTypeConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\IndexConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\IndexCreationOptionsConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\IndexPartConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\IndexTypeConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\InsertReplacePacketConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\PacketSizeConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\PingPacketConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\RequestHeaderConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\RequestIdConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\ResponseHeaderConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\ResponsePacketConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\SelectPacketConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\SpaceConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\SpaceFieldConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\SqlInfoResponsePacketConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\StorageEngineConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\StringSpliceOperationConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\TarantoolTupleConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\UpdateOperationConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\UpdatePacketConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\UpsertPacketConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Dto\CompletionSource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Dto\TarantoolTupleArrayType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Dto\TarantoolTupleType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Dto\TarantoolUri.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Exceptions\ClientSetupException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Exceptions\TarantoolException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\ByteArrayHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\ExceptionHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\Sha1Helper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\StringHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\BoxInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\ClientOptions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\ConnectionOptions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Enums\CommandCode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Enums\FieldType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Enums\IndexType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Enums\Iterator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Enums\Key.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Enums\StorageEngine.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Headers\HeaderBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Headers\RequestHeader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Headers\ResponseHeader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\IndexCreationOptions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\IndexPart.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\MajorVersion.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Metrics.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\PacketSize.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\RequestId.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Requests\AuthenticationRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Requests\CallRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Requests\DeleteRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Requests\EvalRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Requests\ExecuteSqlRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Requests\InsertReplaceRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Requests\InsertRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Requests\IRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Requests\PingRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Requests\ReplaceRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Requests\SelectRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Requests\UpdateRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Requests\UpsertRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Responses\DataResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Responses\EmptyResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Responses\ErrorResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Responses\FieldMetadata.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Responses\GreetingsResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Responses\SqlInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Responses\SqlInfoResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\SelectOptions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\SpaceField.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\SqlParameter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\TarantoolNode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\TarantoolTuple.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\TarantoolVersion.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\UpdateOperations\StringSpliceOperation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\UpdateOperations\UpdateOperation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\UpdateOperations\UpdateOperationFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\UpdateOperations\UpdateOperationType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)System\Security\Cryptography\SHA1.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TarantoolContext.cs" />
+  </ItemGroup>
+</Project>

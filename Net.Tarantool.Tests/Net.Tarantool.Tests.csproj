@@ -1,0 +1,17 @@
+<Project Sdk="MSTest.Sdk/3.6.4">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UseVSTest>true</UseVSTest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\nanoFramework.Tarantool.Net\nanoFramework.Tarantool.Net.csproj" />
+  </ItemGroup>
+
+  <Import Project="..\Shared\Tests\Tests.projitems" Label="Shared" />
+
+</Project>

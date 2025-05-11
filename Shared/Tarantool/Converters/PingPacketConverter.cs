@@ -1,0 +1,28 @@
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
+#if NANOFRAMEWORK_1_0
+using System;
+#endif
+using System.Diagnostics.CodeAnalysis;
+using nanoFramework.MessagePack.Converters;
+using nanoFramework.MessagePack.Stream;
+
+namespace nanoFramework.Tarantool.Converters
+{
+    /// <summary>
+    /// The <see cref="Tarantool"/> ping packet converter class.
+    /// </summary>
+    internal class PingPacketConverter : IConverter
+    {
+#nullable enable
+        public void Write(object? value, [NotNull] IMessagePackWriter writer)
+        {
+        }
+
+        public virtual object? Read([NotNull] IMessagePackReader reader)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}

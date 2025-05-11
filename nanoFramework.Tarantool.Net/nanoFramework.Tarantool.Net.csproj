@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <Import Project="..\Shared\Tarantool\Tarantool.projitems" Label="Shared" />
+
+  <ItemGroup>
+    <PackageReference Include="nf.MessagePack.Net" Version="1.0.0" />
+  </ItemGroup>
+
+</Project>
