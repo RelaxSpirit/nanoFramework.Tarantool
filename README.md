@@ -5,6 +5,13 @@ This repository contains the client library for working with [Tarantool](https:/
 # Key features
  -  Getting closer to the most complete [IProto](https://www.tarantool.io/en/doc/latest/reference/internals/box_protocol/) protocol coverage.
 
+# What can Tarantool for a microcontroller be useful for?
+
+1. Getting various configuration parameters, settings, and data.
+2. Transfer of complex calculations to more productive platforms (Tarantool).
+3. Transfer of various data for subsequent storage, processing and aggregation.
+4. Integration via Tarantool with various [relational databases](https://www.tarantool.io/en/doc/latest/reference/reference_rock/dbms/). Such as MySQL or PostgreSQL.
+
 # Limitations
 
 1. From the [list of client-server messages](https://www.tarantool.io/en/doc/latest/reference/internals/iproto/requests/), only IPROTO_CHUNK, IPROTO_NOP, and IPROTO_ID remained unrealized, since these protocol messages do not make much sense to a simple client.
@@ -150,7 +157,7 @@ using (var box = TarantoolContext.Connect(clientOptions))
    
          executeSqlResult = box.ExecuteSql("update sql_test set name = '1234' where id = 2");
    
-         executeSqlResult = CheckResponseData(box.ExecuteSql("SELECT * FROM sql_test WHERE id = $1", typeof(TarantoolTuple[]), new SqlParameter(2, "$1")));
+         executeSqlResult = box.ExecuteSql("SELECT * FROM sql_test WHERE id = $1", typeof(TarantoolTuple[]), new SqlParameter(2, "$1"));
 
          if (evalResult != null && evalResult.Data[0] is not null)
          {
