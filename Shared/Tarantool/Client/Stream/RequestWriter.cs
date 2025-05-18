@@ -18,16 +18,16 @@ namespace nanoFramework.Tarantool.Client.Stream
     /// </summary>
     internal class RequestWriter : IRequestWriter
     {
-        private readonly ClientOptions clientOptions;
-        private readonly IPhysicalConnection physicalConnection;
-        private readonly Queue requestQueue = new Queue();
-        private readonly object writeLock = new object();
-        private readonly Thread thread;
-        private readonly ManualResetEvent exitEvent = new ManualResetEvent(false);
-        private readonly ManualResetEvent newRequestsAvailable = new ManualResetEvent(false);
-        private readonly ConnectionOptions connectionOptions;
-        private bool disposed = false;
-        private long remaining = 0;
+        private readonly ClientOptions _clientOptions;
+        private readonly IPhysicalConnection _physicalConnection;
+        private readonly Queue _requestQueue = new Queue();
+        private readonly object _writeLock = new object();
+        private readonly Thread _thread;
+        private readonly ManualResetEvent _exitEvent = new ManualResetEvent(false);
+        private readonly ManualResetEvent _newRequestsAvailable = new ManualResetEvent(false);
+        private readonly ConnectionOptions _connectionOptions;
+        private bool _disposed = false;
+        private long _remaining = 0;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestWriter"/> class.
@@ -36,15 +36,15 @@ namespace nanoFramework.Tarantool.Client.Stream
         /// <param name="physicalConnection">Physical connection <see cref="IPhysicalConnection"/> interface.</param>
         internal RequestWriter(ClientOptions clientOptions, IPhysicalConnection physicalConnection)
         {
-            this.clientOptions = clientOptions;
-            this.physicalConnection = physicalConnection;
-            this.thread = new Thread(this.WriteFunction);
-            this.connectionOptions = this.clientOptions.ConnectionOptions;
+            _clientOptions = clientOptions;
+            _physicalConnection = physicalConnection;
+            _thread = new Thread(WriteFunction);
+            _connectionOptions = _clientOptions.ConnectionOptions;
         }
 
         void IRequestWriter.BeginWriting()
         {
-            if (this.disposed)
+            if (_disposed)
             {
 #if NANOFRAMEWORK_1_0
                 throw new ObjectDisposedException();
@@ -53,14 +53,14 @@ namespace nanoFramework.Tarantool.Client.Stream
 #endif
             }
 
-            this.thread.Start();
+            _thread.Start();
         }
 
-        bool IRequestWriter.IsConnected => !this.disposed;
+        bool IRequestWriter.IsConnected => !_disposed;
 
         void IRequestWriter.Write(byte[] request)
         {
-            if (this.disposed)
+            if (_disposed)
             {
 #if NANOFRAMEWORK_1_0
                 throw new ObjectDisposedException();
@@ -70,22 +70,22 @@ namespace nanoFramework.Tarantool.Client.Stream
             }
 
             bool shouldSignal = false;
-            lock (this.writeLock)
+            lock (_writeLock)
             {
-                this.requestQueue.Enqueue(request);
-                shouldSignal = this.requestQueue.Count == 1;
+                _requestQueue.Enqueue(request);
+                shouldSignal = _requestQueue.Count == 1;
             }
 
             if (shouldSignal)
             {
-                this.newRequestsAvailable.Set();
+                _newRequestsAvailable.Set();
             }
         }
 
         private void WriteFunction()
         {
-            var handles = new[] { this.exitEvent, this.newRequestsAvailable };
-            var throttle = this.connectionOptions.WriteThrottlePeriodInMs;
+            var handles = new[] { _exitEvent, _newRequestsAvailable };
+            var throttle = _connectionOptions.WriteThrottlePeriodInMs;
 
             while (true)
             {
@@ -94,9 +94,9 @@ namespace nanoFramework.Tarantool.Client.Stream
                     case 0:
                         return;
                     case 1:
-                        this.WriteRequests(this.connectionOptions.WriteStreamBufferSize, this.connectionOptions.MaxRequestsInBatch);
+                        WriteRequests(_connectionOptions.WriteStreamBufferSize, _connectionOptions.MaxRequestsInBatch);
 
-                        if (throttle > 0 && this.remaining < this.connectionOptions.MinRequestsWithThrottle)
+                        if (throttle > 0 && _remaining < _connectionOptions.MinRequestsWithThrottle)
                         {
                             Thread.Sleep(throttle);
                         }
@@ -109,14 +109,14 @@ namespace nanoFramework.Tarantool.Client.Stream
 #nullable enable
         private bool GetRequest(out object? result)
         {
-            if (this.requestQueue.Count > 0)
+            if (_requestQueue.Count > 0)
             {
-                lock (this.writeLock)
+                lock (_writeLock)
                 {
-                    if (this.requestQueue.Count > 0)
+                    if (_requestQueue.Count > 0)
                     {
-                        this.remaining = this.requestQueue.Count + 1;
-                        result = this.requestQueue.Dequeue();
+                        _remaining = _requestQueue.Count + 1;
+                        result = _requestQueue.Dequeue();
                         return result != null;
                     }
                 }
@@ -132,7 +132,7 @@ namespace nanoFramework.Tarantool.Client.Stream
             ulong length = 0;
             ArrayList list = new ArrayList();
 
-            while (this.GetRequest(out object? requestObject))
+            while (GetRequest(out object? requestObject))
             {
                 if (requestObject != null)
                 {
@@ -162,30 +162,30 @@ namespace nanoFramework.Tarantool.Client.Stream
                     position += r.Length;
                 }
 
-                this.physicalConnection.Write(result, 0, result.Length);
+                _physicalConnection.Write(result, 0, result.Length);
             }
 
-            lock (this.writeLock)
+            lock (_writeLock)
             {
-                if (this.requestQueue.Count == 0)
+                if (_requestQueue.Count == 0)
                 {
-                    this.newRequestsAvailable.Reset();
+                    _newRequestsAvailable.Reset();
                 }
             }
 
-            this.physicalConnection.Flush();
+            _physicalConnection.Flush();
         }
         
         public void Dispose()
         {
-            if (!this.exitEvent.Set() || this.disposed)
+            if (!_exitEvent.Set() || _disposed)
             {
                 return;
             }
 
-            this.disposed = true;
+            _disposed = true;
 
-            this.thread.Join(100);
+            _thread.Join(100);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace nanoFramework.Tarantool.Model
         /// <param name="value">Request id value.</param>
         internal RequestId(ulong value)
         {
-            this.Value = value;
+            Value = value;
         }
 
         /// <summary>
@@ -34,12 +34,12 @@ namespace nanoFramework.Tarantool.Model
 
         public override string ToString()
         {
-            return this.Value.ToString();
+            return Value.ToString();
         }
 
         public override int GetHashCode()
         {
-            return this.Value.GetHashCode();
+            return Value.GetHashCode();
         }
 
 #nullable enable
@@ -47,7 +47,7 @@ namespace nanoFramework.Tarantool.Model
         {
             if (obj is RequestId requestId)
             {
-                return this.Value == requestId.Value;
+                return Value == requestId.Value;
             }
             else
             {

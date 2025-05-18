@@ -1,6 +1,9 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+#if NANOFRAMEWORK_1_0
+using System.IO;
+#endif
 using System.Net.Sockets;
 
 namespace nanoFramework.Tarantool.Model
@@ -10,6 +13,13 @@ namespace nanoFramework.Tarantool.Model
     /// </summary>
     /// <param name="socket">Socket instance to configure.</param>
     public delegate void ConfigureSocketDelegate(Socket socket);
+
+    /// <summary>
+    /// Get network stream delegate.
+    /// </summary>
+    /// <param name="clientOptions">Client options.</param>
+    /// <returns>Stream to write and read.</returns>
+    public delegate Stream GetNetworkStreamDelegate(ClientOptions clientOptions);
 
     /// <summary>
     /// Network client options class.
@@ -45,6 +55,11 @@ namespace nanoFramework.Tarantool.Model
         /// </summary>
 #nullable enable
         public ConfigureSocketDelegate? ConfigureSocket { get; set; }
+
+        /// <summary>
+        /// Gets or sets configure socket а reference to the method corresponding to the <see cref="GetNetworkStreamDelegate"/>.
+        /// </summary>
+        public GetNetworkStreamDelegate? GetNetworkStream { get; set; }
 #nullable disable
 
         /// <summary>

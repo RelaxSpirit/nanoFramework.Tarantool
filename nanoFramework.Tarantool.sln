@@ -15,6 +15,8 @@ Project("{11A8DD76-328B-46DF-9F39-F559912D0360}") = "NFUnitTest", "NFUnitTest\NF
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Tests", "Shared\Tests\Tests.shproj", "{D0ADC230-6C4C-44A6-8A49-693EA49B900C}"
 EndProject
+Project("{11A8DD76-328B-46DF-9F39-F559912D0360}") = "NFTestApp", "NFTestApp\NFTestApp.nfproj", "{5E9F2EED-77D2-4339-BA11-CABBD9AD2144}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,12 @@ Global
 		{756FBAFD-4545-44F5-B600-446DD557B9C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{756FBAFD-4545-44F5-B600-446DD557B9C5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{756FBAFD-4545-44F5-B600-446DD557B9C5}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{5E9F2EED-77D2-4339-BA11-CABBD9AD2144}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E9F2EED-77D2-4339-BA11-CABBD9AD2144}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E9F2EED-77D2-4339-BA11-CABBD9AD2144}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{5E9F2EED-77D2-4339-BA11-CABBD9AD2144}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E9F2EED-77D2-4339-BA11-CABBD9AD2144}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E9F2EED-77D2-4339-BA11-CABBD9AD2144}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

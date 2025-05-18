@@ -21,7 +21,7 @@ namespace nanoFramework.Tarantool.Model
         /// <param name="url">URL by <see cref="Tarantool"/> node.</param>
         public TarantoolNode([NotNull] string url)
         {
-            this.Uri = new TarantoolUri(url);
+            Uri = new TarantoolUri(url);
         }
 
         /// <summary>
@@ -33,17 +33,20 @@ namespace nanoFramework.Tarantool.Model
         /// Parse string URL for <see cref="Tarantool"/>
         /// </summary>
         /// <param name="url">String URL <see cref="Tarantool"/></param>
+        /// /// <param name="uriParceException">Out exception <see cref="ArgumentException"/> if uri is not parse.</param>
         /// <returns>Instance of the <see cref="TarantoolNode" /> or <see langword="null"/> if string URL is not parsed.</returns>
 #nullable enable
-        public static TarantoolNode? TryParse(string url)
+        public static TarantoolNode? TryParse(string url, out ArgumentException? uriParceException)
         {
             try
             {
+                uriParceException = null;
                 return new TarantoolNode(url);
             }
             catch (Exception e)
             {
-                throw new ClientSetupException($"Url parsing failed. Url: {url}, error: {e.Message}");
+                uriParceException = new ArgumentException($"Url parsing failed. Url: {url}", e);
+                return null;
             }
         }
     }

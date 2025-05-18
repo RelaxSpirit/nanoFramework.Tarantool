@@ -20,16 +20,15 @@ namespace nanoFramework.Tarantool.Client.Connections
     internal class NetworkStreamPhysicalConnection : IPhysicalConnection
     {
 #nullable enable
-        private System.IO.Stream? stream;
-        private Socket? socket;
-        private bool disposed;
+        private System.IO.Stream? _stream;
+        private Socket? _socket;
+        private bool _disposed;
 
         private static void Connect(Socket socket, string host, int port)
         {
             try
             {
                 ConnectToIp(socket, host, port);
-                return;
             }
             catch
             {
@@ -41,7 +40,6 @@ namespace nanoFramework.Tarantool.Client.Connections
         {
             var address = IPAddress.Parse(ipString);
             socket.Connect(new IPEndPoint(address, port));
-            return;
         }
 
         private static void ConnectToHostName(Socket socket, string host, int port)
@@ -71,15 +69,15 @@ namespace nanoFramework.Tarantool.Client.Connections
 
         public void Dispose()
         {
-            if (this.disposed)
+            if (_disposed)
             {
                 return;
             }
 
-            this.disposed = true;
+            _disposed = true;
 
-            this.stream?.Dispose();
-            this.socket?.Close();
+            _stream?.Dispose();
+            _socket?.Close();
         }
 
         public void Connect(ClientOptions options)
@@ -91,39 +89,46 @@ namespace nanoFramework.Tarantool.Client.Connections
 
             var singleNode = options.ConnectionOptions.Nodes[0];
 
-            this.socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            if (options.GetNetworkStream == null)
+            {
+                _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-            options.ConfigureSocket?.Invoke(this.socket);
+                options.ConfigureSocket?.Invoke(_socket);
 
-            Connect(this.socket, singleNode.Uri.Host, singleNode.Uri.Port);
+                Connect(_socket, singleNode.Uri.Host, singleNode.Uri.Port);
 
-            this.stream = new NetworkStream(this.socket, true);
+                _stream = new NetworkStream(_socket, true);
+            }
+            else
+            {
+                _stream = options.GetNetworkStream(options);
+            }
         }
 
         public void Write(byte[] buffer, int offset, int count)
         {
-            this.CheckConnectionStatus();
-            this.stream?.Write(buffer, offset, count);
+            CheckConnectionStatus();
+            _stream?.Write(buffer, offset, count);
         }
 
         public void Flush()
         {
-            this.CheckConnectionStatus();
-            this.stream?.Flush();
+            CheckConnectionStatus();
+            _stream?.Flush();
         }
 
         public int Read(byte[] buffer, int offset, int count)
         {
-            this.CheckConnectionStatus();
+            CheckConnectionStatus();
             try
             {
-                if (this.stream == null)
+                if (_stream == null)
                 {
                     return 0;
                 }
                 else
                 {
-                    return this.stream.Read(buffer, offset, count);
+                    return _stream.Read(buffer, offset, count);
                 }
             }
             catch (ObjectDisposedException)
@@ -132,7 +137,7 @@ namespace nanoFramework.Tarantool.Client.Connections
             }
             catch (IOException)
             {
-                if (this.disposed)
+                if (_disposed)
                 {
                     return 0;
                 }
@@ -143,11 +148,11 @@ namespace nanoFramework.Tarantool.Client.Connections
             }
         }
 
-        public bool IsConnected => !this.disposed && this.stream != null;
+        public bool IsConnected => !_disposed && _stream != null;
 
         private void CheckConnectionStatus()
         {
-            if (this.disposed)
+            if (_disposed)
             {
 #if NANOFRAMEWORK_1_0
                 throw new ObjectDisposedException();
@@ -156,7 +161,7 @@ namespace nanoFramework.Tarantool.Client.Connections
 #endif
             }
 
-            if (!this.IsConnected)
+            if (!IsConnected)
             {
                 throw ExceptionHelper.NotConnected();
             }

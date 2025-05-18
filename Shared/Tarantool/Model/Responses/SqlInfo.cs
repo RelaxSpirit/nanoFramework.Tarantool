@@ -14,7 +14,7 @@ namespace nanoFramework.Tarantool.Model.Responses
         /// <param name="rowCount">Response rows count.</param>
         internal SqlInfo(int rowCount)
         {
-            this.RowCount = rowCount;
+            RowCount = rowCount;
         }
 
         /// <summary>

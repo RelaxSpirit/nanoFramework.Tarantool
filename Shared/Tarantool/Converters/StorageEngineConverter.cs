@@ -36,6 +36,8 @@ namespace nanoFramework.Tarantool.Converters
                     return StorageEngine.Sysview;
                 case "blackhole":
                     return StorageEngine.Blackhole;
+                case "vinyl":
+                    return StorageEngine.Vinyl;
                 default:
                     throw ExceptionHelper.UnexpectedEnumUnderlyingType(typeof(FieldType), enumString);
             }
@@ -61,6 +63,9 @@ namespace nanoFramework.Tarantool.Converters
                     break;
                 case StorageEngine.Blackhole:
                     stringConverter.Write("blackhole", writer);
+                    break;
+                case StorageEngine.Vinyl:
+                    stringConverter.Write("vinyl", writer);
                     break;
                 default:
                     throw ExceptionHelper.EnumValueExpected(value.GetType(), value);

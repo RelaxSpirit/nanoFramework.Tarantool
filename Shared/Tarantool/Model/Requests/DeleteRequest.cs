@@ -18,9 +18,9 @@ namespace nanoFramework.Tarantool.Model.Requests
         /// <param name="key"><see cref="TarantoolTuple"/> key for delete.</param>
         public DeleteRequest(uint spaceId, uint indexId, TarantoolTuple key)
         {
-            this.SpaceId = spaceId;
-            this.IndexId = indexId;
-            this.Key = key;
+            SpaceId = spaceId;
+            IndexId = indexId;
+            Key = key;
         }
 
         /// <summary>

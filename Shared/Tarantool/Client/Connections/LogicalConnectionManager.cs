@@ -23,18 +23,18 @@ namespace nanoFramework.Tarantool.Client.Connections
         private const int ConnectionTimeout = 1000;
         private static readonly PingRequest PingRequest = new PingRequest();
 
-        private readonly ClientOptions clientOptions;
-        private readonly RequestIdCounter requestIdCounter = new RequestIdCounter();
-        private readonly ManualResetEvent connected = new ManualResetEvent(true);
-        private readonly AutoResetEvent reconnectAvailable = new AutoResetEvent(true);
-        private readonly int pingCheckInterval = 1000;
-        private readonly TimeSpan pingTimeout;
+        private readonly ClientOptions _clientOptions;
+        private readonly RequestIdCounter _requestIdCounter = new RequestIdCounter();
+        private readonly ManualResetEvent _connected = new ManualResetEvent(true);
+        private readonly AutoResetEvent _reconnectAvailable = new AutoResetEvent(true);
+        private readonly int _pingCheckInterval = 1000;
+        private readonly TimeSpan _pingTimeout;
         
-        private LogicalConnection? droppableLogicalConnection;
-        private Timer? timer;
-        private int disposing;
-        private DateTime nextPingTime = DateTime.MinValue;
-        private bool disposedValue;
+        private LogicalConnection? _droppableLogicalConnection;
+        private Timer? _timer;
+        private int _disposing;
+        private DateTime _nextPingTime = DateTime.MinValue;
+        private bool _disposedValue;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LogicalConnectionManager"/> class.
@@ -42,122 +42,122 @@ namespace nanoFramework.Tarantool.Client.Connections
         /// <param name="options">Client options.</param>
         internal LogicalConnectionManager(ClientOptions options)
         {
-            this.clientOptions = options;
+            _clientOptions = options;
 
-            if (this.clientOptions.ConnectionOptions.PingCheckInterval >= 0)
+            if (_clientOptions.ConnectionOptions.PingCheckInterval >= 0)
             {
-                this.pingCheckInterval = this.clientOptions.ConnectionOptions.PingCheckInterval;
+                _pingCheckInterval = _clientOptions.ConnectionOptions.PingCheckInterval;
             }
 
-            this.pingTimeout = this.clientOptions.ConnectionOptions.PingCheckTimeout;
+            _pingTimeout = _clientOptions.ConnectionOptions.PingCheckTimeout;
         }
 
-        public uint PingsFailedByTimeoutCount => this.droppableLogicalConnection == null ? 0 : this.droppableLogicalConnection.PingsFailedByTimeoutCount;
+        public uint PingsFailedByTimeoutCount => _droppableLogicalConnection == null ? 0 : _droppableLogicalConnection.PingsFailedByTimeoutCount;
 
-        public bool IsConnected() => this.connected.WaitOne(ConnectionTimeout, false) && this.IsConnectedInternal();
+        public bool IsConnected() => _connected.WaitOne(ConnectionTimeout, false) && IsConnectedInternal();
 
         public void Connect()
         {
-            if (this.IsConnectedInternal())
+            if (IsConnectedInternal())
             {
                 return;
             }
 
-            if (!this.reconnectAvailable.WaitOne(ConnectionTimeout, false))
+            if (!_reconnectAvailable.WaitOne(ConnectionTimeout, false))
             {
                 throw ExceptionHelper.NotConnected();
             }
 
             try
             {
-                if (this.IsConnectedInternal())
+                if (IsConnectedInternal())
                 {
                     return;
                 }
 
-                this.connected.Reset();
+                _connected.Reset();
 
                 //// Debug.WriteLine($"{nameof(LogicalConnectionManager)}: Connecting...");
 
-                this.timer?.Dispose();
-                this.droppableLogicalConnection?.Dispose();
+                _timer?.Dispose();
+                _droppableLogicalConnection?.Dispose();
 
-                var newConnection = new LogicalConnection(this.clientOptions, this.requestIdCounter);              
-                this.droppableLogicalConnection = newConnection;
-                this.droppableLogicalConnection.Connect();
+                var newConnection = new LogicalConnection(_clientOptions, _requestIdCounter);              
+                _droppableLogicalConnection = newConnection;
+                _droppableLogicalConnection.Connect();
 
-                this.connected.Set();
+                _connected.Set();
 
                 //// Debug.WriteLine($"{nameof(LogicalConnectionManager)}: Connected.");
 
-                if (this.pingCheckInterval > 0 && this.timer == null)
+                if (_pingCheckInterval > 0 && _timer == null)
                 {
-                    this.timer = new Timer(x => this.CheckPing(), null, this.pingCheckInterval, Timeout.Infinite);
+                    _timer = new Timer(x => CheckPing(), null, _pingCheckInterval, Timeout.Infinite);
                 }
             }
             finally
             {
-               this.reconnectAvailable.Set();
+               _reconnectAvailable.Set();
             }
         }
 
         public DataResponse? SendRequest(IRequest request, TimeSpan timeout, Type? responseDataType)
         {
-            this.Connect();
+            Connect();
 
-            this.ChangePingTimer();
+            ChangePingTimer();
 
-            var result = this.droppableLogicalConnection?.SendRequest(request, timeout, responseDataType);
+            var result = _droppableLogicalConnection?.SendRequest(request, timeout, responseDataType);
 
-            this.ScheduleNextPing();
+            ScheduleNextPing();
 
             return result;
         }
 
         public ArraySegment? SendRawRequest(IRequest request, TimeSpan timeout)
         {
-            this.Connect();
+            Connect();
 
-            this.ChangePingTimer();
+            ChangePingTimer();
 
-            var result = this.droppableLogicalConnection?.SendRawRequest(request, timeout);
+            var result = _droppableLogicalConnection?.SendRawRequest(request, timeout);
 
-            this.ScheduleNextPing();
+            ScheduleNextPing();
 
             return result;
         }
 
         public void SendRequestWithEmptyResponse(IRequest request, TimeSpan timeout)
         {
-            this.Connect();
+            Connect();
 
-            this.droppableLogicalConnection?.SendRequestWithEmptyResponse(request, timeout);
+            _droppableLogicalConnection?.SendRequestWithEmptyResponse(request, timeout);
 
-            this.ScheduleNextPing();
+            ScheduleNextPing();
         }
 
         public void Dispose()
         {
-            this.Dispose(disposing: true);
+            Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!this.disposedValue)
+            if (!_disposedValue)
             {
-                this.disposedValue = true;
+                _disposedValue = true;
                 if (disposing)
                 {
-                    if (Interlocked.Exchange(ref this.disposing, 1) > 0)
+                    if (Interlocked.Exchange(ref _disposing, 1) > 0)
                     {
                         return;
                     }
 
-                    this.droppableLogicalConnection?.Dispose();
-                    this.droppableLogicalConnection = null;
-                    this.timer?.Dispose();
-                    this.timer = null;
+                    _droppableLogicalConnection?.Dispose();
+                    _droppableLogicalConnection = null;
+                    _timer?.Dispose();
+                    _timer = null;
                 }
             }
         }
@@ -166,33 +166,33 @@ namespace nanoFramework.Tarantool.Client.Connections
         {
             try
             {
-                if (this.nextPingTime > DateTime.UtcNow || this.disposedValue)
+                if (_nextPingTime > DateTime.UtcNow || _disposedValue)
                 {
                     return;
                 } 
 
-                this.SendRequestWithEmptyResponse(PingRequest, this.pingTimeout);
+                SendRequestWithEmptyResponse(PingRequest, _pingTimeout);
             }
             catch (Exception)
             {
                 //// Debug.WriteLine($"{nameof(LogicalConnectionManager)}: Ping failed with exception: {e.Message}. Dropping current connection.");
                
-                this.droppableLogicalConnection?.Dispose();
+                _droppableLogicalConnection?.Dispose();
             }
             finally
             {
-                if (!this.disposedValue)
+                if (!_disposedValue)
                 {
-                    this.ChangePingTimer();
+                    ChangePingTimer();
                 }
             }
         }
 
         private bool IsConnectedInternal()
         {
-            if (this.droppableLogicalConnection != null)
+            if (_droppableLogicalConnection != null)
             {
-                return this.droppableLogicalConnection.IsConnected();
+                return _droppableLogicalConnection.IsConnected();
             }
             else
             {
@@ -202,17 +202,17 @@ namespace nanoFramework.Tarantool.Client.Connections
 
         private void ScheduleNextPing()
         {
-            if (this.pingCheckInterval > 0)
+            if (_pingCheckInterval > 0)
             {
-                this.nextPingTime = DateTime.UtcNow.AddMilliseconds(this.pingCheckInterval);
+                _nextPingTime = DateTime.UtcNow.AddMilliseconds(_pingCheckInterval);
             }
         }
 
         private void ChangePingTimer()
         {
-            if (this.timer != null)
+            if (_timer != null)
             {
-                this.timer.Change(this.pingCheckInterval, Timeout.Infinite);
+                _timer.Change(_pingCheckInterval, Timeout.Infinite);
             }
         }
     }

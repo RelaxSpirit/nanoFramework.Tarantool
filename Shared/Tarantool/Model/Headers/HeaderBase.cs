@@ -17,7 +17,7 @@ namespace nanoFramework.Tarantool.Model.Headers
         /// <param name="requestId">Request id.</param>
         protected HeaderBase(CommandCode code, RequestId requestId)
         {
-            this.Code = code;
+            Code = code;
             RequestId = requestId;
         }
 

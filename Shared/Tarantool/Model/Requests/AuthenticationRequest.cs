@@ -21,10 +21,10 @@ namespace nanoFramework.Tarantool.Model.Requests
         /// </summary>
         /// <param name="username">User name.</param>
         /// <param name="scramble">Scramble byte array.</param>
-        private AuthenticationRequest(string username, byte[] scramble)
+        internal AuthenticationRequest(string username, byte[] scramble)
         {
-            this.Username = username;
-            this.Scramble = scramble;
+            Username = username;
+            Scramble = scramble;
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace nanoFramework.Tarantool.Model.Requests
             return authenticationPacket;
         }
 
-        private static byte[] GetScrable(GreetingsResponse greetings, string password)
+        internal static byte[] GetScrable(GreetingsResponse greetings, string password)
         {
             var decodedSalt = greetings.Salt;
             var first20SaltBytes = new byte[20];

@@ -28,24 +28,24 @@ namespace nanoFramework.Tarantool.Client.Stream
     {
         private static readonly string ErrorReadingPacket = "Error reading the response packet from the network stream";
 
-        private readonly byte[] packetSizeBuffer = new byte[Constants.PacketSizeBufferSize];
-        private readonly IPhysicalConnection physicalConnection;
-        private readonly Hashtable pendingRequests = new Hashtable();
-        private readonly object pendingRequestsLock = new object();
-        private readonly Thread readingThread;
-        private readonly Thread processPackageThread;
-        private readonly ManualResetEvent exitEvent = new ManualResetEvent(false);
-        private readonly ManualResetEvent readNewResponseEvent = new ManualResetEvent(false);
-        private readonly AutoResetEvent allResponsesProcessedEvent = new AutoResetEvent(false);
-        private readonly ManualResetEvent processResponsesEvent = new ManualResetEvent(false);
-        private readonly Queue readingParts = new Queue();
-        private readonly object processingLock = new object();
-        private readonly WaitHandle[] readingPartsQueueFreeWaitHandles;
+        private readonly byte[] _packetSizeBuffer = new byte[Constants.PacketSizeBufferSize];
+        private readonly IPhysicalConnection _physicalConnection;
+        private readonly Hashtable _pendingRequests = new Hashtable();
+        private readonly object _pendingRequestsLock = new object();
+        private readonly Thread _readingThread;
+        private readonly Thread _processPackageThread;
+        private readonly ManualResetEvent _exitEvent = new ManualResetEvent(false);
+        private readonly ManualResetEvent _readNewResponseEvent = new ManualResetEvent(false);
+        private readonly AutoResetEvent _allResponsesProcessedEvent = new AutoResetEvent(false);
+        private readonly ManualResetEvent _processResponsesEvent = new ManualResetEvent(false);
+        private readonly Queue _readingParts = new Queue();
+        private readonly object _processingLock = new object();
+        private readonly WaitHandle[] _readingPartsQueueFreeWaitHandles;
 
-        private readonly byte[] buffer;
-        private int readingOffset = 0;
+        private readonly byte[] _buffer;
+        private int _readingOffset = 0;
 
-        private bool disposed;
+        private bool _disposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ResponseReader"/> class.
@@ -54,14 +54,14 @@ namespace nanoFramework.Tarantool.Client.Stream
         /// <param name="physicalConnection">Physical connection <see cref="IPhysicalConnection"/> interface.</param>
         internal ResponseReader(ClientOptions clientOptions, IPhysicalConnection physicalConnection)
         {
-            this.physicalConnection = physicalConnection;
-            this.buffer = new byte[clientOptions.ConnectionOptions.ReadStreamBufferSize];
-            this.readingThread = new Thread(this.ReadFunction);
-            this.processPackageThread = new Thread(this.ProcessPackageFunction);
-            this.readingPartsQueueFreeWaitHandles = new WaitHandle[] { this.exitEvent, this.allResponsesProcessedEvent };
+            _physicalConnection = physicalConnection;
+            _buffer = new byte[clientOptions.ConnectionOptions.ReadStreamBufferSize];
+            _readingThread = new Thread(ReadFunction);
+            _processPackageThread = new Thread(ProcessPackageFunction);
+            _readingPartsQueueFreeWaitHandles = new WaitHandle[] { _exitEvent, _allResponsesProcessedEvent };
         }
 
-        bool IResponseReader.IsConnected => !this.disposed;
+        bool IResponseReader.IsConnected => !_disposed;
 
         private static void LogUnMatchedResponse(byte[] result)
         {
@@ -123,26 +123,26 @@ namespace nanoFramework.Tarantool.Client.Stream
 
         public void Dispose()
         {
-            if (!this.exitEvent.Set() || this.disposed)
+            if (!_exitEvent.Set() || _disposed)
             {
                 return;
             }
 
-            this.disposed = true;
+            _disposed = true;
 
-            this.physicalConnection.Dispose();
-            this.readingThread.Join(100);
-            this.processPackageThread.Join(100);
+            _physicalConnection.Dispose();
+            _readingThread.Join(100);
+            _processPackageThread.Join(100);
 
-            lock (this.pendingRequestsLock)
+            lock (_pendingRequestsLock)
             {
-                this.pendingRequests.Clear();
+                _pendingRequests.Clear();
             }
         }
 
         CompletionSource IResponseReader.GetResponseCompletionSource(RequestId requestId)
         {
-            if (this.disposed)
+            if (_disposed)
             {
 #if NANOFRAMEWORK_1_0
                 throw new ObjectDisposedException();
@@ -151,9 +151,9 @@ namespace nanoFramework.Tarantool.Client.Stream
 #endif
             }
 
-            lock (this.pendingRequestsLock)
+            lock (_pendingRequestsLock)
             {
-                if (this.pendingRequests.Contains(requestId))
+                if (_pendingRequests.Contains(requestId.Value))
                 {
                     throw ExceptionHelper.RequestWithSuchIdAlreadySent(requestId);
                 }
@@ -161,19 +161,19 @@ namespace nanoFramework.Tarantool.Client.Stream
 
             var cs = new CompletionSource();
 
-            lock (this.pendingRequestsLock)
+            lock (_pendingRequestsLock)
             {
-                this.pendingRequests.Add(requestId, cs);
+                _pendingRequests.Add(requestId.Value, cs);
             }
 
-            this.readNewResponseEvent.Set();
+            _readNewResponseEvent.Set();
 
             return cs;
         }
 
         void IResponseReader.BeginReading()
         {
-            if (this.disposed)
+            if (_disposed)
             {
 #if NANOFRAMEWORK_1_0
                 throw new ObjectDisposedException();
@@ -182,24 +182,24 @@ namespace nanoFramework.Tarantool.Client.Stream
 #endif
             }
 
-            this.readingThread.Start();
-            this.processPackageThread.Start();
+            _readingThread.Start();
+            _processPackageThread.Start();
         }
 
         CompletionSource? IResponseReader.PopResponseCompletionSource(RequestId requestId)
         {
-            if (this.disposed)
+            if (_disposed)
             {
                 return null;
             }
 
-            lock (this.pendingRequestsLock)
+            lock (_pendingRequestsLock)
             {
-                CompletionSource? resultCompletionSource = (CompletionSource?)this.pendingRequests[requestId];
+                CompletionSource? resultCompletionSource = (CompletionSource?)_pendingRequests[requestId.Value];
 
                 if (resultCompletionSource != null)
                 {
-                    this.pendingRequests.Remove(requestId);
+                    _pendingRequests.Remove(requestId.Value);
                 }
 
                 return resultCompletionSource;
@@ -239,7 +239,7 @@ namespace nanoFramework.Tarantool.Client.Stream
 
         private void ReadFunction()
         {
-            var handles = new WaitHandle[] { this.exitEvent, this.readNewResponseEvent };
+            var handles = new WaitHandle[] { _exitEvent, _readNewResponseEvent };
 
             while (true)
             {
@@ -250,11 +250,11 @@ namespace nanoFramework.Tarantool.Client.Stream
                     case 1:
                         try
                         {
-                            this.ReadNetworkStream();
+                            ReadNetworkStream();
                         }
                         catch (Exception e)
                         {
-                            if (this.disposed)
+                            if (_disposed)
                             {
                                 return;
                             }
@@ -271,7 +271,7 @@ namespace nanoFramework.Tarantool.Client.Stream
 
         private void ProcessPackageFunction()
         {
-            var handles = new WaitHandle[] { exitEvent, processResponsesEvent };
+            var handles = new WaitHandle[] { _exitEvent, _processResponsesEvent };
             while (true)
             {
                 switch (WaitHandle.WaitAny(handles))
@@ -279,13 +279,13 @@ namespace nanoFramework.Tarantool.Client.Stream
                     case 0:
                         return;
                     case 1:
-                        while (readingParts.Count > 0)
+                        while (_readingParts.Count > 0)
                         { 
                             ArraySegment? arraySegment = null;
 
-                            lock (processingLock)
+                            lock (_processingLock)
                             {
-                                arraySegment = (ArraySegment?)readingParts.Dequeue();
+                                arraySegment = (ArraySegment?)_readingParts.Dequeue();
                             }
 
                             if (arraySegment != null)
@@ -294,8 +294,8 @@ namespace nanoFramework.Tarantool.Client.Stream
                             }
                         }
 
-                        processResponsesEvent.Reset();
-                        allResponsesProcessedEvent.Set();
+                        _processResponsesEvent.Reset();
+                        _allResponsesProcessedEvent.Set();
                         break;
                 }
             }
@@ -308,30 +308,30 @@ namespace nanoFramework.Tarantool.Client.Stream
             {
                 //// DOTO The response packet may be too large (maximum 2 Gb).
                 //// For a microcontroller, this may lead to the exhaustion of all memory.
-                if (packetSize.Value > this.buffer.Length)
+                if (packetSize.Value > _buffer.Length)
                 {
                     if (IsReadingPartsQueueFree())
                     {
-                        physicalConnection.Read(this.buffer, this.readingOffset, this.buffer.Length);
-                        ResponseHeader? responseHeader = GetResponseHeader(buffer);
+                        _physicalConnection.Read(_buffer, _readingOffset, _buffer.Length);
+                        ResponseHeader? responseHeader = GetResponseHeader(_buffer);
 
-                        var errorPacketSegment = GetErrorResponsePacket($"The package size {packetSize.Value} bytes is too large, maximum packet size for reception {buffer.Length} bytes", responseHeader);
+                        var errorPacketSegment = GetErrorResponsePacket($"The package size {packetSize.Value} bytes is too large, maximum packet size for reception {_buffer.Length} bytes", responseHeader);
 
                         //// Clear network stream
-                        while (physicalConnection.Read(this.buffer, this.readingOffset, this.buffer.Length) > 0)
+                        while (_physicalConnection.Read(_buffer, _readingOffset, _buffer.Length) > 0)
                         {
-                            if (disposed)
+                            if (_disposed)
                             {
                                 return;
                             }
                         }
 
-                        lock (this.processingLock)
+                        lock (_processingLock)
                         {
-                            this.readingParts.Enqueue(errorPacketSegment);
+                            _readingParts.Enqueue(errorPacketSegment);
                         }
 
-                        this.processResponsesEvent.Set();
+                        _processResponsesEvent.Set();
                     }
                     else
                     {
@@ -340,28 +340,28 @@ namespace nanoFramework.Tarantool.Client.Stream
                 }
                 else
                 {
-                    this.EnqueuePacket((int)packetSize.Value);
+                    EnqueuePacket((int)packetSize.Value);
                 }
             }
             else
             {
-                this.processResponsesEvent.Reset();
+                _processResponsesEvent.Reset();
             }
         }
 
         private PacketSize? GetPacketSize()
         {
-            var readByteCount = this.physicalConnection.Read(this.packetSizeBuffer, 0, this.packetSizeBuffer.Length);
+            var readByteCount = _physicalConnection.Read(_packetSizeBuffer, 0, _packetSizeBuffer.Length);
             
-            if (this.disposed)
+            if (_disposed)
             {
                 return null;
             }
 
-            while (readByteCount < this.packetSizeBuffer.Length && readByteCount > 0)
+            while (readByteCount < _packetSizeBuffer.Length && readByteCount > 0)
             {
-                var reading = this.physicalConnection.Read(packetSizeBuffer, readByteCount, this.packetSizeBuffer.Length - readByteCount);
-                if (reading < 1 || this.disposed)
+                var reading = _physicalConnection.Read(_packetSizeBuffer, readByteCount, _packetSizeBuffer.Length - readByteCount);
+                if (reading < 1 || _disposed)
                 {
                     return null;
                 }
@@ -369,16 +369,16 @@ namespace nanoFramework.Tarantool.Client.Stream
                 readByteCount += reading;
             }
 
-            return (PacketSize?)MessagePackSerializer.Deserialize(typeof(PacketSize), this.packetSizeBuffer);
+            return (PacketSize?)MessagePackSerializer.Deserialize(typeof(PacketSize), _packetSizeBuffer);
         }
 
         private void EnqueuePacket(int packetSize)
         {
-            if (this.buffer.Length - this.readingOffset < packetSize)
+            if (_buffer.Length - _readingOffset < packetSize)
             {
-                while (!this.IsReadingPartsQueueFree())
+                while (!IsReadingPartsQueueFree())
                 {
-                    if (this.disposed)
+                    if (_disposed)
                     {
                         return;
                     }
@@ -391,13 +391,13 @@ namespace nanoFramework.Tarantool.Client.Stream
                 int readingPacketSize = ReadAllPacketBytes(packetSize, out packetSegmentArray);
                 if (packetSegmentArray != null)
                 {
-                    this.readingOffset += readingPacketSize;
-                    lock (this.processingLock)
+                    _readingOffset += readingPacketSize;
+                    lock (_processingLock)
                     {
-                        this.readingParts.Enqueue(packetSegmentArray);
+                        _readingParts.Enqueue(packetSegmentArray);
                     }
 
-                    this.processResponsesEvent.Set();
+                    _processResponsesEvent.Set();
                     break;
                 }
             }
@@ -405,14 +405,14 @@ namespace nanoFramework.Tarantool.Client.Stream
 
         private int ReadAllPacketBytes(int packetLength, out ArraySegment? result)
         {
-            var freeBufferSpace = this.buffer.Length - this.readingOffset;
+            var freeBufferSpace = _buffer.Length - _readingOffset;
             result = null;
             int reading = 0;
             if (freeBufferSpace > packetLength)
             {
                 while (reading < packetLength)
                 {
-                    var readBytesCount = this.physicalConnection.Read(this.buffer, this.readingOffset + reading, packetLength - reading);
+                    var readBytesCount = _physicalConnection.Read(_buffer, _readingOffset + reading, packetLength - reading);
                     if (readBytesCount < 1)
                     {
                         break;
@@ -425,7 +425,7 @@ namespace nanoFramework.Tarantool.Client.Stream
 
                 if (reading >= packetLength)
                 {
-                    result = new ArraySegment(this.buffer, this.readingOffset, reading);
+                    result = new ArraySegment(_buffer, _readingOffset, reading);
                 }
             }
 
@@ -434,19 +434,19 @@ namespace nanoFramework.Tarantool.Client.Stream
 
         private bool IsReadingPartsQueueFree()
         {
-            lock (this.processingLock)
+            lock (_processingLock)
             {
-                if (this.readingParts.Count < 1)
+                if (_readingParts.Count < 1)
                 {
-                    this.readingOffset = 0;
+                    _readingOffset = 0;
                     return true;
                 }
             }
 
-            int waitResult = WaitHandle.WaitAny(this.readingPartsQueueFreeWaitHandles);
+            int waitResult = WaitHandle.WaitAny(_readingPartsQueueFreeWaitHandles);
             if (waitResult > 0)
             {
-                this.readingOffset = 0;
+                _readingOffset = 0;
                 return true;
             }
 

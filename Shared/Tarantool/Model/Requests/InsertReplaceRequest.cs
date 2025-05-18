@@ -18,9 +18,9 @@ namespace nanoFramework.Tarantool.Model.Requests
         /// <param name="tuple"><see cref="Tarantool"/> <see cref="TarantoolTuple"/> to be insert or replace.</param>
         protected InsertReplaceRequest(CommandCode code, uint spaceId, TarantoolTuple tuple)
         {
-            this.Code = code;
-            this.SpaceId = spaceId;
-            this.Tuple = tuple;
+            Code = code;
+            SpaceId = spaceId;
+            Tuple = tuple;
         }
 
         /// <summary>

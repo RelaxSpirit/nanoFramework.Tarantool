@@ -14,7 +14,7 @@ namespace nanoFramework.Tarantool.Model
         /// <param name="value">Size value.</param>
         internal PacketSize(uint value)
         {
-            this.Value = value;
+            Value = value;
         }
 
         /// <summary>

@@ -18,9 +18,9 @@ namespace nanoFramework.Tarantool.Dto
     internal class TarantoolTupleArrayType : Type
     {
         private static readonly Type DefaultTarantoolTupleArrayType = typeof(TarantoolTupleType[]);
-        private readonly TarantoolTupleType elementType;
-        private string name = string.Empty;
-        private string fullName = string.Empty;
+        private readonly TarantoolTupleType _elementType;
+        private string _name = string.Empty;
+        private string _fullName = string.Empty;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Dto.TarantoolTupleArrayType"/> class.
@@ -28,7 +28,7 @@ namespace nanoFramework.Tarantool.Dto
         /// <param name="elementType"><see cref="Tarantool"/> element tuple type.</param>
         internal TarantoolTupleArrayType(TarantoolTupleType elementType)
         {
-            this.elementType = elementType;
+            _elementType = elementType;
         }
 
         public new static bool IsArray => true;
@@ -41,9 +41,9 @@ namespace nanoFramework.Tarantool.Dto
         {
             get
             {
-                if (string.IsNullOrEmpty(this.name))
-                    this.InitializeName();
-                return this.name;
+                if (string.IsNullOrEmpty(_name))
+                    InitializeName();
+                return _name;
             }
         }
 
@@ -52,12 +52,12 @@ namespace nanoFramework.Tarantool.Dto
         {
             get
             {
-                if (string.IsNullOrEmpty(this.fullName))
+                if (string.IsNullOrEmpty(_fullName))
                 {
-                    this.InitializeFullName();
+                    InitializeFullName();
                 }
 
-                return this.fullName;
+                return _fullName;
             }
         }
 
@@ -78,7 +78,7 @@ namespace nanoFramework.Tarantool.Dto
 
         public override Type GetElementType()
         {
-            return this.elementType;
+            return _elementType;
         }
 
         public override FieldInfo[] GetFields(BindingFlags bindingAttr)
@@ -99,13 +99,13 @@ namespace nanoFramework.Tarantool.Dto
         [MethodImpl(MethodImplOptions.Synchronized)]
         private void InitializeName()
         {
-            this.name = $"[{this.elementType.Name}]";
+            _name = $"[{_elementType.Name}]";
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
         private void InitializeFullName()
         {
-            this.fullName = $"[{this.elementType.FullName}]";
+            _fullName = $"[{_elementType.FullName}]";
         }
 
 #if !NANOFRAMEWORK_1_0
@@ -113,9 +113,9 @@ namespace nanoFramework.Tarantool.Dto
         {
             get
             {
-                if (string.IsNullOrEmpty(fullName))
+                if (string.IsNullOrEmpty(_fullName))
                     InitializeFullName();
-                return fullName;
+                return _fullName;
             }
         }
 
@@ -141,7 +141,8 @@ namespace nanoFramework.Tarantool.Dto
             throw new NotImplementedException();
         }
 
-        protected override ConstructorInfo? GetConstructorImpl(BindingFlags bindingAttr, 
+        protected override ConstructorInfo? GetConstructorImpl(
+            BindingFlags bindingAttr, 
             Binder? binder, 
             CallingConventions callConvention, 
             Type[] types,

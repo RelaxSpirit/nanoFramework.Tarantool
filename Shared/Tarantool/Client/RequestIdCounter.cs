@@ -11,12 +11,12 @@ namespace nanoFramework.Tarantool.Client
     /// </summary>
     internal class RequestIdCounter
     {
-        private ulong currentRequestId = 0;
+        private ulong _currentRequestId = 0;
 
         [MethodImpl(MethodImplOptions.Synchronized)]
         internal RequestId GetRequestId()
         {
-            return (RequestId)(++this.currentRequestId);
+            return (RequestId)(++_currentRequestId);
         }
     }
 }

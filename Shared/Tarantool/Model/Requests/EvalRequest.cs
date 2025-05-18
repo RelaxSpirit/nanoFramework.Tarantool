@@ -19,8 +19,8 @@ namespace nanoFramework.Tarantool.Model.Requests
         /// <param name="tuple"><see cref="TarantoolTuple"/> parameter for eval.</param>
         public EvalRequest(string expression, TarantoolTuple tuple)
         {
-            this.Expression = expression;
-            this.Tuple = tuple;
+            Expression = expression;
+            Tuple = tuple;
         }
 
         /// <summary>

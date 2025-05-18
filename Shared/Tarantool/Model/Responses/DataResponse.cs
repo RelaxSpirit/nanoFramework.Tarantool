@@ -19,7 +19,7 @@ namespace nanoFramework.Tarantool.Model.Responses
 #nullable enable
         internal DataResponse(object? data, FieldMetadata[] metadata, SqlInfo? sqlInfo) : this(data, sqlInfo)
         {
-            this.MetaData = metadata;
+            MetaData = metadata;
         }
 
         /// <summary>
@@ -31,28 +31,28 @@ namespace nanoFramework.Tarantool.Model.Responses
         {
             if (data is ArrayList arrayList)
             {
-                this.Data = (object[])arrayList.ToArray();
+                Data = (object[])arrayList.ToArray();
             }
             else
             {
                 if (data == null)
                 {
-                    this.Data = new object[0];
+                    Data = new object[0];
                 }
                 else
                 {
                     if (data.GetType().IsArray)
                     {
-                        this.Data = (object[])data;
+                        Data = (object[])data;
                     }
                     else
                     {
-                        this.Data = new object[1] { data };
+                        Data = new object[1] { data };
                     }
                 }
             }
 
-            this.MetaData = new FieldMetadata[0];
+            MetaData = new FieldMetadata[0];
         }
 
         /// <summary>

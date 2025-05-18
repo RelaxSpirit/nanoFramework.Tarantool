@@ -22,8 +22,8 @@ namespace nanoFramework.Tarantool.Model.UpdateOperations
             string argument)
             : base(UpdateOperationType.Splice, fieldNumber, argument)
         {
-            this.Position = position;
-            this.Offset = offset;
+            Position = position;
+            Offset = offset;
         }
 
         /// <summary>

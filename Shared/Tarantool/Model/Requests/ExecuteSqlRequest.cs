@@ -19,8 +19,8 @@ namespace nanoFramework.Tarantool.Model.Requests
         /// <param name="parameters"><see cref="Tarantool"/> SQL query <see cref="SqlParameter"/> array.</param>
         public ExecuteSqlRequest(string query, SqlParameter[] parameters)
         {
-            this.Query = query;
-            this.Parameters = parameters ?? Empty;
+            Query = query;
+            Parameters = parameters ?? Empty;
         }
 
         /// <summary>

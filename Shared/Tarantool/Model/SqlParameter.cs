@@ -15,9 +15,10 @@ namespace nanoFramework.Tarantool.Model
     /// </summary>
     public class SqlParameter
     {
-        private readonly object value;
-        private readonly string name;
-        private readonly Type typeValue;
+#nullable enable
+        private readonly object _value;
+        private readonly string _name;
+        private readonly Type _typeValue;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlParameter" /> class.
@@ -25,9 +26,9 @@ namespace nanoFramework.Tarantool.Model
         /// <param name="value">Parameter value.</param>
         public SqlParameter(object value)
         {
-            this.name = string.Empty;
-            this.value = value;
-            this.typeValue = value.GetType();
+            _name = string.Empty;
+            _value = value;
+            _typeValue = value.GetType();
         }
 
         /// <summary>
@@ -48,18 +49,18 @@ namespace nanoFramework.Tarantool.Model
 #endif
             }
 
-            this.name = name;
+            _name = name;
         }
 
         internal void Write([NotNull] IMessagePackWriter writer)
         {
-            if (this.name != null)
+            if (_name != null)
             {
                 writer.WriteMapHeader(1u);
-                ConverterContext.GetConverter(typeof(string)).Write(this.name, writer);
+                ConverterContext.GetConverter(typeof(string)).Write(_name, writer);
             }
 
-            ConverterContext.GetConverter(this.typeValue).Write(this.value, writer);
+            ConverterContext.GetConverter(_typeValue).Write(_value, writer);
         }
     }
 }

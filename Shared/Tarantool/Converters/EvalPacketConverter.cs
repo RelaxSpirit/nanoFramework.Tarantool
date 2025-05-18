@@ -22,7 +22,7 @@ namespace nanoFramework.Tarantool.Converters
         {
             var keyConverter = ConverterContext.GetConverter(typeof(uint));
             var stringConverter = ConverterContext.GetConverter(typeof(string));
-            var tupleConverter = TarantoolContext.GetTarantoolTupleConverter(value.Tuple);
+            var tupleConverter = TarantoolContext.Instance.GetTarantoolTupleConverter(value.Tuple);
 
             writer.WriteMapHeader(2);
 

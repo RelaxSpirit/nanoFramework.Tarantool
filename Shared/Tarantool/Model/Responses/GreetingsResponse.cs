@@ -22,10 +22,10 @@ namespace nanoFramework.Tarantool.Model.Responses
         /// <param name="response">Byte array by response.</param>
         internal GreetingsResponse(byte[] response)
         {
-            this.Message = Encoding.UTF8.GetString(response, 0, GreetingsMessageLength);
+            Message = Encoding.UTF8.GetString(response, 0, GreetingsMessageLength);
 
             var saltString = Encoding.UTF8.GetString(response, GreetingsMessageLength, GreetingsSaltLength);
-            this.Salt = Convert.FromBase64String(saltString);
+            Salt = Convert.FromBase64String(saltString);
         }
 
         /// <summary>

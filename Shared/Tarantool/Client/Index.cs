@@ -33,12 +33,12 @@ namespace nanoFramework.Tarantool.Client
         /// <param name="parts">Index parts array.</param>
         internal Index(uint id, uint spaceId, string name, bool unique, IndexType type, IndexPart[] parts)
         {
-            this.Id = id;
-            this.SpaceId = spaceId;
-            this.Name = name;
-            this.Unique = unique;
-            this.Type = type;
-            this.Parts = parts;
+            Id = id;
+            SpaceId = spaceId;
+            Name = name;
+            Unique = unique;
+            Type = type;
+            Parts = parts;
         }
         
         internal ILogicalConnection? LogicalConnection { get; set; }
@@ -58,8 +58,8 @@ namespace nanoFramework.Tarantool.Client
         public DataResponse? Select(TarantoolTuple key, TarantoolTupleType? responseType = null, SelectOptions? options = null)
         {
             var selectRequest = new SelectRequest(
-                this.SpaceId,
-                this.Id,
+                SpaceId,
+                Id,
                 options != null ? options.Limit : uint.MaxValue,
                 options != null ? options.Offset : 0,
                 options != null ? options.Iterator : Iterator.Eq,
@@ -67,106 +67,106 @@ namespace nanoFramework.Tarantool.Client
 
             if (responseType != null)
             {
-                return this.LogicalConnection?.SendRequest(selectRequest, TimeSpan.Zero, new TarantoolTupleArrayType(responseType));
+                return LogicalConnection?.SendRequest(selectRequest, TimeSpan.Zero, new TarantoolTupleArrayType(responseType));
             }
             else
             {
-                return this.LogicalConnection?.SendRequest(selectRequest, TimeSpan.Zero, responseType);
+                return LogicalConnection?.SendRequest(selectRequest, TimeSpan.Zero, responseType);
             }
         }
 
         public DataResponse? Min(TarantoolTuple key, TarantoolTupleType? responseType = null)
         {
-            if (this.Type != IndexType.Tree)
+            if (Type != IndexType.Tree)
             {
                 throw ExceptionHelper.WrongIndexType("TREE", "min");
             }
 
             var iterator = key == null ? Iterator.Eq : Iterator.Ge;
 
-            var selectPacket = new SelectRequest(this.SpaceId, this.Id, 1, 0, iterator, key);
+            var selectPacket = new SelectRequest(SpaceId, Id, 1, 0, iterator, key);
 
             if (responseType != null)
             {
-                return this.LogicalConnection?.SendRequest(selectPacket, TimeSpan.Zero, new TarantoolTupleArrayType(responseType));
+                return LogicalConnection?.SendRequest(selectPacket, TimeSpan.Zero, new TarantoolTupleArrayType(responseType));
             }
             else
             {
-                return this.LogicalConnection?.SendRequest(selectPacket, TimeSpan.Zero, responseType);
+                return LogicalConnection?.SendRequest(selectPacket, TimeSpan.Zero, responseType);
             }
         }
 
         public DataResponse? Min(TarantoolTupleType? responseType = null)
         {
-            return this.Min(TarantoolTuple.Empty, responseType);
+            return Min(TarantoolTuple.Empty, responseType);
         }
 
         public DataResponse? Max(TarantoolTupleType? responseType = null)
         {
-            return this.Max(TarantoolTuple.Empty, responseType);
+            return Max(TarantoolTuple.Empty, responseType);
         }
 
         public DataResponse? Max(TarantoolTuple key, TarantoolTupleType? responseType = null)
         {
-            if (this.Type != IndexType.Tree)
+            if (Type != IndexType.Tree)
             {
                 throw ExceptionHelper.WrongIndexType("TREE", "max");
             }
 
             var iterator = key == null ? Iterator.Req : Iterator.Le;
 
-            var selectPacket = new SelectRequest(this.SpaceId, this.Id, 1, 0, iterator, key);
+            var selectPacket = new SelectRequest(SpaceId, Id, 1, 0, iterator, key);
 
             if (responseType != null)
             {
-                return this.LogicalConnection?.SendRequest(selectPacket, TimeSpan.Zero, new TarantoolTupleArrayType(responseType));
+                return LogicalConnection?.SendRequest(selectPacket, TimeSpan.Zero, new TarantoolTupleArrayType(responseType));
             }
             else
             {
-                return this.LogicalConnection?.SendRequest(selectPacket, TimeSpan.Zero, responseType);
+                return LogicalConnection?.SendRequest(selectPacket, TimeSpan.Zero, responseType);
             }
         }
 
         public DataResponse? Delete(TarantoolTuple key, TarantoolTupleType? responseType = null)
         {
-            var deleteRequest = new DeleteRequest(this.SpaceId, this.Id, key);
+            var deleteRequest = new DeleteRequest(SpaceId, Id, key);
 
             if (responseType != null)
             {
-                return this.LogicalConnection?.SendRequest(deleteRequest, TimeSpan.Zero, new TarantoolTupleArrayType(responseType));
+                return LogicalConnection?.SendRequest(deleteRequest, TimeSpan.Zero, new TarantoolTupleArrayType(responseType));
             }
             else
             {
-                return this.LogicalConnection?.SendRequest(deleteRequest, TimeSpan.Zero, responseType);
+                return LogicalConnection?.SendRequest(deleteRequest, TimeSpan.Zero, responseType);
             }
         }
 
         public DataResponse? Update(TarantoolTuple key, UpdateOperation[] updateOperations, TarantoolTupleType? responseType = null)
         {
             var updateRequest = new UpdateRequest(
-                this.SpaceId,
-                this.Id,
+                SpaceId,
+                Id,
                 key,
                 updateOperations);
 
             if (responseType != null)
             {
-                return this.LogicalConnection?.SendRequest(updateRequest, TimeSpan.Zero, new TarantoolTupleArrayType(responseType));
+                return LogicalConnection?.SendRequest(updateRequest, TimeSpan.Zero, new TarantoolTupleArrayType(responseType));
             }
             else
             {
-                return this.LogicalConnection?.SendRequest(updateRequest, TimeSpan.Zero, responseType);
+                return LogicalConnection?.SendRequest(updateRequest, TimeSpan.Zero, responseType);
             }
         }
 
         public TarantoolTuple? MinTuple([NotNull] TarantoolTupleType responseType)
         {
-            return this.MinTuple(TarantoolTuple.Empty, responseType);
+            return MinTuple(TarantoolTuple.Empty, responseType);
         }
 
         public TarantoolTuple? MinTuple(TarantoolTuple key, [NotNull] TarantoolTupleType responseType)
         {
-            var minResponse = this.Min(key, responseType);
+            var minResponse = Min(key, responseType);
             if (minResponse != null && minResponse.Data.Length > 0)
             {
                 return (TarantoolTuple)((object[])minResponse.Data[0])[0];
@@ -179,12 +179,12 @@ namespace nanoFramework.Tarantool.Client
 
         public TarantoolTuple? MaxTuple([NotNull] TarantoolTupleType responseType)
         {
-            return this.MaxTuple(TarantoolTuple.Empty, responseType);
+            return MaxTuple(TarantoolTuple.Empty, responseType);
         }
 
         public TarantoolTuple? MaxTuple(TarantoolTuple key, [NotNull] TarantoolTupleType responseType)
         {
-            var maxResponse = this.Max(key, responseType);
+            var maxResponse = Max(key, responseType);
             if (maxResponse != null && maxResponse.Data.Length > 0)
             {
                 return (TarantoolTuple)((object[])maxResponse.Data[0])[0];

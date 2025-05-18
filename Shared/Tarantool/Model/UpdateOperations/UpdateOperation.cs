@@ -16,9 +16,9 @@ namespace nanoFramework.Tarantool.Model.UpdateOperations
         /// <param name="argument">Update argument.</param>
         internal UpdateOperation(string operationType, int fieldNumber, object argument)
         {
-            this.OperationType = operationType;
-            this.FieldNumber = fieldNumber;
-            this.Argument = argument;
+            OperationType = operationType;
+            FieldNumber = fieldNumber;
+            Argument = argument;
         }
 
         /// <summary>

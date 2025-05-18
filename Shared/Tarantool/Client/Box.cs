@@ -21,11 +21,11 @@ namespace nanoFramework.Tarantool.Client
 #nullable enable
     internal class Box : IBox
     {
-        private readonly ClientOptions clientOptions;
-        private readonly LogicalConnectionManager logicalConnection;
-        private BoxInfo? info;
-        private bool sqlReady;
-        private bool disposedValue;
+        private readonly ClientOptions _clientOptions;
+        private readonly LogicalConnectionManager _logicalConnection;
+        private BoxInfo? _info;
+        private bool _sqlReady;
+        private bool _disposedValue;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Box"/> class.
@@ -33,33 +33,33 @@ namespace nanoFramework.Tarantool.Client
         /// <param name="options">Client options.</param>
         internal Box(ClientOptions options)
         {
-            this.clientOptions = options;
-            this.logicalConnection = new LogicalConnectionManager(options);
-            this.Metrics = new Metrics(this.logicalConnection);
-            this.Schema = new Schema(this.logicalConnection);
+            _clientOptions = options;
+            _logicalConnection = new LogicalConnectionManager(options);
+            Metrics = new Metrics(_logicalConnection);
+            Schema = new Schema(_logicalConnection);
         }
 
         public Metrics Metrics { get; }
 
-        bool IBox.IsConnected => this.logicalConnection.IsConnected();
+        bool IBox.IsConnected => _logicalConnection.IsConnected();
 
         public ISchema Schema { get; }
 
         public BoxInfo? Info
         {
-            get => this.info;
+            get => _info;
             private set
             {
-                this.info = value;
-                this.sqlReady = value != null && value.IsSqlAvailable();
+                _info = value;
+                _sqlReady = value != null && value.IsSqlAvailable();
             }
         }
 
-        public ITarantoolConnection TarantoolConnection => this.logicalConnection;
+        public ITarantoolConnection TarantoolConnection => _logicalConnection;
 
         public void ReloadBoxInfo()
         {
-            var report = this.Eval("return box.info", typeof(BoxInfo));
+            var report = Eval("return box.info", typeof(BoxInfo));
             if (report != null)
             {
                 if (report.Data.Length != 1)
@@ -67,35 +67,35 @@ namespace nanoFramework.Tarantool.Client
                     throw ExceptionHelper.CantParseBoxInfoResponse();
                 }
 
-                this.Info = (BoxInfo)report.Data[0];
+                Info = (BoxInfo)report.Data[0];
             }
         }
 
         public void ReloadSchema()
         {
-            this.Schema.Reload();
+            Schema.Reload();
         }
 
         public DataResponse? Call(string functionName, Type? responseDataType)
         {
-            return this.Call(functionName, TarantoolTuple.Empty, responseDataType);
+            return Call(functionName, TarantoolTuple.Empty, responseDataType);
         }
 
         public DataResponse? Call(string functionName, TarantoolTuple parameters, Type? responseDataType)
         {
             var callRequest = new CallRequest(functionName, parameters);
-            return this.logicalConnection.SendRequest(callRequest, TimeSpan.Zero, responseDataType);
+            return _logicalConnection.SendRequest(callRequest, TimeSpan.Zero, responseDataType);
         }
 
         public DataResponse? Eval(string expression, TarantoolTuple parameters, Type? responseDataType)
         {
             var evalRequest = new EvalRequest(expression, parameters);
-            return this.logicalConnection.SendRequest(evalRequest, TimeSpan.Zero, responseDataType);
+            return _logicalConnection.SendRequest(evalRequest, TimeSpan.Zero, responseDataType);
         }
 
         public DataResponse? Eval(string expression, Type? responseDataType)
         {
-            return this.Eval(expression, TarantoolTuple.Empty, responseDataType);
+            return Eval(expression, TarantoolTuple.Empty, responseDataType);
         }
 
         /// <summary>
@@ -108,35 +108,35 @@ namespace nanoFramework.Tarantool.Client
         /// <exception cref="NullReferenceException">If box info or <see cref="Tarantool"/> version is <see langword="null"/>.</exception>
         public DataResponse? ExecuteSql(string query, Type? responseDataType, params SqlParameter[] parameters)
         {
-            if (this.Info != null && this.Info.Version is null)
+            if (Info != null && Info.Version is null)
             {
-                if (!this.sqlReady)
+                if (!_sqlReady)
                 {
-                    throw ExceptionHelper.SqlIsNotAvailable(this.Info.Version);
+                    throw ExceptionHelper.SqlIsNotAvailable(Info.Version);
                 }
             }
 
-            return logicalConnection.SendRequest(new ExecuteSqlRequest(query, parameters), TimeSpan.Zero, responseDataType);
+            return _logicalConnection.SendRequest(new ExecuteSqlRequest(query, parameters), TimeSpan.Zero, responseDataType);
         }
 
         public void Dispose()
         {
-            this.Dispose(disposing: true);
+            Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
 
         private void Connect()
         {
-            this.logicalConnection.Connect();
+            _logicalConnection.Connect();
 
-            if (this.clientOptions.ConnectionOptions.ReadSchemaOnConnect)
+            if (_clientOptions.ConnectionOptions.ReadSchemaOnConnect)
             {
-                this.ReloadSchema();
+                ReloadSchema();
             }
 
-            if (this.clientOptions.ConnectionOptions.ReadBoxInfoOnConnect)
+            if (_clientOptions.ConnectionOptions.ReadBoxInfoOnConnect)
             {
-                this.ReloadBoxInfo();
+                ReloadBoxInfo();
             }
         }
 
@@ -164,14 +164,14 @@ namespace nanoFramework.Tarantool.Client
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!this.disposedValue)
+            if (!_disposedValue)
             {
                 if (disposing)
                 {
-                    this.logicalConnection.Dispose();
+                    _logicalConnection.Dispose();
                 }
 
-                this.disposedValue = true;
+                _disposedValue = true;
             }
         }
     }

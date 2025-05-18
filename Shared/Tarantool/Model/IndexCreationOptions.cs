@@ -14,7 +14,7 @@ namespace nanoFramework.Tarantool.Model
         /// <param name="unique"><see langword="true"/> if created index must be unique.</param>
         internal IndexCreationOptions(bool unique)
         {
-            this.Unique = unique;
+            Unique = unique;
         }
 
         /// <summary>

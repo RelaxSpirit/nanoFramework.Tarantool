@@ -12,7 +12,7 @@ namespace nanoFramework.Tarantool.Model.Requests
     /// </summary>
     public class CallRequest : IRequest
     {
-        private readonly bool use17;
+        private readonly bool _use17;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CallRequest"/> class.
@@ -22,9 +22,9 @@ namespace nanoFramework.Tarantool.Model.Requests
         /// <param name="use17"><see langword="true"/> if use on old <see cref="Tarantool"/> version, other <see langword="false"/>. Default <see langword="true"/>.</param>
         public CallRequest(string functionName, TarantoolTuple tuple, bool use17 = true)
         {
-            this.use17 = use17;
-            this.FunctionName = functionName;
-            this.Tuple = tuple;
+            _use17 = use17;
+            FunctionName = functionName;
+            Tuple = tuple;
         }
 
         /// <summary>
@@ -40,6 +40,6 @@ namespace nanoFramework.Tarantool.Model.Requests
         /// <summary>
         /// Gets request command code.
         /// </summary>
-        public CommandCode Code => this.use17 ? CommandCode.Call : CommandCode.OldCall;
+        public CommandCode Code => _use17 ? CommandCode.Call : CommandCode.OldCall;
     }
 }

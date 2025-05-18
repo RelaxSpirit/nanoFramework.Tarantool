@@ -13,34 +13,34 @@ namespace nanoFramework.Tarantool.Model
     public partial class BoxInfo
     {
         /// <summary>
-        /// Gets a numeric identifier of the current instance within the replica set.
+        /// Gets or sets a numeric identifier of the current instance within the replica set.
         /// </summary>
-        public long Id { get; private set; }
+        public long Id { get; protected set; }
 
         /// <summary>
-        /// Gets a log sequence number (LSN) for the latest entry in the instance’s write-ahead log (WAL).
+        /// Gets or sets a log sequence number (LSN) for the latest entry in the instance’s write-ahead log (WAL).
         /// </summary>
-        public long Lsn { get; private set; }
+        public long Lsn { get; protected set; }
 
         /// <summary>
-        /// Gets a process ID of the current instance.
+        /// Gets or sets a process ID of the current instance.
         /// </summary>
-        public long Pid { get; private set; }
+        public long Pid { get; protected set; }
 
         /// <summary>
-        /// Gets a value indicating whether the current mode of the instance (writable or read-only).
+        /// Gets or sets a value indicating whether the current mode of the instance (writable or read-only).
         /// </summary>
-        public bool ReadOnly { get; private set; }
+        public bool ReadOnly { get; protected set; }
 
         /// <summary>
-        /// Gets a globally unique identifier of the current instance.
+        /// Gets or sets a globally unique identifier of the current instance.
         /// </summary>
-        public Guid Uuid { get; private set; }
+        public Guid Uuid { get; protected set; }
 
         /// <summary>
-        /// Gets the <see cref="Tarantool"/> version.
+        /// Gets or sets the <see cref="Tarantool"/> version.
         /// </summary>
 #nullable enable
-        public TarantoolVersion? Version { get; private set; }
+        public TarantoolVersion? Version { get; protected set; }
     }
 }

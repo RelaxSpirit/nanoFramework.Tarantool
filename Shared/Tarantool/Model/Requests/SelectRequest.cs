@@ -22,12 +22,12 @@ namespace nanoFramework.Tarantool.Model.Requests
 #nullable enable
         public SelectRequest(uint spaceId, uint indexId, uint limit, uint offset, Iterator iterator, TarantoolTuple? selectKey)
         {
-            this.SpaceId = spaceId;
-            this.IndexId = indexId;
-            this.Limit = limit;
-            this.Offset = offset;
-            this.Iterator = iterator;
-            this.SelectKey = selectKey;
+            SpaceId = spaceId;
+            IndexId = indexId;
+            Limit = limit;
+            Offset = offset;
+            Iterator = iterator;
+            SelectKey = selectKey;
         }
 
         /// <summary>

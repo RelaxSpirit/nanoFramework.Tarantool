@@ -18,7 +18,7 @@ namespace nanoFramework.Tarantool.Model.Headers
         /// <param name="schemaId"><see cref="Tarantool"/> schema id.</param>
         internal ResponseHeader(CommandCode code, RequestId requestId, ulong schemaId) : base(code, requestId)
         {
-            this.SchemaId = schemaId;
+            SchemaId = schemaId;
         }
 
         /// <summary>

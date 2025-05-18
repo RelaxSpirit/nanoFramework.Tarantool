@@ -19,9 +19,9 @@ namespace nanoFramework.Tarantool.Model.Requests
         /// <param name="updateOperations"><see cref="Tarantool"/> <see cref="UpdateOperation"/> array.</param>
         public UpsertRequest(uint spaceId, TarantoolTuple tuple, UpdateOperation[] updateOperations)
         {
-            this.SpaceId = spaceId;
-            this.Tuple = tuple;
-            this.UpdateOperations = updateOperations;
+            SpaceId = spaceId;
+            Tuple = tuple;
+            UpdateOperations = updateOperations;
         }
 
         /// <summary>

@@ -22,10 +22,10 @@ namespace nanoFramework.Tarantool.Model
         /// <param name="commitHash">Commit hash <see cref="Tarantool"/> version.</param>
         internal TarantoolVersion(MajorVersion major, int minor, int build, string commitHash)
         {
-            this.Major = major;
-            this.Minor = minor;
-            this.Build = build;
-            this.CommitHash = commitHash;
+            Major = major;
+            Minor = minor;
+            Build = build;
+            CommitHash = commitHash;
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace nanoFramework.Tarantool.Model
                 return false;
             }
 
-            return this.Equals((TarantoolVersion)obj);
+            return Equals((TarantoolVersion)obj);
         }
 
         /// <summary>
@@ -183,7 +183,7 @@ namespace nanoFramework.Tarantool.Model
             }
 
             return obj is TarantoolVersion version
-                ? this.CompareTo(version)
+                ? CompareTo(version)
 #if NANOFRAMEWORK_1_0
                 : throw new ArgumentException();
 #else
@@ -198,7 +198,7 @@ namespace nanoFramework.Tarantool.Model
         /// <returns><see cref="Tarantool"/> version hash code.</returns>
         public override int GetHashCode()
         {
-            return this.Major.GetHashCode() & this.Minor.GetHashCode() & this.Build.GetHashCode() & this.CommitHash.GetHashCode();
+            return Major.GetHashCode() & Minor.GetHashCode() & Build.GetHashCode() & CommitHash.GetHashCode();
         }
 
         private bool Equals(TarantoolVersion other)
@@ -213,7 +213,7 @@ namespace nanoFramework.Tarantool.Model
                 return true;
             }
 
-            return this.Major.Equals(other.Major) && this.Minor == other.Minor && this.Build == other.Build && string.Equals(this.CommitHash, other.CommitHash);
+            return Major.Equals(other.Major) && Minor == other.Minor && Build == other.Build && string.Equals(CommitHash, other.CommitHash);
         }
 
         private int CompareTo(TarantoolVersion other)
@@ -228,30 +228,30 @@ namespace nanoFramework.Tarantool.Model
                 return 1;
             }
 
-            var majorComparison = this.Major.CompareTo(other.Major);
+            var majorComparison = Major.CompareTo(other.Major);
             if (majorComparison != 0)
             {
                 return majorComparison;
             }
 
-            var minorComparison = this.Minor - other.Minor;
+            var minorComparison = Minor - other.Minor;
             if (minorComparison != 0)
             {
                 return minorComparison;
             }
 
-            var buildComparison = this.Build - other.Build;
+            var buildComparison = Build - other.Build;
             if (buildComparison != 0)
             {
                 return buildComparison;
             }
 
-            if (this.CommitHash == null || other.CommitHash == null)
+            if (CommitHash == null || other.CommitHash == null)
             {
                 return 0;
             }
 
-            var hashComparison = string.Compare(this.CommitHash, other.CommitHash);
+            var hashComparison = string.Compare(CommitHash, other.CommitHash);
             if (hashComparison != 0)
             {
                 throw ExceptionHelper.CantCompareBuilds(this, other);

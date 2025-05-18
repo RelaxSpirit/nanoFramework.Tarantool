@@ -17,8 +17,8 @@ namespace nanoFramework.Tarantool.Model
         /// <param name="type">Index field type.</param>
         internal IndexPart(uint fieldNo, FieldType type)
         {
-            this.FieldNo = fieldNo;
-            this.Type = type;
+            FieldNo = fieldNo;
+            Type = type;
         }
 
         /// <summary>

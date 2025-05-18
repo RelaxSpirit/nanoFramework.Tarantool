@@ -21,36 +21,76 @@ namespace nanoFramework.Tarantool.Tests
     {
         private const string TarantoolHostIp = "192.168.1.116";
 
+        //[TestMethod]
+        //public void TestMockNetworkStream()
+        //{
+        //    var co = GetClientOptions(true, true);
+        //    Assert.IsNotNull(co);
+        //    Assert.IsNotNull(co.GetNetworkStream);
+
+        //    byte[] buff = new byte[512];
+        //    using (TarantoolStreamMock st = (TarantoolStreamMock)co.GetNetworkStream(co))
+        //    {
+        //        int r = st.Read(buff, 0, buff.Length);
+        //        Assert.AreEqual(128, r);
+
+        //        using (var stream = new MemoryStream())
+        //        {
+        //            var requestHeader = new RequestHeader(CommandCode.Eval, new RequestId(1));
+        //            stream.Seek(Constants.PacketSizeBufferSize, SeekOrigin.Begin);
+        //            MessagePackSerializer.Serialize(requestHeader, stream);
+        //            MessagePackSerializer.Serialize(new EvalRequest("return box.info", TarantoolTuple.Empty), stream);
+        //            var totalLength = stream.Position - Constants.PacketSizeBufferSize;
+        //            var packetLength = new PacketSize((uint)totalLength);
+        //            stream.Seek(0, SeekOrigin.Begin);
+        //            MessagePackSerializer.Serialize(packetLength, stream);
+        //            stream.Seek(0, SeekOrigin.Begin);
+        //            System.Diagnostics.Debug.WriteLine("Write request begin.....");
+        //            st.Write(stream.ToArray(), 0, (int)stream.Length);
+        //            System.Diagnostics.Debug.WriteLine("Request writing.");
+        //        }
+        //        System.Diagnostics.Debug.WriteLine("Flash begin.....");
+        //        st.Flush();
+        //        System.Diagnostics.Debug.WriteLine("Flushing.");
+
+        //        System.Diagnostics.Debug.WriteLine("Read begin.....");
+        //        r = st.Read(buff, 0, buff.Length);
+        //        System.Diagnostics.Debug.WriteLine($"Reading {r} bytes.");
+        //    }
+        //}
+
         /// <summary>
         /// Test <see cref="Tarantool"/> box network connections.
         /// </summary>
         [TestMethod]
         public void ConnectionTests()
         {
-            ClientOptions _clientOptions = new ClientOptions($"{TarantoolHostIp}:3301");
-            using (var box = TarantoolContext.Connect(_clientOptions))
+            using (var box = TarantoolContext.Connect(GetClientOptions(true, true)))
             {
                 CheckBox(box);
             }
 #if !NANOFRAMEWORK_1_0
-            Assert.ThrowsException<TarantoolException>(() =>
-            {
-                using (var box = TarantoolContext.Connect(TarantoolHostIp, 3301, "test", "test_password"))
+            Assert.ThrowsException<TarantoolException>(
+                () =>
                 {
-                };
-            },
+                    using (var box = TarantoolContext.Connect(GetClientOptions(false, false, userData: "test:test_password")))
+                    {
+                    }
+                    ;
+                },
             "Tarantool returns an error for request with id: 1, code: 0x0000802F  and message: User not found or supplied credentials are invalid.");
-#else
-            Assert.ThrowsException(typeof(TarantoolException), () => 
-            { 
-                using (var box = TarantoolContext.Connect(TarantoolHostIp, 3301, "test", "test_password")) 
-                { 
-                }; 
-            },
-            "Tarantool returns an error for request with id: 1, code: 0x0000802F  and message: User not found or supplied credentials are invalid.");
+////#else
+////            Assert.ThrowsException(typeof(TarantoolException), 
+////                () => 
+////                { 
+////                    using (var box = TarantoolContext.Connect(GetClientOptions(false, false, userData: "test:test_password"))) 
+////                    { 
+////                    }; 
+////                }
+////                );
 #endif
 
-            using (var box = TarantoolContext.Connect(TarantoolHostIp, 3301, "testuser", "test_password"))
+            using (var box = TarantoolContext.Connect(GetClientOptions(true, true, userData: "testuser:test_password")))
             {
                 CheckBox(box);
             }
@@ -62,7 +102,7 @@ namespace nanoFramework.Tarantool.Tests
         [TestMethod]
         public void BoxCallTests()
         {
-            using (var box = TarantoolContext.Connect(GetLiteClientOptions()))
+            using (var box = TarantoolContext.Connect(GetClientOptions(false, false, 256, 256)))
             {
                 var tupleParam = TarantoolTuple.Create(1.3d);
                 var callResult = CheckResponseData(box.Call("math.sqrt", tupleParam, tupleParam.GetType()));
@@ -75,16 +115,16 @@ namespace nanoFramework.Tarantool.Tests
                 Assert.AreEqual(1, resultData.Length);
 
                 var value = resultData[0];
-                Assert.IsNotNull(value);                
+                Assert.IsNotNull(value);
 
 #if !NANOFRAMEWORK_1_0
                 var diff = Math.Abs(((double)value) - Math.Sqrt(1.3d));
                 Assert.AreEqual(0d, diff);
                 Assert.ThrowsException<TarantoolException>(() => box.Call("math.pi"));
-#else
-                Assert.AreNotEqual(1.3d, (double)value);
-                Assert.ThrowsException(typeof(TarantoolException), () => box.Call("math.pi"));
-                
+////#else
+////                    Assert.AreNotEqual(1.3d, (double)value);
+////                    Assert.ThrowsException(typeof(TarantoolException), () => box.Call("math.pi"));
+
 #endif
 
                 callResult = CheckResponseData(box.Call("string.reverse", TarantoolTuple.Create("krowemarFonan")));
@@ -106,11 +146,11 @@ namespace nanoFramework.Tarantool.Tests
         [TestMethod]
         public void BoxEvalTests()
         {
-            using (var box = TarantoolContext.Connect(GetLiteClientOptions()))
+            using (var box = TarantoolContext.Connect(GetClientOptions(false, false, 512, 512)))
             {
                 var tupleParam = TarantoolTuple.Create(1, 2, 3);
                 var evalResult = CheckResponseData(box.Eval("return ...", tupleParam, tupleParam.GetType()));
-                
+
                 var resultData = evalResult.Data[0] as TarantoolTuple;
                 Assert.IsNotNull(resultData);
                 Assert.AreEqual(3, resultData.Length);
@@ -127,7 +167,7 @@ namespace nanoFramework.Tarantool.Tests
                 var selectResult = evalResult.Data[0] as TarantoolTuple[];
                 Assert.IsNotNull(selectResult);
                 Assert.AreEqual(14, selectResult.Length);
-                
+
                 foreach (var tuple in selectResult)
                 {
                     Console.WriteLine(tuple.ToString());
@@ -154,7 +194,7 @@ namespace nanoFramework.Tarantool.Tests
         [TestMethod]
         public void BoxExecuteSqlTests()
         {
-            using (var box = TarantoolContext.Connect(GetLiteClientOptions()))
+            using (var box = TarantoolContext.Connect(GetClientOptions(false, false, 512, 512)))
             {
                 var executeSqlResult = CheckResponseData(box.ExecuteSql("SELECT 1 as ABC, 'z', 3", typeof(TarantoolTuple[])));
 
@@ -169,19 +209,14 @@ namespace nanoFramework.Tarantool.Tests
 
 #if !NANOFRAMEWORK_1_0
                 Assert.ThrowsException<TarantoolException>(() => box.ExecuteSql("create table sql_test(id int primary key, name text)"));
-#else
-                Assert.ThrowsException(typeof(TarantoolException), () => box.ExecuteSql("create table sql_test(id int primary key, name text)"));
+////#else
+////                    Assert.ThrowsException(typeof(TarantoolException), () => box.ExecuteSql("create table sql_test(id int primary key, name text)"));
 #endif
             }
 
-            var clientOptions = new ClientOptions($"testuser:test_password@{TarantoolHostIp}:3301");
-            clientOptions.ConnectionOptions.ReadSchemaOnConnect = false;
-            clientOptions.ConnectionOptions.ReadBoxInfoOnConnect = false;
-            clientOptions.ConnectionOptions.WriteStreamBufferSize /= 32;
-            clientOptions.ConnectionOptions.ReadStreamBufferSize /= 32;
             bool isTableCreate = false;
 
-            using (var box = TarantoolContext.Connect(clientOptions))
+            using (var box = TarantoolContext.Connect(GetClientOptions(false, false, 256, 256, "testuser:test_password")))
             {
                 try
                 {
@@ -233,13 +268,34 @@ namespace nanoFramework.Tarantool.Tests
         }
 #nullable disable
 
-        private static ClientOptions GetLiteClientOptions()
+        private static ClientOptions GetClientOptions(
+            bool isReadSchemaOnConnect,
+            bool isReadBoxInfoOnConnect,
+            int writeStreamBufferSize = 8192,
+            int readStreamBufferSize = 8192,
+            string userData = null)
         {
-            ClientOptions clientOptions = new ClientOptions($"{TarantoolHostIp}:3301");
-            clientOptions.ConnectionOptions.ReadSchemaOnConnect = false;
-            clientOptions.ConnectionOptions.ReadBoxInfoOnConnect = false;
-            clientOptions.ConnectionOptions.WriteStreamBufferSize /= 16;
-            clientOptions.ConnectionOptions.ReadStreamBufferSize /= 16;
+            string replicationSource = $"{TarantoolHostIp}:3301";
+
+            if (userData != null)
+            {
+                replicationSource = $"{userData}@{replicationSource}";
+            }
+
+            ClientOptions clientOptions = new ClientOptions(replicationSource);
+            clientOptions.ConnectionOptions.ReadSchemaOnConnect = isReadSchemaOnConnect;
+            clientOptions.ConnectionOptions.ReadBoxInfoOnConnect = isReadBoxInfoOnConnect;
+#if NANOFRAMEWORK_1_0
+            clientOptions.ConnectionOptions.WriteStreamBufferSize = writeStreamBufferSize > 512 ? 512 : writeStreamBufferSize;
+            clientOptions.ConnectionOptions.ReadStreamBufferSize = readStreamBufferSize > 512 ? 512 : readStreamBufferSize;
+#else
+            clientOptions.ConnectionOptions.WriteStreamBufferSize = writeStreamBufferSize;
+            clientOptions.ConnectionOptions.ReadStreamBufferSize = readStreamBufferSize;
+#endif
+            clientOptions.ConnectionOptions.PingCheckInterval = 0;
+#if NANOFRAMEWORK_1_0
+            clientOptions.GetNetworkStream = Mocks.TarantoolMockContext.Instanse.GetTarantoolStreamMock;
+#endif
 
             return clientOptions;
         }

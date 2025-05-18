@@ -18,9 +18,12 @@ namespace nanoFramework.Tarantool.Dto
     /// </summary>
     public class TarantoolTupleType : Type
     {
+        private static TarantoolContext _context = TarantoolContext.Instance;
         private static readonly Type DefaultTarantoolTupleType = typeof(TarantoolTupleType);
-        private string name = string.Empty;
-        private string fullName = string.Empty;
+
+        private string _name = string.Empty;
+        private string _fullName = string.Empty;
+        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TarantoolTupleType"/> class.
@@ -28,12 +31,12 @@ namespace nanoFramework.Tarantool.Dto
         /// <param name="tupleTypes">Tuple items types.</param>
         internal TarantoolTupleType(params Type[] tupleTypes)
         { 
-            this.TupleTypes = tupleTypes;
+            TupleTypes = tupleTypes;
 
             if (tupleTypes.Length < 1)
             {
-                this.name = DefaultTarantoolTupleType.Name;
-                this.fullName = DefaultTarantoolTupleType.FullName ?? string.Empty;
+                _name = DefaultTarantoolTupleType.Name;
+                _fullName = DefaultTarantoolTupleType.FullName ?? string.Empty;
             }
         }
 
@@ -54,9 +57,9 @@ namespace nanoFramework.Tarantool.Dto
         {
             get
             {
-                if (string.IsNullOrEmpty(this.name))
-                    this.InitializeName();
-                return this.name;
+                if (string.IsNullOrEmpty(_name))
+                    InitializeName();
+                return _name;
             }
         }
 
@@ -72,7 +75,7 @@ namespace nanoFramework.Tarantool.Dto
         /// <returns>Instance of the <see cref="TarantoolTupleType"/> class.</returns>
         public static TarantoolTupleType Create(params Type[] tupleTypes)
         {
-            return TarantoolContext.GetTarantoolTupleType(tupleTypes);
+            return _context.GetTarantoolTupleType(tupleTypes);
         }
 
 #if NANOFRAMEWORK_1_0
@@ -83,12 +86,12 @@ namespace nanoFramework.Tarantool.Dto
         {
             get
             {
-                if (string.IsNullOrEmpty(this.fullName))
+                if (string.IsNullOrEmpty(_fullName))
                 {
-                    this.InitializeFullName();
+                    InitializeFullName();
                 }
 
-                return this.fullName;
+                return _fullName;
             }
         }
 
@@ -153,7 +156,7 @@ namespace nanoFramework.Tarantool.Dto
         [MethodImpl(MethodImplOptions.Synchronized)]
         private void InitializeName()
         {
-            if (string.IsNullOrEmpty(this.name))
+            if (string.IsNullOrEmpty(_name))
             {
                 StringBuilder sbName = new();
                 sbName.Append(DefaultTarantoolTupleType.Name);
@@ -167,16 +170,16 @@ namespace nanoFramework.Tarantool.Dto
                 sbName.Remove(sbName.Length - 1, 1);
                 sbName.Append('>');
 
-                name = sbName.ToString();
+                _name = sbName.ToString();
             }
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
         private void InitializeFullName()
         {
-            if (string.IsNullOrEmpty(this.fullName))
+            if (string.IsNullOrEmpty(_fullName))
             {
-                fullName = $"{DefaultTarantoolTupleType.FullName}<{TupleTypes.GetTypeArrayTypesFullName()}>";
+                _fullName = $"{DefaultTarantoolTupleType.FullName}<{TarantoolContext.GetTypeArrayTypesFullName(TupleTypes)}>";
             }
         }
 
@@ -185,9 +188,9 @@ namespace nanoFramework.Tarantool.Dto
         {
             get
             {
-                if (string.IsNullOrEmpty(fullName))
+                if (string.IsNullOrEmpty(_fullName))
                     InitializeFullName();
-                return fullName;
+                return _fullName;
             }
         }
 
@@ -261,7 +264,8 @@ namespace nanoFramework.Tarantool.Dto
             return DefaultTarantoolTupleType.GetProperties(bindingAttr);
         }
 
-        public override object? InvokeMember(string name, 
+        public override object? InvokeMember(
+            string name, 
             BindingFlags invokeAttr, 
             Binder? binder, 
             object? target,

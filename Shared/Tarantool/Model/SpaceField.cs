@@ -11,8 +11,8 @@ namespace nanoFramework.Tarantool.Model
     /// </summary>
     internal class SpaceField : ISpaceField
     {
-        private readonly string name;
-        private readonly FieldType type;
+        private readonly string _name;
+        private readonly FieldType _type;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SpaceField"/> class.
@@ -21,18 +21,18 @@ namespace nanoFramework.Tarantool.Model
         /// <param name="type">Space field type.</param>
         internal SpaceField(string name, FieldType type)
         {
-            this.name = name;
-            this.type = type;
+            _name = name;
+            _type = type;
         }
 
         /// <summary>
         /// Gets <see cref="Tarantool"/> space field name.
         /// </summary>
-        string ISpaceField.Name => this.name;
+        string ISpaceField.Name => _name;
 
         /// <summary>
         /// Gets <see cref="Tarantool"/> space field type.
         /// </summary>
-        FieldType ISpaceField.Type => this.type;
+        FieldType ISpaceField.Type => _type;
     }
 }

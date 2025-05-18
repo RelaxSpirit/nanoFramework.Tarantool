@@ -24,7 +24,7 @@ namespace nanoFramework.Tarantool.Converters
 
             var uintConverter = ConverterContext.GetConverter(typeof(uint));
             var keyConverter = uintConverter;
-            var tupleConverter = TarantoolContext.GetTarantoolTupleConverter(value.Tuple);
+            var tupleConverter = TarantoolContext.Instance.GetTarantoolTupleConverter(value.Tuple);
 
             keyConverter.Write(Key.SpaceId, writer);
             uintConverter.Write(value.SpaceId, writer);

@@ -43,7 +43,7 @@ namespace nanoFramework.Tarantool.Converters
 
             if (value.SelectKey != null)
             {
-                var selectKeyConverter = TarantoolContext.GetTarantoolTupleConverter(value.SelectKey);
+                var selectKeyConverter = TarantoolContext.Instance.GetTarantoolTupleConverter(value.SelectKey);
 
                 keyConverter.Write(Key.Key, writer);
                 selectKeyConverter.Write(value.SelectKey, writer);

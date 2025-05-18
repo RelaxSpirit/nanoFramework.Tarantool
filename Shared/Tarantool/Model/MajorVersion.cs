@@ -19,8 +19,8 @@ namespace nanoFramework.Tarantool.Model
         /// <param name="majorSecond">Major version second number.</param>
         internal MajorVersion(int majorFirst, int majorSecond)
         {
-            this.MajorFirst = majorFirst;
-            this.MajorSecond = majorSecond;
+            MajorFirst = majorFirst;
+            MajorSecond = majorSecond;
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace nanoFramework.Tarantool.Model
         /// <returns>Major version hash code.</returns>
         public override int GetHashCode()
         {
-            return this.MajorFirst.GetHashCode() & this.MajorSecond.GetHashCode();
+            return MajorFirst.GetHashCode() & MajorSecond.GetHashCode();
         }
 
         /// <summary>
@@ -60,8 +60,8 @@ namespace nanoFramework.Tarantool.Model
         public override bool Equals(object? obj)
         {
             return (obj is MajorVersion major) &&
-                this.MajorFirst == major.MajorFirst &&
-                this.MajorSecond == major.MajorSecond;
+                MajorFirst == major.MajorFirst &&
+                MajorSecond == major.MajorSecond;
         }
 #nullable disable
 
@@ -74,13 +74,13 @@ namespace nanoFramework.Tarantool.Model
         {
             if (obj is MajorVersion major)
             {
-                var firstMajor = this.MajorFirst - major.MajorFirst;
+                var firstMajor = MajorFirst - major.MajorFirst;
                 if (firstMajor != 0)
                 {
                     return firstMajor;
                 }
 
-                var secondMajor = this.MajorSecond - major.MajorSecond;
+                var secondMajor = MajorSecond - major.MajorSecond;
                 if (secondMajor != 0)
                 {
                     return secondMajor;

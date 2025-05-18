@@ -20,7 +20,7 @@ namespace nanoFramework.Tarantool.Converters
     /// </summary>
     internal class ResponsePacketConverter : IConverter
     {
-        protected readonly Type DataType;
+        private readonly Type _dataType;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ResponsePacketConverter"/> class.
@@ -28,7 +28,7 @@ namespace nanoFramework.Tarantool.Converters
         /// <param name="dataType"><see cref="Type"/> data of response.</param>
         internal ResponsePacketConverter(Type dataType)
         {
-            this.DataType = dataType;
+            _dataType = dataType;
         }
 
 #nullable enable
@@ -41,7 +41,7 @@ namespace nanoFramework.Tarantool.Converters
             }
 
             var keyConverter = ConverterContext.GetConverter(typeof(uint));
-            var dataConverter = ConverterContext.GetConverter(this.DataType);
+            var dataConverter = ConverterContext.GetConverter(_dataType);
             var intConverter = ConverterContext.GetConverter(typeof(int));
 
             object? data = null;

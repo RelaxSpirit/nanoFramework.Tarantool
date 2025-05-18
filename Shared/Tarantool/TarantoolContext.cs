@@ -26,19 +26,23 @@ namespace nanoFramework.Tarantool
     /// <summary>
     /// <see cref="Tarantool"/> context.
     /// </summary>
-    public static class TarantoolContext
-    {
-        private static readonly Hashtable ConvertersHashtable = new Hashtable();
-        private static readonly Hashtable TarantoolTupleTypeHashtable = new Hashtable();
-        private static readonly object Lock = new object();
-        private static readonly object ArrayLock = new object();
-        private static readonly object ConvertersHashtableLock = new object();
-        private static readonly object TarantoolTupleTypeHashtableLock = new object();
+    public class TarantoolContext
+    {        
+        private static readonly object LockInstance = new object();
+#nullable enable
+        private static TarantoolContext? _instance = null;
+#nullable disable
+        private readonly Hashtable _convertersHashtable = new Hashtable();
+        private readonly Hashtable _tarantoolTupleTypeHashtable = new Hashtable();
+        private readonly object _lock = new object();
+        private readonly object _arrayLock = new object();
+        private readonly object _convertersHashtableLock = new object();
+        private readonly object _tarantoolTupleTypeHashtableLock = new object();
 
         /// <summary>
-        /// Initializes static members of the <see cref="TarantoolContext"/> class.
+        /// Initializes a new instance of the <see cref="TarantoolContext"/> class.
         /// </summary>
-        static TarantoolContext()
+        private TarantoolContext()
         {
             ConverterContext.Add(typeof(PingRequest), new PingPacketConverter());
             ConverterContext.Add(typeof(AuthenticationRequest), new AuthenticationPacketConverter());
@@ -79,99 +83,28 @@ namespace nanoFramework.Tarantool
         }
 
         /// <summary>
-        /// Connect to <see cref="Tarantool"/> 
+        /// Gets <see cref="TarantoolContext"/> instance.
         /// </summary>
-        /// <param name="clientOptions">Client options fo connect.</param>
-        /// <returns><see cref="Tarantool"/> <see cref="IBox"/> interface.</returns>
-        public static IBox Connect(ClientOptions clientOptions)
+        public static TarantoolContext Instance 
         {
-            return Box.Connect(clientOptions);
-        }
-
-        /// <summary>
-        /// Connect to <see cref="Tarantool"/> 
-        /// </summary>
-        /// <param name="replicationSource"><see cref="Tarantool"/> replica connection string.</param>
-        /// <returns><see cref="Tarantool"/> <see cref="IBox"/> interface.</returns>
-        public static IBox Connect(string replicationSource)
-        {
-            return Box.Connect(replicationSource);
-        }
-
-        /// <summary>
-        /// Connect to <see cref="Tarantool"/> as guest.
-        /// </summary>
-        /// <param name="host"><see cref="Tarantool"/> instance network host name.</param>
-        /// <param name="port"><see cref="Tarantool"/> instance network port number.</param>
-        /// <returns><see cref="Tarantool"/> <see cref="IBox"/> interface.</returns>
-        public static IBox Connect(string host, int port)
-        {
-            return Box.Connect(host, port);
-        }
-
-        /// <summary>
-        /// Connect to <see cref="Tarantool"/> as specific user.
-        /// </summary>
-        /// <param name="host"><see cref="Tarantool"/> instance network host name.</param>
-        /// <param name="port"><see cref="Tarantool"/> instance network port number.</param>
-        /// <param name="user">User name.</param>
-        /// <param name="password">User password.</param>
-        /// <returns><see cref="Tarantool"/> <see cref="IBox"/> interface.</returns>
-        public static IBox Connect(string host, int port, string user, string password)
-        {
-            return Box.Connect(host, port, user, password);
-        }
-
-        internal static IConverter GetTarantoolTupleConverter(TarantoolTuple tarantoolTuple)
-        {
-            var tupleType = tarantoolTuple.GetType();
-            return GetTarantoolTupleConverter((TarantoolTupleType)tupleType);
-        }
-
-        internal static IConverter GetDataResponseDataTypeConverter(Type dataType)
-        {
-            var converter = ConvertersHashtable[dataType.Name];
-
-            if (converter == null)
+            get
             {
-                lock (ConvertersHashtableLock)
+                if (_instance == null)
                 {
-                    converter = ConvertersHashtable[dataType.Name];
-
-                    if (converter == null)
+                    lock (LockInstance)
                     {
-                        converter = GetResponsePacketConverter(dataType);
-                        ConvertersHashtable.Add(dataType.Name, converter);
+                        if (_instance == null)
+                        {
+                            _instance = new TarantoolContext();
+                        }
                     }
                 }
-            }
 
-            return (IConverter)converter;
+                return _instance;
+            }
         }
 
-        internal static TarantoolTupleType GetTarantoolTupleType(params Type[] tupleItemsTypes)
-        {
-            var typesFullName = tupleItemsTypes.GetTypeArrayTypesFullName();
-            var tarantoolTupleType = TarantoolTupleTypeHashtable[typesFullName];
-
-            if (tarantoolTupleType == null)
-            {
-                lock (TarantoolTupleTypeHashtableLock)
-                {
-                    tarantoolTupleType = TarantoolTupleTypeHashtable[typesFullName];
-
-                    if (tarantoolTupleType == null)
-                    {
-                        tarantoolTupleType = new TarantoolTupleType(tupleItemsTypes);
-                        TarantoolTupleTypeHashtable.Add(typesFullName, tarantoolTupleType);
-                    }
-                }
-            }
-
-            return (TarantoolTupleType)tarantoolTupleType;
-        }
-
-        internal static string GetTypeArrayTypesFullName(this Type[] tupleItemsTypes)
+        internal static string GetTypeArrayTypesFullName(Type[] tupleItemsTypes)
         {
             if (tupleItemsTypes.Length < 1)
             {
@@ -191,7 +124,132 @@ namespace nanoFramework.Tarantool
             return sbFullName.ToString();
         }
 
-        private static ResponsePacketConverter GetResponsePacketConverter(Type dataType)
+        /// <summary>
+        /// Connect to <see cref="Tarantool"/> 
+        /// </summary>
+        /// <param name="clientOptions">Client options fo connect.</param>
+        /// <returns><see cref="Tarantool"/> <see cref="IBox"/> interface.</returns>
+        /// <exception cref="NotSupportedException">If <see cref="Tarantool"/> context not initialize.</exception>
+        public static IBox Connect(ClientOptions clientOptions)
+        {
+            if (Instance != null)
+            {
+                return Box.Connect(clientOptions);
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
+        }
+
+        /// <summary>
+        /// Connect to <see cref="Tarantool"/> 
+        /// </summary>
+        /// <param name="replicationSource"><see cref="Tarantool"/> replica connection string.</param>
+        /// <returns><see cref="Tarantool"/> <see cref="IBox"/> interface.</returns>
+        /// <exception cref="NotSupportedException">If <see cref="Tarantool"/> context not initialize.</exception>
+        public static IBox Connect(string replicationSource)
+        {
+            if (Instance != null)
+            {
+                return Box.Connect(replicationSource);
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
+        }
+
+        /// <summary>
+        /// Connect to <see cref="Tarantool"/> as guest.
+        /// </summary>
+        /// <param name="host"><see cref="Tarantool"/> instance network host name.</param>
+        /// <param name="port"><see cref="Tarantool"/> instance network port number.</param>
+        /// <returns><see cref="Tarantool"/> <see cref="IBox"/> interface.</returns>
+        /// <exception cref="NotSupportedException">If <see cref="Tarantool"/> context not initialize.</exception>
+        public static IBox Connect(string host, int port)
+        {
+            if (Instance != null)
+            {
+                return Box.Connect(host, port);
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
+        }
+
+        /// <summary>
+        /// Connect to <see cref="Tarantool"/> as specific user.
+        /// </summary>
+        /// <param name="host"><see cref="Tarantool"/> instance network host name.</param>
+        /// <param name="port"><see cref="Tarantool"/> instance network port number.</param>
+        /// <param name="user">User name.</param>
+        /// <param name="password">User password.</param>
+        /// <returns><see cref="Tarantool"/> <see cref="IBox"/> interface.</returns>
+        /// <exception cref="NotSupportedException">If <see cref="Tarantool"/> context not initialize.</exception>
+        public static IBox Connect(string host, int port, string user, string password)
+        {
+            if (Instance != null)
+            {
+                return Box.Connect(host, port, user, password);
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
+        }
+
+        internal IConverter GetTarantoolTupleConverter(TarantoolTuple tarantoolTuple)
+        {
+            var tupleType = tarantoolTuple.GetType();
+            return GetTarantoolTupleConverter((TarantoolTupleType)tupleType);
+        }
+
+        internal IConverter GetDataResponseDataTypeConverter(Type dataType)
+        {
+            var converter = _convertersHashtable[dataType.Name];
+
+            if (converter == null)
+            {
+                lock (_convertersHashtableLock)
+                {
+                    converter = _convertersHashtable[dataType.Name];
+
+                    if (converter == null)
+                    {
+                        converter = GetResponsePacketConverter(dataType);
+                        _convertersHashtable.Add(dataType.Name, converter);
+                    }
+                }
+            }
+
+            return (IConverter)converter;
+        }
+
+        internal TarantoolTupleType GetTarantoolTupleType(params Type[] tupleItemsTypes)
+        {
+            var typesFullName = GetTypeArrayTypesFullName(tupleItemsTypes);
+            var tarantoolTupleType = _tarantoolTupleTypeHashtable[typesFullName];
+
+            if (tarantoolTupleType == null)
+            {
+                lock (_tarantoolTupleTypeHashtableLock)
+                {
+                    tarantoolTupleType = _tarantoolTupleTypeHashtable[typesFullName];
+
+                    if (tarantoolTupleType == null)
+                    {
+                        tarantoolTupleType = new TarantoolTupleType(tupleItemsTypes);
+                        _tarantoolTupleTypeHashtable.Add(typesFullName, tarantoolTupleType);
+                    }
+                }
+            }
+
+            return (TarantoolTupleType)tarantoolTupleType;
+        }
+
+        private ResponsePacketConverter GetResponsePacketConverter(Type dataType)
         {
             if (dataType is TarantoolTupleType tarantoolTupleType)
             {
@@ -232,12 +290,12 @@ namespace nanoFramework.Tarantool
             }
         }
 
-        private static IConverter GetTarantoolTupleConverter(TarantoolTupleType tarantoolTupleType)
+        private IConverter GetTarantoolTupleConverter(TarantoolTupleType tarantoolTupleType)
         {
             var converter = ConverterContext.GetConverter(tarantoolTupleType);
             if (converter == null)
             {
-                lock (Lock)
+                lock (_lock)
                 {
                     converter = ConverterContext.GetConverter(tarantoolTupleType);
 
@@ -252,12 +310,12 @@ namespace nanoFramework.Tarantool
             return converter;
         }
 
-        private static IConverter GetTarantoolArrayTupleConverter(TarantoolTupleArrayType tarantoolTupleArrayType)
+        private IConverter GetTarantoolArrayTupleConverter(TarantoolTupleArrayType tarantoolTupleArrayType)
         {
             var converter = ConverterContext.GetConverter(tarantoolTupleArrayType);
             if (converter == null)
             {
-                lock (ArrayLock)
+                lock (_arrayLock)
                 {
                     converter = ConverterContext.GetConverter(tarantoolTupleArrayType);
                     if (converter == null)

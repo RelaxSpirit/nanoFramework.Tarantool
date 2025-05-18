@@ -27,12 +27,12 @@ namespace nanoFramework.Tarantool.Client.Connections
     {
         private static readonly ResponsePacketConverter ResponseConverter = (ResponsePacketConverter)ConverterContext.GetConverter(typeof(DataResponse));
 
-        private readonly ClientOptions clientOptions;
-        private readonly RequestIdCounter requestIdCounter;
-        private readonly NetworkStreamPhysicalConnection physicalConnection;
-        private readonly IResponseReader responseReader;
-        private readonly IRequestWriter requestWriter;
-        private readonly ManualResetEvent exitEvent = new ManualResetEvent(false);
+        private readonly ClientOptions _clientOptions;
+        private readonly RequestIdCounter _requestIdCounter;
+        private readonly NetworkStreamPhysicalConnection _physicalConnection;
+        private readonly IResponseReader _responseReader;
+        private readonly IRequestWriter _requestWriter;
+        private readonly ManualResetEvent _exitEvent = new ManualResetEvent(false);
 
         private bool disposed;
 
@@ -43,12 +43,12 @@ namespace nanoFramework.Tarantool.Client.Connections
         /// <param name="requestIdCounter"><see cref="Tarantool"/> request id counter.</param>
         public LogicalConnection(ClientOptions options, RequestIdCounter requestIdCounter)
         {
-            this.clientOptions = options;
-            this.requestIdCounter = requestIdCounter;
+            _clientOptions = options;
+            _requestIdCounter = requestIdCounter;
 
-            this.physicalConnection = new NetworkStreamPhysicalConnection();
-            this.responseReader = new ResponseReader(this.clientOptions, this.physicalConnection);
-            this.requestWriter = new RequestWriter(this.clientOptions, this.physicalConnection);
+            _physicalConnection = new NetworkStreamPhysicalConnection();
+            _responseReader = new ResponseReader(_clientOptions, _physicalConnection);
+            _requestWriter = new RequestWriter(_clientOptions, _physicalConnection);
         }
 
         public uint PingsFailedByTimeoutCount { get; private set; } = 0;
@@ -72,25 +72,25 @@ namespace nanoFramework.Tarantool.Client.Connections
 
         public void Dispose()
         {
-            if (this.disposed)
+            if (disposed)
             {
                 return;
             }
 
-            this.disposed = true;
+            disposed = true;
 
-            this.exitEvent.Set();
-            this.responseReader.Dispose();
-            this.requestWriter.Dispose();
-            this.physicalConnection.Dispose();
+            _exitEvent.Set();
+            _responseReader.Dispose();
+            _requestWriter.Dispose();
+            _physicalConnection.Dispose();
         }
 
         public void Connect()
         {
-            this.physicalConnection.Connect(clientOptions);
+            _physicalConnection.Connect(_clientOptions);
 
             var greetingsResponseBytes = new byte[128];
-            var readCount = this.physicalConnection.Read(greetingsResponseBytes, 0, greetingsResponseBytes.Length);
+            var readCount = _physicalConnection.Read(greetingsResponseBytes, 0, greetingsResponseBytes.Length);
             if (readCount != greetingsResponseBytes.Length)
             {
                 throw ExceptionHelper.UnexpectedGreetingBytesCount(readCount);
@@ -98,33 +98,33 @@ namespace nanoFramework.Tarantool.Client.Connections
 
             var greetings = new GreetingsResponse(greetingsResponseBytes);
 
-            this.PingsFailedByTimeoutCount = 0;
+            PingsFailedByTimeoutCount = 0;
 
-            this.responseReader.BeginReading();
-            this.requestWriter.BeginWriting();
+            _responseReader.BeginReading();
+            _requestWriter.BeginWriting();
 
-            this.LoginIfNotGuest(greetings);
+            LoginIfNotGuest(greetings);
         }
 
         public bool IsConnected()
         {
-            if (this.disposed)
+            if (disposed)
             {
                 return false;
             }
 
-            return this.responseReader.IsConnected && this.requestWriter.IsConnected && this.physicalConnection.IsConnected;
+            return _responseReader.IsConnected && _requestWriter.IsConnected && _physicalConnection.IsConnected;
         }
 
         public void SendRequestWithEmptyResponse(IRequest request, TimeSpan timeout)
         {
-            var _ = this.SendRequestImpl(request, timeout);
+            var _ = SendRequestImpl(request, timeout);
         }
 
 #nullable enable
         public DataResponse? SendRequest(IRequest request, TimeSpan timeout, Type? responseDataType)
         {
-            var arraySegment = this.SendRequestImpl(request, timeout);
+            var arraySegment = SendRequestImpl(request, timeout);
 
             if (arraySegment != null)
             {
@@ -133,7 +133,7 @@ namespace nanoFramework.Tarantool.Client.Connections
                     return ResponseConverter.Read(arraySegment);
                 }
 
-                var converter = TarantoolContext.GetDataResponseDataTypeConverter(responseDataType);
+                var converter = TarantoolContext.Instance.GetDataResponseDataTypeConverter(responseDataType);
 
                 return (DataResponse?)converter.Read(arraySegment);
             }
@@ -145,17 +145,17 @@ namespace nanoFramework.Tarantool.Client.Connections
 
         public ArraySegment? SendRawRequest(IRequest request, TimeSpan timeout)
         {
-            return this.SendRequestImpl(request, timeout);
+            return SendRequestImpl(request, timeout);
         }
 
         private void LoginIfNotGuest(GreetingsResponse greetings)
         {
-            if (this.clientOptions.ConnectionOptions.Nodes.Length < 1)
+            if (_clientOptions.ConnectionOptions.Nodes.Length < 1)
             {
                 throw new ClientSetupException("There are zero configured nodes, you should provide one");
             }
 
-            var singleNode = this.clientOptions.ConnectionOptions.Nodes[0];
+            var singleNode = _clientOptions.ConnectionOptions.Nodes[0];
 
             if (string.IsNullOrEmpty(singleNode.Uri.UserName))
             {
@@ -168,19 +168,19 @@ namespace nanoFramework.Tarantool.Client.Connections
 
             //// Debug.WriteLine($"Authentication request send: {authenticateRequest}");
 
-            this.SendRequestWithEmptyResponse(authenticateRequest, TimeSpan.Zero);
+            SendRequestWithEmptyResponse(authenticateRequest, TimeSpan.Zero);
         }
 
         private ArraySegment? SendRequestImpl(IRequest request, TimeSpan timeout)
         {
-            if (this.disposed)
+            if (disposed)
             {
                 return null;
             }
 
-            var requestId = this.requestIdCounter.GetRequestId();
+            var requestId = _requestIdCounter.GetRequestId();
 
-            var responseCompletionSource = this.responseReader.GetResponseCompletionSource(requestId);
+            var responseCompletionSource = _responseReader.GetResponseCompletionSource(requestId);
 
             void CompleteResult(object result)
             {
@@ -207,14 +207,14 @@ namespace nanoFramework.Tarantool.Client.Connections
                 //// keep API for the sake of backward comp.
                 //// merged header and body
 
-                this.requestWriter.Write(buffer);
+                _requestWriter.Write(buffer);
 
                 //// System.Diagnostics.Debug.WriteLine($"Request with Id {requestId} is sent.");
             }
 
             try
             {
-                WaitHandle[] waitHandles = new[] { this.exitEvent, responseCompletionSource.ResponseEvent };
+                WaitHandle[] waitHandles = new[] { _exitEvent, responseCompletionSource.ResponseEvent };
 
                 if (timeout > TimeSpan.Zero)
                 {
@@ -231,7 +231,7 @@ namespace nanoFramework.Tarantool.Client.Connections
                 }
                 else
                 {
-                    var waitResult = WaitHandle.WaitAny(waitHandles, this.clientOptions.RequestTimeout, false);
+                    var waitResult = WaitHandle.WaitAny(waitHandles, _clientOptions.RequestTimeout, false);
                     if (waitResult == 0)
                     {
                         return null;
@@ -251,7 +251,7 @@ namespace nanoFramework.Tarantool.Client.Connections
             }
             catch (ArgumentException)
             {
-                this.responseReader.PopResponseCompletionSource(requestId);
+                _responseReader.PopResponseCompletionSource(requestId);
 
                 //// Debug.WriteLine($"Response with requestId {requestId} failed, content:\n{buffer.ToReadableString()} ");
                 
@@ -259,8 +259,8 @@ namespace nanoFramework.Tarantool.Client.Connections
             }
             catch (TimeoutException)
             {
-                this.responseReader.PopResponseCompletionSource(requestId);
-                this.PingsFailedByTimeoutCount++;
+                _responseReader.PopResponseCompletionSource(requestId);
+                PingsFailedByTimeoutCount++;
                 throw;
             }
         }

@@ -10,7 +10,7 @@ namespace nanoFramework.Tarantool.Model
     /// </summary>
     public class Metrics
     {
-        private readonly ILogicalConnection logicalConnection;
+        private readonly ILogicalConnection _logicalConnection;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Metrics"/> class.
@@ -18,12 +18,12 @@ namespace nanoFramework.Tarantool.Model
         /// <param name="logicalConnection">Network logical connection interface <see cref="ILogicalConnection"/>.</param>
         internal Metrics(ILogicalConnection logicalConnection)
         {
-            this.logicalConnection = logicalConnection;
+            _logicalConnection = logicalConnection;
         }
 
         /// <summary>
         /// Gets a pings failed by timeout count.
         /// </summary>
-        public uint PingsFailedByTimeoutCount => this.logicalConnection.PingsFailedByTimeoutCount;
+        public uint PingsFailedByTimeoutCount => _logicalConnection.PingsFailedByTimeoutCount;
     }
 }

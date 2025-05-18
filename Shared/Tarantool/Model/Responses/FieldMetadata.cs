@@ -21,7 +21,7 @@ namespace nanoFramework.Tarantool.Model.Responses
         /// <exception cref="ArgumentNullException">If field name is null.</exception>
         internal FieldMetadata([NotNull] string name)
         {
-            this.Name = name ?? throw new ArgumentNullException();
+            Name = name ?? throw new ArgumentNullException();
         }
         
         /// <summary>
@@ -55,7 +55,7 @@ namespace nanoFramework.Tarantool.Model.Responses
         /// Overrides base <see cref="object.ToString"/> method.
         /// </summary>
         /// <returns>Field name.</returns>
-        public override string ToString() => this.Name;
+        public override string ToString() => Name;
 
         /// <summary>
         /// Overrides base <see cref="object.Equals(object?)"/> method. Equals instances <see cref="FieldMetadata"/> and <see cref="object"/> as <see cref="FieldMetadata"/>.
@@ -79,7 +79,7 @@ namespace nanoFramework.Tarantool.Model.Responses
                 return false;
             }
 
-            return this.Equals((FieldMetadata)obj);
+            return Equals((FieldMetadata)obj);
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace nanoFramework.Tarantool.Model.Responses
         /// <returns>Hash code.</returns>
         public override int GetHashCode()
         {
-            return this.Name.GetHashCode();
+            return Name.GetHashCode();
         }
 
         private bool Equals(FieldMetadata other)
@@ -103,7 +103,7 @@ namespace nanoFramework.Tarantool.Model.Responses
                 return true;
             }
 
-            return string.Equals(this.Name, other.Name);
+            return string.Equals(Name, other.Name);
         }
     }
 }

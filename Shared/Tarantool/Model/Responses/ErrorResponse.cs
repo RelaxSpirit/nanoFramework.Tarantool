@@ -14,7 +14,7 @@ namespace nanoFramework.Tarantool.Model.Responses
         /// <param name="errorMessage">Error message.</param>
         internal ErrorResponse(string errorMessage)
         {
-            this.ErrorMessage = errorMessage;
+            ErrorMessage = errorMessage;
         }
 
         /// <summary>

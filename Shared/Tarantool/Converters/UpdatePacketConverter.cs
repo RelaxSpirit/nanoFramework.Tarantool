@@ -32,7 +32,7 @@ namespace nanoFramework.Tarantool.Converters
             uintConverter.Write(value.IndexId, writer);
 
             keyConverter.Write(Key.Key, writer);
-            TarantoolContext.GetTarantoolTupleConverter(value.Key).Write(value.Key, writer);
+            TarantoolContext.Instance.GetTarantoolTupleConverter(value.Key).Write(value.Key, writer);
 
             keyConverter.Write(Key.Tuple, writer);
             writer.WriteArrayHeader((uint)value.UpdateOperations.Length);

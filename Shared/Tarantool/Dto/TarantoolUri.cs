@@ -27,14 +27,14 @@ namespace nanoFramework.Tarantool.Dto
             var startIndex = uri.IndexOf("//");
             if (startIndex < 0)
             {
-                this.Scheme = SCHEME;
+                Scheme = SCHEME;
                 startIndex = 0;
             }
             else
             {
-                this.Scheme = uri.Substring(0, startIndex - 1);
+                Scheme = uri.Substring(0, startIndex - 1);
 
-                if (this.Scheme != SCHEME)
+                if (Scheme != SCHEME)
                 {
                     throw new ArgumentException("Uri scheme must be tarantool");
                 }
@@ -49,22 +49,22 @@ namespace nanoFramework.Tarantool.Dto
 
             if (splitIndex < 0)
             {
-                this.Password = string.Empty;
-                this.UserName = string.Empty;
+                Password = string.Empty;
+                UserName = string.Empty;
             }
             else
             {
                 var authString = uri.Substring(startIndex, splitIndex);
                 var authArray = authString.Split(':');
-                this.UserName = authArray[0];
+                UserName = authArray[0];
 
                 if (authArray.Length > 1)
                 {
-                    this.Password = authArray[1];
+                    Password = authArray[1];
                 }
                 else
                 {
-                    this.Password = string.Empty;
+                    Password = string.Empty;
                 }
 
                 splitIndex++;
@@ -75,25 +75,25 @@ namespace nanoFramework.Tarantool.Dto
 
             if (splitIndex < 0)
             {
-                this.Path = string.Empty;
+                Path = string.Empty;
                 splitIndex = uri.Length;
             }
             else
             {
-                this.Path = uri.Substring(splitIndex, uri.Length - splitIndex);
+                Path = uri.Substring(splitIndex, uri.Length - splitIndex);
             }
 
             var hostPortString = uri.Substring(startIndex, splitIndex);
 
             var hostPortArray = hostPortString.Split(':');
-            this.Host = hostPortArray[0];
+            Host = hostPortArray[0];
 
             if (hostPortArray.Length < 2 || !int.TryParse(hostPortArray[1], out int port))
             {
                 throw new ArgumentException($"The URI '{uri}' does not contain a port number.", nameof(uri));
             }
 
-            this.Port = port;
+            Port = port;
         }
 
         /// <summary>

@@ -7,6 +7,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using nanoFramework.MessagePack.Converters;
 using nanoFramework.MessagePack.Stream;
+using nanoFramework.Tarantool.Model.Requests;
 
 namespace nanoFramework.Tarantool.Converters
 {
@@ -20,9 +21,10 @@ namespace nanoFramework.Tarantool.Converters
         {
         }
 
-        public virtual object? Read([NotNull] IMessagePackReader reader)
+        public object? Read([NotNull] IMessagePackReader reader)
         {
-            throw new NotImplementedException();
+            reader.ReadToken();
+            return new PingRequest();
         }
     }
 }

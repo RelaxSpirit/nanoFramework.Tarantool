@@ -20,12 +20,12 @@ namespace nanoFramework.Tarantool.Converters
     /// </summary>
     internal class ResponseHeaderConverter : IConverter
     {
-        public static void Write(ResponseHeader value, IMessagePackWriter writer)
+        private static void Write(ResponseHeader value, IMessagePackWriter writer)
         {
             writer.WriteMapHeader(3u);
             var uintConverter = ConverterContext.GetConverter(typeof(uint));
             uintConverter.Write(Key.Code, writer);
-            uintConverter.Write(value.Code, writer);
+            uintConverter.Write((uint)value.Code, writer);
             uintConverter.Write(Key.Sync, writer);
             ConverterContext.GetConverter(typeof(RequestId)).Write(value.RequestId, writer);
             uintConverter.Write(Key.SchemaId, writer);
@@ -33,7 +33,7 @@ namespace nanoFramework.Tarantool.Converters
         }
 
 #nullable enable
-        public static ResponseHeader Read(IMessagePackReader reader)
+        internal static ResponseHeader Read(IMessagePackReader reader)
         {
             var length = reader.ReadMapLength();
 

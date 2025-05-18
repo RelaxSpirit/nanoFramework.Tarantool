@@ -11,7 +11,7 @@ namespace nanoFramework.Tarantool.Model.Responses
     {
         internal SqlInfoResponse(SqlInfo? sqlInfo)
         {
-            this.SqlInfo = sqlInfo;
+            SqlInfo = sqlInfo;
         }
 
         /// <summary>

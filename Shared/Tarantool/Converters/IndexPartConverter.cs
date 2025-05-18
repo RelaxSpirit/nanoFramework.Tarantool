@@ -99,7 +99,7 @@ namespace nanoFramework.Tarantool.Converters
             throw new SerializationException("Can't read fieldNo or indexPart from map of index metadata");
         }
 
-        private static byte GetHighBits(DataTypes type, byte bitsCount)
+        internal static byte GetHighBits(DataTypes type, byte bitsCount)
         {
             return (byte)((byte)type >> (8 - bitsCount));
         }

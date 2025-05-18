@@ -8,14 +8,14 @@ namespace System.Security.Cryptography
     /// </summary>
     internal class SHA1
     {
-        private readonly SHA1Context defaultContext;
+        private readonly SHA1Context _defaultContext;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="SHA1" /> class from being created.
         /// </summary>
         private SHA1() 
         {
-            this.defaultContext = new SHA1Context();
+            _defaultContext = new SHA1Context();
         }
 
 #pragma warning disable CS0436 // Type conflicts with imported type
@@ -255,13 +255,13 @@ namespace System.Security.Cryptography
 
         internal byte[] ComputeHash(byte[] buf)
         {
-            Update(this.defaultContext, buf, buf.Length);
-            return Finalize(this.defaultContext);
+            Update(_defaultContext, buf, buf.Length);
+            return Finalize(_defaultContext);
         }
 
-        internal void Update(byte[] buf) => Update(this.defaultContext, buf, buf.Length);
+        internal void Update(byte[] buf) => Update(_defaultContext, buf, buf.Length);
 
-        internal byte[] Finalize() => Finalize(this.defaultContext);
+        internal byte[] Finalize() => Finalize(_defaultContext);
 
         /// <summary>
         /// The SHA1 context class.

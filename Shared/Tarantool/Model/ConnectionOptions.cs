@@ -5,7 +5,9 @@
 using System;
 #endif
 using System.Collections;
+using System.Text;
 using nanoFramework.Tarantool.Client.Interfaces;
+using nanoFramework.Tarantool.Exceptions;
 
 namespace nanoFramework.Tarantool.Model
 {
@@ -14,7 +16,7 @@ namespace nanoFramework.Tarantool.Model
     /// </summary>
     public class ConnectionOptions
     {
-        private readonly ArrayList nodes = new ArrayList();
+        private readonly ArrayList _nodes = new ArrayList();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConnectionOptions" /> class.
@@ -31,7 +33,7 @@ namespace nanoFramework.Tarantool.Model
         {
             if (!string.IsNullOrEmpty(replicationSource))
             {
-                this.Parse(replicationSource);
+                Parse(replicationSource);
             }
         }
 
@@ -98,16 +100,35 @@ namespace nanoFramework.Tarantool.Model
         {
             var urls = replicationSource.Split(',');
 
+            ArrayList exceptionArray = new ArrayList();
+
             foreach (var url in urls)
             {
-                var node = TarantoolNode.TryParse(url);
+                var node = TarantoolNode.TryParse(url, out var uriParceException);
                 if (node != null)
                 {
-                    this.nodes.Add(node);
+                    _nodes.Add(node);
+                }
+                else
+                {
+                    exceptionArray.Add(uriParceException);
                 }
             }
 
-            this.Nodes = (TarantoolNode[])this.nodes.ToArray(typeof(TarantoolNode));
+            if (_nodes.Count < 1)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (var exception in exceptionArray)
+                {
+                    sb.AppendLine(exception.ToString());
+                }
+
+                throw new ClientSetupException(sb.ToString());
+            }
+            else
+            {
+                Nodes = (TarantoolNode[])_nodes.ToArray(typeof(TarantoolNode));
+            }
         }
     }
 }

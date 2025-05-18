@@ -18,14 +18,14 @@ namespace nanoFramework.Tarantool.Client
     /// </summary>
     internal class Schema : ISchema
     {
-        private const int VSpace = 0x119;
-        private const int VIndex = 0x121;
+        internal const int VSpace = 0x119;
+        internal const int VIndex = 0x121;
         internal const uint PrimaryIndexId = 0;
 
-        private readonly ILogicalConnection logicalConnection;
+        private readonly ILogicalConnection _logicalConnection;
 
-        private Hashtable indexByName = new Hashtable();
-        private Hashtable indexById = new Hashtable();
+        private Hashtable _indexByName = new Hashtable();
+        private Hashtable _indexById = new Hashtable();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Schema"/> class.
@@ -33,14 +33,14 @@ namespace nanoFramework.Tarantool.Client
         /// <param name="logicalConnection">Network logical connection.</param>
         internal Schema(ILogicalConnection logicalConnection)
         {
-            this.logicalConnection = logicalConnection;
+            _logicalConnection = logicalConnection;
         }
 
         public ISpace this[string name]
         {
             get
             {
-                var space = this.indexByName[name];
+                var space = _indexByName[name];
                 if (space == null)
                 {
                     throw ExceptionHelper.InvalidSpaceName(name);
@@ -54,7 +54,7 @@ namespace nanoFramework.Tarantool.Client
         {
             get
             {
-                var space = this.indexById[id];
+                var space = _indexById[id];
                 if (space == null)
                 {
                     throw ExceptionHelper.InvalidSpaceId(id);
@@ -71,27 +71,27 @@ namespace nanoFramework.Tarantool.Client
             var indByName = new Hashtable();
             var indById = new Hashtable();
 
-            var spaces = (Space[])this.Select(VSpace, typeof(Space[]));
+            var spaces = (Space[])Select(VSpace, typeof(Space[]));
             foreach (var space in spaces)
             {
                 indByName[space.Name] = space;
                 indById[space.Id] = space;
-                space.LogicalConnection = this.logicalConnection;
-                space.SetIndices((Index[])this.Select(VIndex, typeof(Index[]), Iterator.Eq, space.Id));
+                space.LogicalConnection = _logicalConnection;
+                space.SetIndices((Index[])Select(VIndex, typeof(Index[]), Iterator.Eq, space.Id));
             }
 
-            this.indexByName = indByName;
-            this.indexById = indById;
-            this.LastReloadTime = DateTime.UtcNow;
+            _indexByName = indByName;
+            _indexById = indById;
+            LastReloadTime = DateTime.UtcNow;
         }
 
-        public ICollection Spaces => this.indexByName.Values;
+        public ICollection Spaces => _indexByName.Values;
 
         private object[] Select(uint spaceId, Type responseType, Iterator iterator = Iterator.All, uint id = 0u)
         {
             var request = new SelectRequest(spaceId, PrimaryIndexId, uint.MaxValue, 0, iterator, TarantoolTuple.Create(id));
 
-            var response = this.logicalConnection.SendRequest(request, TimeSpan.Zero, responseType);
+            var response = _logicalConnection.SendRequest(request, TimeSpan.Zero, responseType);
 
             if (response != null)
             {

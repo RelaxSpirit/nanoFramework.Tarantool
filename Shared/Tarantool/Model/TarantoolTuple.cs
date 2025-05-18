@@ -25,8 +25,8 @@ namespace nanoFramework.Tarantool.Model
         /// </summary>
         private TarantoolTuple()
         {
-            this.tupleItemTypes = new Type[0];
-            this.tarantoolTupleType = TarantoolTupleType.Create(this.tupleItemTypes);
+            tupleItemTypes = new Type[0];
+            tarantoolTupleType = TarantoolTupleType.Create(tupleItemTypes);
         }
 
         /// <summary>
@@ -35,20 +35,20 @@ namespace nanoFramework.Tarantool.Model
         /// <param name="tupleObjects"><see cref="Tarantool"/> tuple items values.</param>
         private TarantoolTuple(params object?[] tupleObjects)
         {
-            this.tupleItemTypes = new Type[tupleObjects.Length];
+            tupleItemTypes = new Type[tupleObjects.Length];
 
             for (int i = 0; i < tupleObjects.Length; i++)
             {
                 var itemObject = tupleObjects[i];
                 if (itemObject != null)
                 {
-                    this.tupleItemTypes[i] = itemObject.GetType();
+                    tupleItemTypes[i] = itemObject.GetType();
                 }
 
-                this.items.Add(tupleObjects[i]);
+                items.Add(tupleObjects[i]);
             }
 
-            this.tarantoolTupleType = TarantoolTupleType.Create(this.tupleItemTypes);
+            tarantoolTupleType = TarantoolTupleType.Create(tupleItemTypes);
         }
 
         /// <summary>
@@ -60,14 +60,14 @@ namespace nanoFramework.Tarantool.Model
         {
             get
             {
-                return this.items[index];
+                return items[index];
             }
         }
 
         /// <summary>
         /// Gets <see cref="Tarantool"/> tuple length (items count).
         /// </summary>
-        public int Length => this.tupleItemTypes.Length;
+        public int Length => tupleItemTypes.Length;
 
         /// <summary>
         /// Gets empty <see cref="Tarantool"/> tuple.
@@ -101,12 +101,12 @@ namespace nanoFramework.Tarantool.Model
                 return true;
             }
 
-            if (obj.GetType() != this.GetType())
+            if (obj.GetType() != GetType())
             {
                 return false;
             }
 
-            return this.Equals((TarantoolTuple)obj);
+            return Equals((TarantoolTuple)obj);
         }
 #nullable disable
 
@@ -118,7 +118,7 @@ namespace nanoFramework.Tarantool.Model
         {
             int result = 0;
 
-            foreach (var item in this.items)
+            foreach (var item in items)
             {
                 result &= item.GetHashCode();
             }
@@ -134,7 +134,7 @@ namespace nanoFramework.Tarantool.Model
         {
             StringBuilder sb = new StringBuilder();
 
-            foreach (var item in this.items)
+            foreach (var item in items)
             {
                 sb.Append(item.ToString());
                 sb.Append(", ");
@@ -154,19 +154,19 @@ namespace nanoFramework.Tarantool.Model
         /// <returns><see cref="Type"/> <see cref="TarantoolTuple"/> instance.</returns>
         public new Type GetType()
         {
-            return this.tarantoolTupleType;
+            return tarantoolTupleType;
         }
 
         private bool Equals(TarantoolTuple other)
         {
-            if (this.items.Count != other.items.Count)
+            if (items.Count != other.items.Count)
             {
                 return false;
             }
 
-            for (int i = 0; i < this.items.Count; i++)
+            for (int i = 0; i < items.Count; i++)
             {
-                if (this.tupleItemTypes[i] != other.tupleItemTypes[i] || !this[i].Equals(other[i]))
+                if (tupleItemTypes[i] != other.tupleItemTypes[i] || !this[i].Equals(other[i]))
                 {
                     return false;
                 }

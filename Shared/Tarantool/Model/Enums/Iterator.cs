@@ -77,5 +77,10 @@ namespace nanoFramework.Tarantool.Model.Enums
         /// Neighbors the rectangle or box.
         /// </summary>
         Neighbour = 11,
+
+        /// <summary>
+        /// No iterator code.
+        /// </summary>
+        _ = uint.MaxValue,
     }
 }

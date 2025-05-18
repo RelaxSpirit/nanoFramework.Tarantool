@@ -20,10 +20,10 @@ namespace nanoFramework.Tarantool.Model.Requests
         /// <param name="updateOperations"><see cref="Tarantool"/> <see cref="UpdateOperation"/> array.</param>
         public UpdateRequest(uint spaceId, uint indexId, TarantoolTuple key, UpdateOperation[] updateOperations)
         {
-            this.SpaceId = spaceId;
-            this.IndexId = indexId;
-            this.Key = key;
-            this.UpdateOperations = updateOperations;
+            SpaceId = spaceId;
+            IndexId = indexId;
+            Key = key;
+            UpdateOperations = updateOperations;
         }
 
         /// <summary>
