@@ -122,7 +122,7 @@ namespace nanoFramework.Tarantool.Tests
                 Assert.AreEqual(0d, diff);
                 Assert.ThrowsException<TarantoolException>(() => box.Call("math.pi"));
 ////#else
-////                    Assert.AreNotEqual(1.3d, (double)value);
+                Assert.AreNotEqual(1.3d, (double)value);
 ////                    Assert.ThrowsException(typeof(TarantoolException), () => box.Call("math.pi"));
 
 #endif
