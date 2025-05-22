@@ -6,6 +6,7 @@ using nanoFramework.TestFramework;
 #endif
 using nanoFramework.Tarantool.Model;
 using nanoFramework.Tarantool.Model.Responses;
+using nanoFramework.Tarantool.Tests.Mocks;
 
 namespace nanoFramework.Tarantool.Tests
 {
@@ -49,6 +50,7 @@ namespace nanoFramework.Tarantool.Tests
 #if NANOFRAMEWORK_1_0
             clientOptions.ConnectionOptions.WriteStreamBufferSize = writeStreamBufferSize > 512 ? 512 : writeStreamBufferSize;
             clientOptions.ConnectionOptions.ReadStreamBufferSize = readStreamBufferSize > 512 ? 512 : readStreamBufferSize;
+            clientOptions.GetNetworkStream = TarantoolMockContext.Instanse.GetTarantoolStreamMock;
             
 #else
             clientOptions.ConnectionOptions.WriteStreamBufferSize = writeStreamBufferSize;
