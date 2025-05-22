@@ -12,11 +12,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)BoxTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mocks\Converters\AuthenticationPacketConverterMock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mocks\Converters\CallPacketConverterMock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mocks\Converters\DeletePacketConverterMock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mocks\Converters\EmptyResponseConverterMock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mocks\Converters\EvalPacketConverterMock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mocks\Converters\ExecuteSqlRequestConverterMock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mocks\Converters\IndexCreationOptionsConverterMock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mocks\Converters\IndexPartConverterMock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mocks\Converters\InsertReplacePacketConverterMock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mocks\Converters\RequestHeaderConverterMock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mocks\Converters\ResponsePacketConverterMock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mocks\Converters\SelectPacketConverterMock.cs" />
@@ -33,6 +35,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Mocks\Data\SpaceMock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mocks\TarantoolStreamMock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mocks\TarantoolMockContext.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Mocks\TestStream.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SchemaTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SpaceTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TestHelper.cs" />
   </ItemGroup>
 </Project>

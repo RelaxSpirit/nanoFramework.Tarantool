@@ -29,18 +29,21 @@ namespace nanoFramework.Tarantool
     public class TarantoolContext
     {        
         private static readonly object LockInstance = new object();
+        private static readonly InsertReplacePacketConverter InsertReplacePacketConverter = new InsertReplacePacketConverter();
 #nullable enable
         private static TarantoolContext? _instance = null;
 #nullable disable
-        private readonly Hashtable _convertersHashtable = new Hashtable();
+        private readonly Hashtable _tarantoolConvertersHashtable = new Hashtable();
         private readonly Hashtable _tarantoolTupleTypeHashtable = new Hashtable();
-        private readonly object _lock = new object();
-        private readonly object _arrayLock = new object();
-        private readonly object _convertersHashtableLock = new object();
+        private readonly Hashtable _tarantoolTupleArrayTypeHashtable = new Hashtable();
+        private readonly object _converterContextTupleTypeLock = new object();
+        private readonly object _converterContextTupleArrayTypeLock = new object();
+        private readonly object _tarantoolConvertersHashtableLock = new object();
         private readonly object _tarantoolTupleTypeHashtableLock = new object();
+        private readonly object _tarantoolTupleArrayTypeHashtableLock = new object();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TarantoolContext"/> class.
+        /// Prevents a default instance of the <see cref="TarantoolContext" /> class from being created.
         /// </summary>
         private TarantoolContext()
         {
@@ -59,7 +62,9 @@ namespace nanoFramework.Tarantool
             ConverterContext.Add(typeof(IndexPart), new IndexPartConverter());
             ConverterContext.Add(typeof(IndexPart[]), new SimpleArrayConverter(typeof(IndexPart)));
             ConverterContext.Add(typeof(IndexType), new IndexTypeConverter());
-            ConverterContext.Add(typeof(InsertReplaceRequest), new InsertReplacePacketConverter());
+            ConverterContext.Add(typeof(InsertReplaceRequest), InsertReplacePacketConverter);
+            ConverterContext.Add(typeof(InsertRequest), InsertReplacePacketConverter);
+            ConverterContext.Add(typeof(ReplaceRequest), InsertReplacePacketConverter);
             ConverterContext.Add(typeof(PacketSize), new PacketSizeConverter());
             ConverterContext.Add(typeof(RequestHeader), new RequestHeaderConverter());
             ConverterContext.Add(typeof(RequestId), new RequestIdConverter());
@@ -206,20 +211,40 @@ namespace nanoFramework.Tarantool
             return GetTarantoolTupleConverter((TarantoolTupleType)tupleType);
         }
 
+        internal IConverter GetTarantoolTupleConverter(TarantoolTupleType tarantoolTupleType)
+        {
+            var converter = ConverterContext.GetConverter(tarantoolTupleType);
+            if (converter == null)
+            {
+                lock (_converterContextTupleTypeLock)
+                {
+                    converter = ConverterContext.GetConverter(tarantoolTupleType);
+
+                    if (converter == null)
+                    {
+                        converter = new TarantoolTupleConverter(tarantoolTupleType.TupleTypes);
+                        ConverterContext.Add(tarantoolTupleType, converter);
+                    }
+                }
+            }
+
+            return converter;
+        }
+
         internal IConverter GetDataResponseDataTypeConverter(Type dataType)
         {
-            var converter = _convertersHashtable[dataType.Name];
+            var converter = _tarantoolConvertersHashtable[dataType.Name];
 
             if (converter == null)
             {
-                lock (_convertersHashtableLock)
+                lock (_tarantoolConvertersHashtableLock)
                 {
-                    converter = _convertersHashtable[dataType.Name];
+                    converter = _tarantoolConvertersHashtable[dataType.Name];
 
                     if (converter == null)
                     {
                         converter = GetResponsePacketConverter(dataType);
-                        _convertersHashtable.Add(dataType.Name, converter);
+                        _tarantoolConvertersHashtable.Add(dataType.Name, converter);
                     }
                 }
             }
@@ -247,6 +272,26 @@ namespace nanoFramework.Tarantool
             }
 
             return (TarantoolTupleType)tarantoolTupleType;
+        }
+
+        internal TarantoolTupleArrayType GetTarantoolTupleArrayType(TarantoolTupleType arrayElementType)
+        {
+            var elementTypeFullName = arrayElementType.FullName;
+            var tarantoolTupleArrayType = _tarantoolTupleArrayTypeHashtable[elementTypeFullName];
+            if (tarantoolTupleArrayType == null)
+            {
+                lock (_tarantoolTupleArrayTypeHashtableLock)
+                {
+                    tarantoolTupleArrayType = _tarantoolTupleArrayTypeHashtable[elementTypeFullName];
+                    if (tarantoolTupleArrayType == null)
+                    {
+                        tarantoolTupleArrayType = new TarantoolTupleArrayType(arrayElementType);
+                        _tarantoolTupleArrayTypeHashtable[elementTypeFullName] = tarantoolTupleArrayType;
+                    }
+                }
+            }
+
+            return (TarantoolTupleArrayType)tarantoolTupleArrayType;
         }
 
         private ResponsePacketConverter GetResponsePacketConverter(Type dataType)
@@ -290,37 +335,17 @@ namespace nanoFramework.Tarantool
             }
         }
 
-        private IConverter GetTarantoolTupleConverter(TarantoolTupleType tarantoolTupleType)
-        {
-            var converter = ConverterContext.GetConverter(tarantoolTupleType);
-            if (converter == null)
-            {
-                lock (_lock)
-                {
-                    converter = ConverterContext.GetConverter(tarantoolTupleType);
-
-                    if (converter == null)
-                    {
-                        converter = new TarantoolTupleConverter(tarantoolTupleType.TupleTypes);
-                        ConverterContext.Add(tarantoolTupleType, converter);
-                    }
-                }
-            }
-
-            return converter;
-        }
-
         private IConverter GetTarantoolArrayTupleConverter(TarantoolTupleArrayType tarantoolTupleArrayType)
         {
             var converter = ConverterContext.GetConverter(tarantoolTupleArrayType);
             if (converter == null)
             {
-                lock (_arrayLock)
+                lock (_converterContextTupleArrayTypeLock)
                 {
                     converter = ConverterContext.GetConverter(tarantoolTupleArrayType);
                     if (converter == null)
                     {
-                        converter = new SimpleArrayConverter(tarantoolTupleArrayType.GetElementType());
+                        converter = new TarantoolTupleArrayConverter((TarantoolTupleType)tarantoolTupleArrayType.GetElementType());
                         ConverterContext.Add(tarantoolTupleArrayType, converter);
                     }
                 }

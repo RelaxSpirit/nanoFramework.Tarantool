@@ -8,6 +8,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 #else
+using System;
 using System.Collections;
 using System.Text;
 #endif
@@ -95,18 +96,15 @@ namespace nanoFramework.Tarantool.Tests.Mocks
             {
                 case "math.sqrt":
                     MessagePackSerializer.Serialize(new ResponseHeader(CommandCode.Ok, requestId, 1), writer);
+#nullable enable
+                    object? tupleValue = callRequest.Tuple[0];
 
-                    ////if(callRequest.Tuple[0] == null)
-                    ////{
-                    ////    throw new ArgumentNullException(nameof(callRequest.Tuple[0]));
-                    ////}
-
-                    ////double argument = (double)callRequest.Tuple[0];
-
-                    ////if (argument != 1.3d)
-                    ////{
-                    ////    throw new ArgumentException($"Unknown tuple argument {cargument} for {callRequest.FunctionName} function");
-                    ////}
+                    double argument = double.Parse(tupleValue?.ToString() ?? throw new ArgumentNullException());
+#nullable disable
+                    if (argument != 1.3d)
+                    {
+                        throw new ArgumentException($"Unknown tuple argument {argument} for {callRequest.FunctionName} function");
+                    }
 
                     ArrayList sqrtResult = new ArrayList();
                     sqrtResult.Add(1.1401754250991381);
@@ -263,6 +261,15 @@ namespace nanoFramework.Tarantool.Tests.Mocks
                     case CommandCode.Ping:
                         EnqueuePingRequest(requestHeader.RequestId, arraySegment);
                         break;
+                    case CommandCode.Insert:
+                        EnqueueInsertRequest(requestHeader.RequestId, arraySegment);
+                        break;
+                    case CommandCode.Replace:
+                        EnqueueReplaceRequest(requestHeader.RequestId, arraySegment);
+                        break;
+                    case CommandCode.Delete:
+                        EnqueueDeleteRequest(requestHeader.RequestId, arraySegment);
+                        break;
                     default:
                         throw new NotImplementedException($"Process request command code {requestHeader.Code} not implemented");
                 }
@@ -316,7 +323,10 @@ namespace nanoFramework.Tarantool.Tests.Mocks
                             object? request = null;
                             lock (_processingLock)
                             {
-                                request = _requestQueue.Dequeue();
+                                if (_requestQueue.Count > 0)
+                                {
+                                    request = _requestQueue.Dequeue();
+                                }
                             }
 
                             if (request != null)
@@ -393,6 +403,36 @@ namespace nanoFramework.Tarantool.Tests.Mocks
             }
         }
 
+        private void EnqueueInsertRequest(RequestId requestId, ArraySegment arraySegment)
+        {
+            InsertRequest request = (InsertRequest)(TarantoolMockContext.InsertPacketConverter.Read(arraySegment) ?? throw new SerializationException("Error serialize InsertRequest"));
+
+            lock (_processingLock)
+            {
+                _requestQueue.Enqueue(new DictionaryEntry(requestId, request));
+            }
+        }
+
+        private void EnqueueReplaceRequest(RequestId requestId, ArraySegment arraySegment)
+        {
+            ReplaceRequest request = (ReplaceRequest)(TarantoolMockContext.ReplacePacketConverter.Read(arraySegment) ?? throw new SerializationException("Error serialize InsertRequest"));
+
+            lock (_processingLock)
+            {
+                _requestQueue.Enqueue(new DictionaryEntry(requestId, request));
+            }
+        }
+
+        private void EnqueueDeleteRequest(RequestId requestId, ArraySegment arraySegment)
+        {
+            DeleteRequest request = (DeleteRequest)(TarantoolMockContext.DeletePacketConverter.Read(arraySegment) ?? throw new SerializationException("Error serialize DeleteRequest"));
+
+            lock (_processingLock)
+            {
+                _requestQueue.Enqueue(new DictionaryEntry(requestId, request));
+            }
+        }
+
         private void EnqueueMockResponse(DictionaryEntry request)
         {
             using (MemoryStream writer = new MemoryStream())
@@ -437,7 +477,21 @@ namespace nanoFramework.Tarantool.Tests.Mocks
                                         }
                                         else
                                         {
-                                            throw new ArgumentException("Unknown request type");
+                                            if (request.Value is InsertReplaceRequest insertReplace)
+                                            {
+                                                WriteInsertReplaceResponseToStream(writer, requestId, insertReplace);
+                                            }
+                                            else
+                                            {
+                                                if (request.Value is DeleteRequest delete)
+                                                {
+                                                    WriteDeleteResponseToStream(writer, requestId, delete);
+                                                }
+                                                else
+                                                {
+                                                    throw new ArgumentException("Unknown request type");
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -447,8 +501,11 @@ namespace nanoFramework.Tarantool.Tests.Mocks
                 }
                 catch (Exception e)
                 {
+                    writer.SetLength(0);
+                    writer.Seek(Constants.PacketSizeBufferSize, SeekOrigin.Begin);
                     MessagePackSerializer.Serialize(new ResponseHeader(CommandCode.ErrorMask, requestId, 1), writer);
-                    MessagePackSerializer.Serialize(new DataResponseMock(new ErrorResponse($"Error process request id {request.Key} and type {request.Value.GetType()}:\n{e}")), writer);
+                    MessagePackSerializer.Serialize(new ErrorResponse($"{e}"), writer);
+                    AddPacketSize(writer, new PacketSize((uint)(writer.Position - Constants.PacketSizeBufferSize)));
                 }
                 finally
                 {
@@ -545,6 +602,85 @@ namespace nanoFramework.Tarantool.Tests.Mocks
                 case Schema.VIndex:
                     MessagePackSerializer.Serialize(new DataResponseMock(_context.Indices), writer);
                     break;
+                case 2:
+                    uint key = uint.Parse(selectRequest.SelectKey[0].ToString());
+                    if (key > _context.TestTable.Length)
+                    {
+                        if (!_context.ModifyTable.Contains(key + selectRequest.Offset))
+                        {
+                            MessagePackSerializer.Serialize(new DataResponseMock(new TarantoolTuple[0]), writer);
+                        }
+                        else
+                        {
+                            if (selectRequest.Limit == 1)
+                            {
+                                MessagePackSerializer.Serialize(new DataResponseMock(new TarantoolTuple[] { (TarantoolTuple)_context.ModifyTable[(uint)selectRequest.Offset + key] }), writer);
+                            }
+                            else
+                            {
+                                var length = (int)(key + selectRequest.Offset) - _context.TestTable.Length;
+
+                                if (length > _context.ModifyTable.Count)
+                                {
+                                    MessagePackSerializer.Serialize(new DataResponseMock(new TarantoolTuple[0]), writer);
+                                }
+                                else
+                                {
+                                    length = length + (int)selectRequest.Limit;
+
+                                    length = length > _context.TestTable.Length ? _context.TestTable.Length : length;
+
+                                    var responseTuples = new TarantoolTuple[length];
+                                    int index = 0;
+                                    for (int i = 0; i < length; i++)
+                                    {
+                                        var selectKey = (uint)(selectRequest.Offset + i + key);
+                                        if (_context.ModifyTable.Contains(selectKey))
+                                        {
+                                            responseTuples[index] = (TarantoolTuple)_context.ModifyTable[selectKey];
+                                        }
+                                        else
+                                        {
+                                            break;
+                                        }
+                                    }
+
+                                    MessagePackSerializer.Serialize(new DataResponseMock(responseTuples), writer);
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (selectRequest.Limit == 1)
+                        {
+                            MessagePackSerializer.Serialize(new DataResponseMock(new TarantoolTuple[] { _context.TestTable[selectRequest.Offset + key - 1] }), writer);
+                        }
+                        else
+                        {
+                            var length = selectRequest.Limit > _context.TestTable.Length + _context.ModifyTable.Count ? (uint)_context.TestTable.Length + _context.ModifyTable.Count : selectRequest.Limit;
+
+                            length = length - key + 1;
+
+                            TarantoolTuple[] responseTuples = new TarantoolTuple[length];
+                            for (int i = 0; i < length; i++)
+                            {
+                                var tableIndex = selectRequest.Offset + i + key - 1;
+                                if (tableIndex < _context.TestTable.Length)
+                                {
+                                    responseTuples[i] = _context.TestTable[tableIndex];
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+
+                            MessagePackSerializer.Serialize(new DataResponseMock(responseTuples), writer);
+                        }
+                    }
+
+                    break;
                 default:
                     throw new NotImplementedException($"Unknown SpaceId value = '{selectRequest.SpaceId}'");
             }
@@ -587,6 +723,45 @@ namespace nanoFramework.Tarantool.Tests.Mocks
                     break;
                 default:
                     throw new NotImplementedException($"Unknown Expression = '{evalRequest.Expression}'");
+            }
+
+            AddPacketSize(writer, new PacketSize((uint)(writer.Position - Constants.PacketSizeBufferSize)));
+        }
+
+        private void WriteInsertReplaceResponseToStream(MemoryStream writer, RequestId requestId, InsertReplaceRequest insertReplacRequest)
+        {
+            MessagePackSerializer.Serialize(new ResponseHeader(CommandCode.Ok, requestId, insertReplacRequest.SpaceId), writer);
+
+            uint key = uint.Parse(insertReplacRequest.Tuple[0].ToString());
+            if (!_context.ModifyTable.Contains(key))
+            {
+                _context.ModifyTable.Add(key, insertReplacRequest.Tuple);
+            }
+            else
+            {
+                _context.ModifyTable[key] = insertReplacRequest.Tuple;
+            }
+
+            MessagePackSerializer.Serialize(new DataResponseMock(new TarantoolTuple[] { (TarantoolTuple)_context.ModifyTable[key] }), writer);
+
+            AddPacketSize(writer, new PacketSize((uint)(writer.Position - Constants.PacketSizeBufferSize)));
+        }
+
+        private void WriteDeleteResponseToStream(MemoryStream writer, RequestId requestId, DeleteRequest deleteRequest)
+        {
+            MessagePackSerializer.Serialize(new ResponseHeader(CommandCode.Ok, requestId, deleteRequest.SpaceId), writer);
+
+            uint key = uint.Parse(deleteRequest.Key[0].ToString());
+
+            if (_context.ModifyTable.Contains(key))
+            {
+                var tuple = _context.ModifyTable[key];
+                _context.ModifyTable.Remove(key);
+                MessagePackSerializer.Serialize(new DataResponseMock(new TarantoolTuple[] { (TarantoolTuple)tuple }), writer);
+            }
+            else
+            {
+                MessagePackSerializer.Serialize(new DataResponseMock(new TarantoolTuple[] { TarantoolTuple.Empty }), writer);
             }
 
             AddPacketSize(writer, new PacketSize((uint)(writer.Position - Constants.PacketSizeBufferSize)));

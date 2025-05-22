@@ -23,7 +23,6 @@ namespace nanoFramework.Tarantool.Converters
 
         public object? Read([NotNull] IMessagePackReader reader)
         {
-            reader.ReadToken();
             return new PingRequest();
         }
     }

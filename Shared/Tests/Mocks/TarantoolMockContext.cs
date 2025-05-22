@@ -1,6 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses _writer file to you under the MIT license.
 
+using System.Collections;
 using nanoFramework.MessagePack;
 using nanoFramework.MessagePack.Converters;
 using nanoFramework.Tarantool.Converters;
@@ -22,8 +23,11 @@ namespace nanoFramework.Tarantool.Tests.Mocks
         internal static readonly EvalPacketConverterMock EvalPacketConverter = new EvalPacketConverterMock();
         internal static readonly ExecuteSqlRequestConverterMock ExecuteSqlRequestConverter = new ExecuteSqlRequestConverterMock();
         internal static readonly PingPacketConverter PingPacketConverter = new PingPacketConverter();
+        internal static readonly InsertReplacePacketConverterMock InsertPacketConverter = new InsertReplacePacketConverterMock(false);
+        internal static readonly InsertReplacePacketConverterMock ReplacePacketConverter = new InsertReplacePacketConverterMock(true);
+        internal static readonly DeletePacketConverterMock DeletePacketConverter = new DeletePacketConverterMock();
 
-        private static object LockInstance = new object();
+        private static object _lockInstance = new object();
 #nullable enable
         private static TarantoolMockContext? _instance;
 #nullable disable
@@ -50,7 +54,7 @@ namespace nanoFramework.Tarantool.Tests.Mocks
             {
                 if (_instance == null)
                 {
-                    lock (LockInstance)
+                    lock (_lockInstance)
                     {
                         if (_instance == null)
                         {
@@ -80,6 +84,8 @@ namespace nanoFramework.Tarantool.Tests.Mocks
                 TarantoolTuple.Create(13, "Queen", 1970),
                 TarantoolTuple.Create(14, "Sector Gaza", 1987)
         };
+
+        internal Hashtable ModifyTable { get; } = new Hashtable();
 
         internal BoxInfoMock TestBoxInfo { get; } = BoxInfoMock.GetBoxInfo();
 

@@ -216,7 +216,10 @@ namespace nanoFramework.Tarantool.Client.Stream
 
                 if (cs?.CompleteResultCallback == null)
                 {
-                    LogUnMatchedResponse(result);
+                    if (header.Code != CommandCode.Ping)
+                    {
+                        LogUnMatchedResponse(result);
+                    }
                 }
                 else
                 {
@@ -285,7 +288,10 @@ namespace nanoFramework.Tarantool.Client.Stream
 
                             lock (_processingLock)
                             {
-                                arraySegment = (ArraySegment?)_readingParts.Dequeue();
+                                if (_readingParts.Count > 0)
+                                {
+                                    arraySegment = (ArraySegment?)_readingParts.Dequeue();
+                                }
                             }
 
                             if (arraySegment != null)

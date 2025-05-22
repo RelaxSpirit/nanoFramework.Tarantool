@@ -9,6 +9,7 @@ using System;
 #endif
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using nanoFramework.Tarantool.Model;
 
 namespace nanoFramework.Tarantool.Dto
 {
@@ -17,6 +18,7 @@ namespace nanoFramework.Tarantool.Dto
     /// </summary>
     internal class TarantoolTupleArrayType : Type
     {
+        private static TarantoolContext _context = TarantoolContext.Instance;
         private static readonly Type DefaultTarantoolTupleArrayType = typeof(TarantoolTupleType[]);
         private readonly TarantoolTupleType _elementType;
         private string _name = string.Empty;
@@ -32,6 +34,16 @@ namespace nanoFramework.Tarantool.Dto
         }
 
         public new static bool IsArray => true;
+
+        internal static TarantoolTupleArrayType Create(TarantoolTuple element)
+        {
+            return _context.GetTarantoolTupleArrayType((TarantoolTupleType)element.GetType());
+        }
+
+        internal static TarantoolTupleArrayType Create(TarantoolTupleType elementType)
+        {
+            return _context.GetTarantoolTupleArrayType(elementType);
+        }
 
         public override Assembly Assembly => DefaultTarantoolTupleArrayType.Assembly;
 
@@ -78,7 +90,7 @@ namespace nanoFramework.Tarantool.Dto
 
         public override Type GetElementType()
         {
-            return _elementType;
+            return _elementType;////typeof(TarantoolTuple);
         }
 
         public override FieldInfo[] GetFields(BindingFlags bindingAttr)
@@ -128,13 +140,13 @@ namespace nanoFramework.Tarantool.Dto
 
         public override Type? BaseType => DefaultTarantoolTupleArrayType.BaseType;
 
-        public override Guid GUID => throw new NotImplementedException();
+        public override Guid GUID => DefaultTarantoolTupleArrayType.GUID;
 
-        public override Module Module => throw new NotImplementedException();
+        public override Module Module => DefaultTarantoolTupleArrayType.Module;
 
-        public override string? Namespace => throw new NotImplementedException();
+        public override string? Namespace => DefaultTarantoolTupleArrayType.Namespace;
 
-        public override Type UnderlyingSystemType => throw new NotImplementedException();
+        public override Type UnderlyingSystemType => DefaultTarantoolTupleArrayType.UnderlyingSystemType;
 
         protected override TypeAttributes GetAttributeFlagsImpl()
         {
@@ -153,28 +165,28 @@ namespace nanoFramework.Tarantool.Dto
 
         public override ConstructorInfo[] GetConstructors(BindingFlags bindingAttr)
         {
-            throw new NotImplementedException();
+            return DefaultTarantoolTupleArrayType.GetConstructors(bindingAttr);
         }
 
         public override EventInfo? GetEvent(string name, BindingFlags bindingAttr)
         {
-            throw new NotImplementedException();
+            return DefaultTarantoolTupleArrayType.GetEvent(name, bindingAttr);
         }
 
         public override EventInfo[] GetEvents(BindingFlags bindingAttr)
         {
-            throw new NotImplementedException();
+            return DefaultTarantoolTupleArrayType.GetEvents(bindingAttr);
         }
 
         [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)]
         public override Type? GetInterface(string name, bool ignoreCase)
         {
-            throw new NotImplementedException();
+            return DefaultTarantoolTupleArrayType.GetInterface(name, ignoreCase);
         }
 
         public override MemberInfo[] GetMembers(BindingFlags bindingAttr)
         {
-            throw new NotImplementedException();
+            return DefaultTarantoolTupleArrayType.GetMembers(bindingAttr);
         }
 
         protected override MethodInfo? GetMethodImpl(string name, BindingFlags bindingAttr, Binder? binder, CallingConventions callConvention, Type[]? types, ParameterModifier[]? modifiers)
@@ -184,17 +196,17 @@ namespace nanoFramework.Tarantool.Dto
 
         public override Type? GetNestedType(string name, BindingFlags bindingAttr)
         {
-            throw new NotImplementedException();
+            return DefaultTarantoolTupleArrayType.GetNestedType(name, bindingAttr);
         }
 
         public override Type[] GetNestedTypes(BindingFlags bindingAttr)
         {
-            throw new NotImplementedException();
+            return DefaultTarantoolTupleArrayType.GetNestedTypes(bindingAttr);
         }
 
         public override PropertyInfo[] GetProperties(BindingFlags bindingAttr)
         {
-            throw new NotImplementedException();
+            return DefaultTarantoolTupleArrayType.GetProperties(bindingAttr);
         }
 
         protected override PropertyInfo? GetPropertyImpl(string name, BindingFlags bindingAttr, Binder? binder, Type? returnType, Type[]? types, ParameterModifier[]? modifiers)
@@ -209,7 +221,7 @@ namespace nanoFramework.Tarantool.Dto
 
         public override object? InvokeMember(string name, BindingFlags invokeAttr, Binder? binder, object? target, object?[]? args, ParameterModifier[]? modifiers, CultureInfo? culture, string[]? namedParameters)
         {
-            throw new NotImplementedException();
+            return DefaultTarantoolTupleArrayType.InvokeMember(name, invokeAttr, binder, target, args);
         }
 
         protected override bool IsArrayImpl()
@@ -239,12 +251,12 @@ namespace nanoFramework.Tarantool.Dto
 
         public override object[] GetCustomAttributes(Type attributeType, bool inherit)
         {
-            throw new NotImplementedException();
+            return DefaultTarantoolTupleArrayType.GetCustomAttributes(attributeType, inherit);
         }
 
         public override bool IsDefined(Type attributeType, bool inherit)
         {
-            throw new NotImplementedException();
+            return DefaultTarantoolTupleArrayType.IsDefined(attributeType, inherit);
         }
 #endif
     }

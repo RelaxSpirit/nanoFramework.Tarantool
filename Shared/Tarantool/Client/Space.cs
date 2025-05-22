@@ -138,19 +138,19 @@ namespace nanoFramework.Tarantool.Client
         public DataResponse? Insert(TarantoolTuple tuple)
         {
             var insertRequest = new InsertRequest(Id, tuple);
-            return LogicalConnection?.SendRequest(insertRequest, TimeSpan.Zero, tuple.GetType());
+            return LogicalConnection?.SendRequest(insertRequest, TimeSpan.Zero, TarantoolContext.Instance.GetTarantoolTupleArrayType((TarantoolTupleType)tuple.GetType()));
         }
 
         public DataResponse? Select(TarantoolTuple selectKey, TarantoolTupleType? tarantoolTupleType = null)
         {
             var selectRequest = new SelectRequest(Id, Schema.PrimaryIndexId, uint.MaxValue, 0, Iterator.Eq, selectKey);
-            return LogicalConnection?.SendRequest(selectRequest, TimeSpan.Zero, tarantoolTupleType);
+            return LogicalConnection?.SendRequest(selectRequest, TimeSpan.Zero, tarantoolTupleType != null ? TarantoolContext.Instance.GetTarantoolTupleArrayType(tarantoolTupleType) : tarantoolTupleType);
         }
 
         public DataResponse? Get(TarantoolTuple key, TarantoolTupleType? tarantoolTupleType = null)
         {
             var selectRequest = new SelectRequest(Id, Schema.PrimaryIndexId, 1, 0, Iterator.Eq, key);
-            return LogicalConnection?.SendRequest(selectRequest, TimeSpan.Zero, tarantoolTupleType);
+            return LogicalConnection?.SendRequest(selectRequest, TimeSpan.Zero, tarantoolTupleType != null ? TarantoolContext.Instance.GetTarantoolTupleArrayType(tarantoolTupleType) : tarantoolTupleType);
         }
         
         public DataResponse? Replace(TarantoolTuple tuple, TarantoolTupleType? tarantoolTupleType = null)
@@ -178,7 +178,6 @@ namespace nanoFramework.Tarantool.Client
 
         public TarantoolTuple? GetTuple(TarantoolTuple key, [NotNull] TarantoolTupleType tarantoolTupleType)
         {
-            var selectRequest = new SelectRequest(Id, Schema.PrimaryIndexId, 1, 0, Iterator.Eq, key);
             var response = Get(key, tarantoolTupleType);
             if (response != null && response.Data.Length > 0)
             {

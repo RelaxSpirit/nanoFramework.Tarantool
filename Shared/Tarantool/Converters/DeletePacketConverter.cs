@@ -25,7 +25,7 @@ namespace nanoFramework.Tarantool.Converters
             {
                 var uintConverter = ConverterContext.GetConverter(typeof(uint));
                 var keyConverter = uintConverter;
-                var selectKeyConverter = ConverterContext.GetConverter(value.Key.GetType());
+                var selectKeyConverter = TarantoolContext.Instance.GetTarantoolTupleConverter(value.Key);
                 writer.WriteMapHeader(3);
 
                 keyConverter.Write(Key.SpaceId, writer);

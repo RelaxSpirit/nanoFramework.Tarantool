@@ -57,6 +57,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Converters\SqlInfoResponsePacketConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\StorageEngineConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\StringSpliceOperationConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\TarantoolTupleArrayConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\TarantoolTupleConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\UpdateOperationConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\UpdatePacketConverter.cs" />
