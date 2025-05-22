@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections;
-using System.Diagnostics.CodeAnalysis;
 using nanoFramework.Tarantool.Dto;
 using nanoFramework.Tarantool.Model;
 using nanoFramework.Tarantool.Model.Enums;
@@ -79,28 +78,12 @@ namespace nanoFramework.Tarantool.Client.Interfaces
         DataResponse? Select(TarantoolTuple selectKey, TarantoolTupleType? tarantoolTupleResponseType = null);
 
         /// <summary>
-        /// Select a <see cref="Tarantool"/> tuple.
-        /// </summary>
-        /// <param name="key"><see cref="Tarantool"/> tuple get key.</param>
-        /// <param name="tarantoolTupleResponseType">Responses <see cref="Tarantool"/> tuple type.</param>
-        /// <returns><see cref="Tarantool"/> data response.</returns>
-        DataResponse? Get(TarantoolTuple key, TarantoolTupleType? tarantoolTupleResponseType = null);
-
-        /// <summary>
         /// Create a replace trigger with a function that cannot change the <see cref="Tarantool"/> tuple.
         /// </summary>
         /// <param name="tuple">Replace <see cref="Tarantool"/> tuple.</param>
         /// <param name="tarantoolTupleResponseType">Responses <see cref="Tarantool"/> tuple type.</param>
         /// <returns><see cref="Tarantool"/> data response.</returns>
         DataResponse? Replace(TarantoolTuple tuple, TarantoolTupleType? tarantoolTupleResponseType = null);
-
-        /// <summary>
-        /// Insert or replace a <see cref="Tarantool"/> tuple.
-        /// </summary>
-        /// <param name="tuple">New <see cref="Tarantool"/> tuple.</param>
-        /// <param name="tarantoolTupleResponseType">Responses <see cref="Tarantool"/> tuple type.</param>
-        /// <returns><see cref="Tarantool"/> data response.</returns>
-        DataResponse? Put(TarantoolTuple tuple, TarantoolTupleType? tarantoolTupleResponseType = null);
 
         /// <summary>
         /// Update a <see cref="Tarantool"/> tuple.
@@ -125,7 +108,7 @@ namespace nanoFramework.Tarantool.Client.Interfaces
         /// <param name="key"><see cref="Tarantool"/> tuple get key.</param>
         /// <param name="tarantoolTupleType">Responses <see cref="Tarantool"/> tuple type.</param>
         /// <returns>Getting <see cref="TarantoolTuple"/> instance.</returns>
-        TarantoolTuple? GetTuple(TarantoolTuple key, [NotNull] TarantoolTupleType tarantoolTupleType);
+        TarantoolTuple? GetTuple(TarantoolTuple key, TarantoolTupleType? tarantoolTupleType = null);
 
         /// <summary>
         /// Insert or replace a <see cref="Tarantool"/> tuple.
@@ -133,7 +116,7 @@ namespace nanoFramework.Tarantool.Client.Interfaces
         /// <param name="tuple">New <see cref="Tarantool"/> tuple.</param>
         /// <param name="tarantoolTupleType">Responses <see cref="Tarantool"/> tuple type.</param>
         /// <returns>Putting <see cref="TarantoolTuple"/> instance.</returns>
-        TarantoolTuple? PutTuple(TarantoolTuple tuple, [NotNull] TarantoolTupleType tarantoolTupleType);
+        TarantoolTuple? PutTuple(TarantoolTuple tuple, TarantoolTupleType? tarantoolTupleType = null);
 #nullable disable
 
         /// <summary>

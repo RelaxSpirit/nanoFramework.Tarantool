@@ -157,6 +157,11 @@ namespace nanoFramework.Tarantool.Model
             return _tarantoolTupleType;
         }
 
+        internal object[] GetItems()
+        {
+            return _items.ToArray();
+        }
+
         private bool Equals(TarantoolTuple other)
         {
             if (_items.Count != other._items.Count)

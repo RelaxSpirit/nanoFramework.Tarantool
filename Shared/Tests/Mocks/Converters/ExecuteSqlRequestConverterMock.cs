@@ -95,8 +95,9 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
 
         internal static object? GetObjectByDataType(ArraySegment reader)
         {
+            var position = reader.Position;
             var type = reader.ReadDataType();
-            reader.Seek(0, SeekOrigin.Begin);
+            reader.Seek(position, SeekOrigin.Begin);
 
             switch (type)
             {

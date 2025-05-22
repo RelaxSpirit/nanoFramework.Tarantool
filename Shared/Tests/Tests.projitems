@@ -25,6 +25,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Mocks\Converters\SpaceConverterMock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mocks\Converters\SpaceFieldConverterMock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mocks\Converters\IndexConverterMock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mocks\Converters\UpdatePacketConverterMock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mocks\Data\BoxInfoMock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mocks\Data\DataResponseMock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mocks\Data\EmptyResponseMock.cs" />

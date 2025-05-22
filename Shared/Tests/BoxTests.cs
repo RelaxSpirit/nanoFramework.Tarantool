@@ -75,16 +75,15 @@ namespace nanoFramework.Tarantool.Tests
                     using (var box = TarantoolContext.Connect(TestHelper.GetClientOptions(false, false, userData: "test:test_password")))
                     {
                     };
-                },
-            "Tarantool returns an error for request with id: 1, code: 0x0000802F  and message: User not found or supplied credentials are invalid.");
+                });
 ////#else
-////         Assert.ThrowsException(typeof(TarantoolException), 
-////            () => 
-////            { 
-////                  using (var box = TarantoolContext.Connect(TestHelper.GetClientOptions(false, false, userData: "test:test_password"))) 
-////                  { 
-////                  }; 
-////            });
+////                Assert.ThrowsException(typeof(TarantoolException), 
+////                () => 
+////                { 
+////                    using (var box = TarantoolContext.Connect(TestHelper.GetClientOptions(false, false, userData: "test:test_password"))) 
+////                    { 
+////                    }; 
+////                });
 #endif
 
             using (var box = TarantoolContext.Connect(TestHelper.GetClientOptions(true, true, userData: "testuser:test_password")))

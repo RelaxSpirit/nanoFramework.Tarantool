@@ -270,6 +270,9 @@ namespace nanoFramework.Tarantool.Tests.Mocks
                     case CommandCode.Delete:
                         EnqueueDeleteRequest(requestHeader.RequestId, arraySegment);
                         break;
+                    case CommandCode.Update:
+                        EnqueueUpdateRequest(requestHeader.RequestId, arraySegment);
+                        break;
                     default:
                         throw new NotImplementedException($"Process request command code {requestHeader.Code} not implemented");
                 }
@@ -433,6 +436,16 @@ namespace nanoFramework.Tarantool.Tests.Mocks
             }
         }
 
+        private void EnqueueUpdateRequest(RequestId requestId, ArraySegment arraySegment)
+        {
+            UpdateRequest request = (UpdateRequest)(TarantoolMockContext.UpdatePacketConverter.Read(arraySegment) ?? throw new SerializationException("Error serialize UpdateRequest"));
+
+            lock (_processingLock)
+            {
+                _requestQueue.Enqueue(new DictionaryEntry(requestId, request));
+            }
+        }
+
         private void EnqueueMockResponse(DictionaryEntry request)
         {
             using (MemoryStream writer = new MemoryStream())
@@ -489,7 +502,14 @@ namespace nanoFramework.Tarantool.Tests.Mocks
                                                 }
                                                 else
                                                 {
-                                                    throw new ArgumentException("Unknown request type");
+                                                    if (request.Value is UpdateRequest update)
+                                                    {
+                                                        WriteUpdateResponseToStream(writer, requestId, update);
+                                                    }
+                                                    else
+                                                    {
+                                                        throw new ArgumentException("Unknown request type");
+                                                    }
                                                 }
                                             }
                                         }
@@ -758,6 +778,32 @@ namespace nanoFramework.Tarantool.Tests.Mocks
                 var tuple = _context.ModifyTable[key];
                 _context.ModifyTable.Remove(key);
                 MessagePackSerializer.Serialize(new DataResponseMock(new TarantoolTuple[] { (TarantoolTuple)tuple }), writer);
+            }
+            else
+            {
+                MessagePackSerializer.Serialize(new DataResponseMock(new TarantoolTuple[] { TarantoolTuple.Empty }), writer);
+            }
+
+            AddPacketSize(writer, new PacketSize((uint)(writer.Position - Constants.PacketSizeBufferSize)));
+        }
+
+        private void WriteUpdateResponseToStream(MemoryStream writer, RequestId requestId, UpdateRequest updateRequest)
+        {
+            MessagePackSerializer.Serialize(new ResponseHeader(CommandCode.Ok, requestId, updateRequest.SpaceId), writer);
+
+            uint key = uint.Parse(updateRequest.Key[0].ToString());
+
+            if (_context.ModifyTable.Contains(key))
+            {
+                var tupleItems = ((TarantoolTuple)_context.ModifyTable[key]).GetItems();
+
+                foreach (var updateOperation in updateRequest.UpdateOperations)
+                {
+                    tupleItems[updateOperation.FieldNumber] = updateOperation.Argument;
+                }
+
+                _context.ModifyTable[key] = TarantoolTuple.Create(tupleItems);
+                MessagePackSerializer.Serialize(new DataResponseMock(new TarantoolTuple[] { (TarantoolTuple)_context.ModifyTable[key] }), writer);
             }
             else
             {

@@ -11,7 +11,7 @@ namespace nanoFramework.Tarantool.Model.UpdateOperations
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdateOperation"/> class.
         /// </summary>
-        /// <param name="operationType">Update operation type.</param>
+        /// <param name="operationType">Update operation type string of <see cref="UpdateOperationType"/>.</param>
         /// <param name="fieldNumber">Update fields number.</param>
         /// <param name="argument">Update argument.</param>
         internal UpdateOperation(string operationType, int fieldNumber, object argument)
