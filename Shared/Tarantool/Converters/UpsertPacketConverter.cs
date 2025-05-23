@@ -42,7 +42,7 @@ namespace nanoFramework.Tarantool.Converters
         }
 
 #nullable enable
-        public object? Read([NotNull] IMessagePackReader reader)
+        public virtual object? Read([NotNull] IMessagePackReader reader)
         {
             throw new NotImplementedException();
         }

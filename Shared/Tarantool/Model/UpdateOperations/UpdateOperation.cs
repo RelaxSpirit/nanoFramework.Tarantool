@@ -3,6 +3,7 @@
 
 namespace nanoFramework.Tarantool.Model.UpdateOperations
 {
+#nullable enable
     /// <summary>
     /// Universal update operation class.
     /// </summary>
@@ -14,7 +15,7 @@ namespace nanoFramework.Tarantool.Model.UpdateOperations
         /// <param name="operationType">Update operation type string of <see cref="UpdateOperationType"/>.</param>
         /// <param name="fieldNumber">Update fields number.</param>
         /// <param name="argument">Update argument.</param>
-        internal UpdateOperation(string operationType, int fieldNumber, object argument)
+        internal UpdateOperation(string operationType, int fieldNumber, object? argument)
         {
             OperationType = operationType;
             FieldNumber = fieldNumber;
@@ -34,6 +35,6 @@ namespace nanoFramework.Tarantool.Model.UpdateOperations
         /// <summary>
         /// Gets update argument.
         /// </summary>
-        public object Argument { get; }
+        public object? Argument { get; }
     }
 }

@@ -27,6 +27,7 @@ namespace nanoFramework.Tarantool.Tests.Mocks
         internal static readonly InsertReplacePacketConverterMock ReplacePacketConverter = new InsertReplacePacketConverterMock(true);
         internal static readonly DeletePacketConverterMock DeletePacketConverter = new DeletePacketConverterMock();
         internal static readonly UpdatePacketConverterMock UpdatePacketConverter = new UpdatePacketConverterMock();
+        internal static readonly UpsertPacketConverterMock UpsertPacketConverter = new UpsertPacketConverterMock();
 
         private static object _lockInstance = new object();
 #nullable enable

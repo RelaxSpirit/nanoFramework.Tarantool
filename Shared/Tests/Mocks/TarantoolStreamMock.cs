@@ -21,6 +21,7 @@ using nanoFramework.Tarantool.Model.Enums;
 using nanoFramework.Tarantool.Model.Headers;
 using nanoFramework.Tarantool.Model.Requests;
 using nanoFramework.Tarantool.Model.Responses;
+using nanoFramework.Tarantool.Model.UpdateOperations;
 using nanoFramework.Tarantool.Tests.Mocks.Data;
 
 namespace nanoFramework.Tarantool.Tests.Mocks
@@ -273,6 +274,9 @@ namespace nanoFramework.Tarantool.Tests.Mocks
                     case CommandCode.Update:
                         EnqueueUpdateRequest(requestHeader.RequestId, arraySegment);
                         break;
+                    case CommandCode.Upsert:
+                        EnqueueUpsertRequest(requestHeader.RequestId, arraySegment);
+                        break;
                     default:
                         throw new NotImplementedException($"Process request command code {requestHeader.Code} not implemented");
                 }
@@ -446,6 +450,16 @@ namespace nanoFramework.Tarantool.Tests.Mocks
             }
         }
 
+        private void EnqueueUpsertRequest(RequestId requestId, ArraySegment arraySegment)
+        {
+            UpsertRequest request = (UpsertRequest)(TarantoolMockContext.UpsertPacketConverter.Read(arraySegment) ?? throw new SerializationException("Error serialize UpsertRequest"));
+
+            lock (_processingLock)
+            {
+                _requestQueue.Enqueue(new DictionaryEntry(requestId, request));
+            }
+        }
+
         private void EnqueueMockResponse(DictionaryEntry request)
         {
             using (MemoryStream writer = new MemoryStream())
@@ -508,7 +522,14 @@ namespace nanoFramework.Tarantool.Tests.Mocks
                                                     }
                                                     else
                                                     {
-                                                        throw new ArgumentException("Unknown request type");
+                                                        if (request.Value is UpsertRequest upsert)
+                                                        {
+                                                            WriteUpsertResponseToStream(writer, requestId, upsert);
+                                                        }
+                                                        else
+                                                        {
+                                                            throw new ArgumentException("Unknown request type");
+                                                        }
                                                     }
                                                 }
                                             }
@@ -808,6 +829,44 @@ namespace nanoFramework.Tarantool.Tests.Mocks
             else
             {
                 MessagePackSerializer.Serialize(new DataResponseMock(new TarantoolTuple[] { TarantoolTuple.Empty }), writer);
+            }
+
+            AddPacketSize(writer, new PacketSize((uint)(writer.Position - Constants.PacketSizeBufferSize)));
+        }
+
+        private void WriteUpsertResponseToStream(MemoryStream writer, RequestId requestId, UpsertRequest upsertRequest)
+        {
+            MessagePackSerializer.Serialize(new ResponseHeader(CommandCode.Ok, requestId, upsertRequest.SpaceId), writer);
+
+            uint key = uint.Parse(upsertRequest.Tuple[0].ToString());
+
+            if (_context.ModifyTable.Contains(key))
+            {
+                var tupleItems = ((TarantoolTuple)_context.ModifyTable[key]).GetItems();
+
+                foreach (var updateOperation in upsertRequest.UpdateOperations)
+                {
+                    if (updateOperation is StringSpliceOperation stringSpliceOperation)
+                    {
+                        string stringValue = tupleItems[updateOperation.FieldNumber].ToString();
+
+                        var part1 = stringValue.Substring(0, stringSpliceOperation.Position);
+                        var part2 = stringValue.Substring(stringSpliceOperation.Offset + stringSpliceOperation.Position);
+                        tupleItems[updateOperation.FieldNumber] = $"{part1}{stringSpliceOperation.Argument}{part2}";
+                    }
+                    else
+                    {
+                        tupleItems[updateOperation.FieldNumber] = updateOperation.Argument;
+                    }
+                }
+
+                _context.ModifyTable[key] = TarantoolTuple.Create(tupleItems);
+                MessagePackSerializer.Serialize(new DataResponseMock(new TarantoolTuple[] { (TarantoolTuple)_context.ModifyTable[key] }), writer);
+            }
+            else
+            {
+                _context.ModifyTable[key] = upsertRequest.Tuple;
+                MessagePackSerializer.Serialize(new DataResponseMock(new TarantoolTuple[] { upsertRequest.Tuple }), writer);
             }
 
             AddPacketSize(writer, new PacketSize((uint)(writer.Position - Constants.PacketSizeBufferSize)));

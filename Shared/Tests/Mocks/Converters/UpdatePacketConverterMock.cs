@@ -16,6 +16,55 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
 {
     internal class UpdatePacketConverterMock : UpdatePacketConverter
     {
+        internal static UpdateOperation[] GetUpdateOperations(IMessagePackReader reader)
+        {
+            var updateOperationsCount = reader.ReadArrayLength();
+            UpdateOperation[] updateOperations = new UpdateOperation[updateOperationsCount];
+            var stringConverter = ConverterContext.GetConverter(typeof(string));
+            var intConverter = ConverterContext.GetConverter(typeof(int));
+            for (int opIndex = 0; opIndex < updateOperationsCount; opIndex++)
+            {
+                ArraySegment arraySegment = reader.ReadToken() ?? throw ExceptionHelper.ActualValueIsNullReference();
+
+                var tupleItemsCount = arraySegment.ReadArrayLength();
+                if (tupleItemsCount == 2)
+                {
+                    updateOperations[opIndex] = new UpdateOperation(
+                        (string)(stringConverter.Read(arraySegment) ?? throw ExceptionHelper.ActualValueIsNullReference()),
+                        (int)(intConverter.Read(arraySegment) ?? throw ExceptionHelper.ActualValueIsNullReference()),
+                        null);
+                }
+                else
+                {
+                    if (tupleItemsCount == 3)
+                    {
+                        updateOperations[opIndex] = new UpdateOperation(
+                        (string)(stringConverter.Read(arraySegment) ?? throw ExceptionHelper.ActualValueIsNullReference()),
+                        (int)(intConverter.Read(arraySegment) ?? throw ExceptionHelper.ActualValueIsNullReference()),
+                        ExecuteSqlRequestConverterMock.GetObjectByDataType(arraySegment) ?? throw ExceptionHelper.ActualValueIsNullReference());
+                    }
+                    else
+                    {
+                        if (tupleItemsCount == 5)
+                        {
+                            var op = stringConverter.Read(arraySegment);
+                            updateOperations[opIndex] = UpdateOperation.CreateStringSlice(
+                                (int)(intConverter.Read(arraySegment) ?? throw ExceptionHelper.ActualValueIsNullReference()),
+                                (int)(intConverter.Read(arraySegment) ?? throw ExceptionHelper.ActualValueIsNullReference()),
+                                (int)(intConverter.Read(arraySegment) ?? throw ExceptionHelper.ActualValueIsNullReference()),
+                                (string)(stringConverter.Read(arraySegment) ?? throw ExceptionHelper.ActualValueIsNullReference()));
+                        }
+                        else
+                        {
+                            throw ExceptionHelper.InvalidArrayLength(5, tupleItemsCount);
+                        }
+                    }
+                }
+            }
+
+            return updateOperations;
+        }
+
 #nullable enable
         public override object? Read([NotNull] IMessagePackReader reader)
         {
@@ -49,24 +98,7 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
                         tuple = (TarantoolTuple)(tupleConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
                         break;
                     case Key.Tuple:
-                        var updateOperationsCount = reader.ReadArrayLength();
-                        updateOperations = new UpdateOperation[updateOperationsCount];
-                        for (int opIndex = 0; opIndex < updateOperationsCount; opIndex++)
-                        {
-                            ArraySegment arraySegment = reader.ReadToken() ?? throw ExceptionHelper.ActualValueIsNullReference();
-
-                            var tupleItemsCount = arraySegment.ReadArrayLength();
-                            if (tupleItemsCount != 3)
-                            {
-                                throw ExceptionHelper.InvalidArrayLength(length, 3);
-                            }
-
-                            updateOperations[opIndex] = new UpdateOperation(
-                            (string)(ConverterContext.GetConverter(typeof(string)).Read(arraySegment) ?? throw ExceptionHelper.ActualValueIsNullReference()),
-                            (int)(ConverterContext.GetConverter(typeof(int)).Read(arraySegment) ?? throw ExceptionHelper.ActualValueIsNullReference()),
-                            ExecuteSqlRequestConverterMock.GetObjectByDataType(arraySegment) ?? throw ExceptionHelper.ActualValueIsNullReference());
-                        }
-
+                        updateOperations = GetUpdateOperations(reader);
                         break;
                 }
             }
