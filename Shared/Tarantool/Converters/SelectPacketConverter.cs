@@ -8,6 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 using nanoFramework.MessagePack;
 using nanoFramework.MessagePack.Converters;
 using nanoFramework.MessagePack.Stream;
+using nanoFramework.Tarantool.Model;
 using nanoFramework.Tarantool.Model.Enums;
 using nanoFramework.Tarantool.Model.Requests;
 
@@ -41,12 +42,17 @@ namespace nanoFramework.Tarantool.Converters
             keyConverter.Write(Key.Iterator, writer);
             iteratorConverter.Write(value.Iterator, writer);
 
+            keyConverter.Write(Key.Key, writer);
+
             if (value.SelectKey != null)
             {
                 var selectKeyConverter = TarantoolContext.Instance.GetTarantoolTupleConverter(value.SelectKey);
-
-                keyConverter.Write(Key.Key, writer);
                 selectKeyConverter.Write(value.SelectKey, writer);
+            }
+            else
+            {
+                var selectKeyConverter = TarantoolContext.Instance.GetTarantoolTupleConverter(TarantoolTuple.Empty);
+                selectKeyConverter.Write(TarantoolTuple.Empty, writer);
             }
         }
 

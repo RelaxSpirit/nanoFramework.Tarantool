@@ -644,80 +644,123 @@ namespace nanoFramework.Tarantool.Tests.Mocks
                     MessagePackSerializer.Serialize(new DataResponseMock(_context.Indices), writer);
                     break;
                 case 2:
-                    uint key = uint.Parse(selectRequest.SelectKey[0].ToString());
-                    if (key > _context.TestTable.Length)
+                    if (selectRequest.SelectKey.Length > 0)
                     {
-                        if (!_context.ModifyTable.Contains(key + selectRequest.Offset))
+                        var keyString = selectRequest.SelectKey[0].ToString();
+                        if (keyString == "Led Zeppelin")
                         {
-                            MessagePackSerializer.Serialize(new DataResponseMock(new TarantoolTuple[0]), writer);
+                            MessagePackSerializer.Serialize(new DataResponseMock(new TarantoolTuple[] { _context.TestTable[11] }), writer);
                         }
                         else
                         {
-                            if (selectRequest.Limit == 1)
+                            if (keyString == "Scorpions")
                             {
-                                MessagePackSerializer.Serialize(new DataResponseMock(new TarantoolTuple[] { (TarantoolTuple)_context.ModifyTable[(uint)selectRequest.Offset + key] }), writer);
+                                MessagePackSerializer.Serialize(new DataResponseMock(new TarantoolTuple[] { _context.TestTable[1] }), writer);
                             }
                             else
                             {
-                                var length = (int)(key + selectRequest.Offset) - _context.TestTable.Length;
-
-                                if (length > _context.ModifyTable.Count)
+                                uint key = uint.Parse(keyString);
+                                if (key > _context.TestTable.Length)
                                 {
-                                    MessagePackSerializer.Serialize(new DataResponseMock(new TarantoolTuple[0]), writer);
-                                }
-                                else
-                                {
-                                    length = length + (int)selectRequest.Limit;
-
-                                    length = length > _context.TestTable.Length ? _context.TestTable.Length : length;
-
-                                    var responseTuples = new TarantoolTuple[length];
-                                    int index = 0;
-                                    for (int i = 0; i < length; i++)
+                                    if (!_context.ModifyTable.Contains(key + selectRequest.Offset))
                                     {
-                                        var selectKey = (uint)(selectRequest.Offset + i + key);
-                                        if (_context.ModifyTable.Contains(selectKey))
+                                        MessagePackSerializer.Serialize(new DataResponseMock(new TarantoolTuple[0]), writer);
+                                    }
+                                    else
+                                    {
+                                        if (selectRequest.Limit == 1)
                                         {
-                                            responseTuples[index] = (TarantoolTuple)_context.ModifyTable[selectKey];
+                                            MessagePackSerializer.Serialize(new DataResponseMock(new TarantoolTuple[] { (TarantoolTuple)_context.ModifyTable[(uint)selectRequest.Offset + key] }), writer);
                                         }
                                         else
                                         {
-                                            break;
+                                            var length = (int)(key + selectRequest.Offset) - _context.TestTable.Length;
+
+                                            if (length > _context.ModifyTable.Count)
+                                            {
+                                                MessagePackSerializer.Serialize(new DataResponseMock(new TarantoolTuple[0]), writer);
+                                            }
+                                            else
+                                            {
+                                                length = length + (int)selectRequest.Limit;
+
+                                                length = length > _context.TestTable.Length ? _context.TestTable.Length : length;
+
+                                                var responseTuples = new TarantoolTuple[length];
+                                                int index = 0;
+                                                for (int i = 0; i < length; i++)
+                                                {
+                                                    var selectKey = (uint)(selectRequest.Offset + i + key);
+                                                    if (_context.ModifyTable.Contains(selectKey))
+                                                    {
+                                                        responseTuples[index] = (TarantoolTuple)_context.ModifyTable[selectKey];
+                                                    }
+                                                    else
+                                                    {
+                                                        break;
+                                                    }
+                                                }
+
+                                                MessagePackSerializer.Serialize(new DataResponseMock(responseTuples), writer);
+                                            }
                                         }
                                     }
-
-                                    MessagePackSerializer.Serialize(new DataResponseMock(responseTuples), writer);
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (selectRequest.Limit == 1)
-                        {
-                            MessagePackSerializer.Serialize(new DataResponseMock(new TarantoolTuple[] { _context.TestTable[selectRequest.Offset + key - 1] }), writer);
-                        }
-                        else
-                        {
-                            var length = selectRequest.Limit > _context.TestTable.Length + _context.ModifyTable.Count ? (uint)_context.TestTable.Length + _context.ModifyTable.Count : selectRequest.Limit;
-
-                            length = length - key + 1;
-
-                            TarantoolTuple[] responseTuples = new TarantoolTuple[length];
-                            for (int i = 0; i < length; i++)
-                            {
-                                var tableIndex = selectRequest.Offset + i + key - 1;
-                                if (tableIndex < _context.TestTable.Length)
-                                {
-                                    responseTuples[i] = _context.TestTable[tableIndex];
                                 }
                                 else
                                 {
-                                    break;
+                                    if (selectRequest.Limit == 1)
+                                    {
+                                        MessagePackSerializer.Serialize(new DataResponseMock(new TarantoolTuple[] { _context.TestTable[selectRequest.Offset + key - 1] }), writer);
+                                    }
+                                    else
+                                    {
+                                        var length = selectRequest.Limit > _context.TestTable.Length + _context.ModifyTable.Count ? (uint)_context.TestTable.Length + _context.ModifyTable.Count : selectRequest.Limit;
+
+                                        length = length - key + 1;
+
+                                        TarantoolTuple[] responseTuples = new TarantoolTuple[length];
+                                        for (int i = 0; i < length; i++)
+                                        {
+                                            var tableIndex = selectRequest.Offset + i + key - 1;
+                                            if (tableIndex < _context.TestTable.Length)
+                                            {
+                                                responseTuples[i] = _context.TestTable[tableIndex];
+                                            }
+                                            else
+                                            {
+                                                break;
+                                            }
+                                        }
+
+                                        MessagePackSerializer.Serialize(new DataResponseMock(responseTuples), writer);
+                                    }
                                 }
                             }
-
-                            MessagePackSerializer.Serialize(new DataResponseMock(responseTuples), writer);
+                        }  
+                    }
+                    else
+                    {
+                        if (selectRequest.IndexId == 1)
+                        {
+                            if (selectRequest.Iterator == Iterator.Eq)
+                            {
+                                MessagePackSerializer.Serialize(new DataResponseMock(new TarantoolTuple[] { _context.TestTable[2] }), writer);
+                            }
+                            else
+                            {
+                                if (selectRequest.Iterator == Iterator.Req)
+                                {
+                                    MessagePackSerializer.Serialize(new DataResponseMock(new TarantoolTuple[] { _context.TestTable[8] }), writer);
+                                }
+                                else
+                                {
+                                    throw new NotImplementedException($"Select for iterator {selectRequest.Iterator}");
+                                }
+                            }
+                        }
+                        else
+                        {
+                            throw new NotImplementedException($"Select for index id {selectRequest.IndexId}");
                         }
                     }
 

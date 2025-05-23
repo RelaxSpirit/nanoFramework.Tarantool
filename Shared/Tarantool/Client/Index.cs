@@ -117,7 +117,7 @@ namespace nanoFramework.Tarantool.Client
             var minResponse = Min(key, responseType);
             if (minResponse != null && minResponse.Data.Length > 0)
             {
-                return (TarantoolTuple)((object[])minResponse.Data[0])[0];
+                return (TarantoolTuple)minResponse.Data[0];
             }
             else
             {
@@ -135,7 +135,7 @@ namespace nanoFramework.Tarantool.Client
             var maxResponse = Max(key, responseType);
             if (maxResponse != null && maxResponse.Data.Length > 0)
             {
-                return (TarantoolTuple)((object[])maxResponse.Data[0])[0];
+                return (TarantoolTuple)maxResponse.Data[0];
             }
             else
             {

@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)BoxTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IndexTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mocks\Converters\AuthenticationPacketConverterMock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mocks\Converters\CallPacketConverterMock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mocks\Converters\DeletePacketConverterMock.cs" />
