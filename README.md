@@ -258,3 +258,64 @@ using (var box = TarantoolContext.Connect(clientOptions))
        }
   }
 ```
+### Index
+1. Getting tuple by min index:
+```csharp
+  ClientOptions clientOptions = new ClientOptions($"{TarantoolHostIp}:3301");
+  using (var box = TarantoolContext.Connect(clientOptions))
+  {
+        var index = box.Schema["bands"]["secondary"];
+        var responseTupleType = TarantoolTupleType.Create(typeof(int), typeof(string), typeof(uint));
+
+        var responseTuple = index.MinTuple(responseTupleType);
+        Console.WriteLine(responseTuple.ToString());
+  }
+```
+2. Getting tuple by max index:
+```csharp
+  ClientOptions clientOptions = new ClientOptions($"{TarantoolHostIp}:3301");
+  using (var box = TarantoolContext.Connect(clientOptions))
+  {
+        var index = box.Schema["bands"]["secondary"];
+        var responseTupleType = TarantoolTupleType.Create(typeof(int), typeof(string), typeof(uint));
+
+        var responseTuple = index.MaxTuple(responseTupleType);
+        Console.WriteLine(responseTuple.ToString());
+  }
+```
+3. Select tuples:
+```csharp
+  ClientOptions clientOptions = new ClientOptions($"{TarantoolHostIp}:3301");
+  using (var box = TarantoolContext.Connect(clientOptions))
+  {
+        var index = box.Schema["bands"]["secondary"];
+        var responseTupleType = TarantoolTupleType.Create(typeof(int), typeof(string), typeof(uint));
+
+        var responseData = index.Select(TarantoolTuple.Create("Scorpions"), new SelectOptions() { Iterator = Model.Enums.Iterator.Ge, Limit = 5}, responseTupleType);
+        ////...........
+  }
+```
+4. Update tuple by index:
+```csharp
+  ClientOptions clientOptions = new ClientOptions($"{TarantoolHostIp}:3301");
+  using (var box = TarantoolContext.Connect(clientOptions))
+  {
+        var index = box.Schema["bands"]["secondary"];
+        var responseTupleType = TarantoolTupleType.Create(typeof(int), typeof(string), typeof(uint));
+
+        //// TODO
+        ////...........
+  }
+```
+5. Delete tuple by index:
+```csharp
+  ClientOptions clientOptions = new ClientOptions($"{TarantoolHostIp}:3301");
+  using (var box = TarantoolContext.Connect(clientOptions))
+  {
+        var index = box.Schema["bands"]["secondary"];
+        var responseTupleType = TarantoolTupleType.Create(typeof(int), typeof(string), typeof(uint));
+
+        //// TODO
+        ////...........
+  }
+```
