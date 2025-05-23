@@ -65,7 +65,7 @@ using (var box = TarantoolContext.Connect(clientOptions))
 ```
 
 3. Get complete information about the schema, spaces, and indexes of the Tarantool database:
- ```csharp
+```csharp
 var clientOptions = new ClientOptions($"{TarantoolHostIp}:3301");
 clientOptions.ConnectionOptions.ReadSchemaOnConnect = true;
 clientOptions.ConnectionOptions.ReadBoxInfoOnConnect = true;
@@ -80,7 +80,7 @@ using (var box = TarantoolContext.Connect(clientOptions))
 ```
 
 4. Calling various Tarantool Lua functions:
- ```csharp
+```csharp
 var clientOptions = new ClientOptions($"{TarantoolHostIp}:3301");
 clientOptions.ConnectionOptions.ReadSchemaOnConnect = false;
 clientOptions.ConnectionOptions.ReadBoxInfoOnConnect = false;
@@ -139,7 +139,7 @@ using (var box = TarantoolContext.Connect(clientOptions))
 ```
 
 6. Work with Tarantool-supported SQL:
- ```csharp
+```csharp
 var clientOptions = new ClientOptions($"testuser:test_password@{TarantoolHostIp}:3301");
 clientOptions.ConnectionOptions.ReadSchemaOnConnect = false;
 clientOptions.ConnectionOptions.ReadBoxInfoOnConnect = false;
@@ -176,7 +176,7 @@ using (var box = TarantoolContext.Connect(clientOptions))
 ```
 ### Space
 1. Insert tuple in space:
-   ```csharp
+```csharp
   ClientOptions clientOptions = new ClientOptions($"{TarantoolHostIp}:3301");
   using (var box = TarantoolContext.Connect(clientOptions))
   {
@@ -189,10 +189,10 @@ using (var box = TarantoolContext.Connect(clientOptions))
            Console.WriteLine(resultData.ToString());
        }
   }
-  ```
+```
 
 2. Getting and Select tuple from the space by key:
- ```csharp
+```csharp
   ClientOptions clientOptions = new ClientOptions($"{TarantoolHostIp}:3301");
   using (var box = TarantoolContext.Connect(clientOptions))
   {
@@ -224,9 +224,9 @@ using (var box = TarantoolContext.Connect(clientOptions))
            Console.WriteLine(resultData.ToString());
        }
   }
-  ```
+```
 4. Upsert tuple from the space:
-   ```csharp
+```csharp
   ClientOptions clientOptions = new ClientOptions($"{TarantoolHostIp}:3301");
   using (var box = TarantoolContext.Connect(clientOptions))
   {
@@ -241,9 +241,9 @@ using (var box = TarantoolContext.Connect(clientOptions))
        selectedTuple = space.GetTuple(TarantoolTuple.Create(17), TarantoolTupleType.Create(typeof(int), typeof(string), tupeof(uint));
        Console.WriteLine(selectedTuple.ToString());
   }
-  ```
+```
 5. Delete tuple from the space:
-  ```csharp
+```csharp
   ClientOptions clientOptions = new ClientOptions($"{TarantoolHostIp}:3301");
   using (var box = TarantoolContext.Connect(clientOptions))
   {
@@ -257,4 +257,4 @@ using (var box = TarantoolContext.Connect(clientOptions))
            Console.WriteLine(resultData.ToString());
        }
   }
-  ```
+```
