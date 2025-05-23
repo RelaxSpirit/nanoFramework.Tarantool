@@ -46,7 +46,7 @@ This repository contains the client library for working with [Tarantool](https:/
 
 # Usage
 ## What the client can do at the moment
-
+### Box
 1. Connect to the Tarantool server with the default user 'Guest':
 ```csharp
 ClientOptions clientOptions = new ClientOptions($"{TarantoolHostIp}:3301");
@@ -65,7 +65,7 @@ using (var box = TarantoolContext.Connect(clientOptions))
 ```
 
 3. Get complete information about the schema, spaces, and indexes of the Tarantool database:
- ```csharp
+```csharp
 var clientOptions = new ClientOptions($"{TarantoolHostIp}:3301");
 clientOptions.ConnectionOptions.ReadSchemaOnConnect = true;
 clientOptions.ConnectionOptions.ReadBoxInfoOnConnect = true;
@@ -80,7 +80,7 @@ using (var box = TarantoolContext.Connect(clientOptions))
 ```
 
 4. Calling various Tarantool Lua functions:
- ```csharp
+```csharp
 var clientOptions = new ClientOptions($"{TarantoolHostIp}:3301");
 clientOptions.ConnectionOptions.ReadSchemaOnConnect = false;
 clientOptions.ConnectionOptions.ReadBoxInfoOnConnect = false;
@@ -92,7 +92,7 @@ using (var box = TarantoolContext.Connect(clientOptions))
     var tupleParam = TarantoolTuple.Create(1.3d);
     var callResult = box.Call("math.sqrt", tupleParam, tupleParam.GetType());
 
-    if (callResult != null && callResult.Data[0] is not null)
+    if (callResult != null && callResult.Data[0] != null)
     {
          var resultData = (TarantoolTuple)callResult.Data[0];
          Console.WriteLine($"The square root of the number {tupleParam[0]} is {resultData[0]}");
@@ -139,7 +139,7 @@ using (var box = TarantoolContext.Connect(clientOptions))
 ```
 
 6. Work with Tarantool-supported SQL:
- ```csharp
+```csharp
 var clientOptions = new ClientOptions($"testuser:test_password@{TarantoolHostIp}:3301");
 clientOptions.ConnectionOptions.ReadSchemaOnConnect = false;
 clientOptions.ConnectionOptions.ReadBoxInfoOnConnect = false;
@@ -159,7 +159,7 @@ using (var box = TarantoolContext.Connect(clientOptions))
    
          executeSqlResult = box.ExecuteSql("SELECT * FROM sql_test WHERE id = $1", typeof(TarantoolTuple[]), new SqlParameter(2, "$1"));
 
-         if (evalResult != null && evalResult.Data[0] is not null)
+         if (evalResult != null && evalResult.Data[0] != null)
          {
              var resultData = (TarantoolTuple)executeSqlResult.Data[0];
              Console.WriteLine(resultData.ToString());
@@ -173,4 +173,88 @@ using (var box = TarantoolContext.Connect(clientOptions))
          }
      }
 }
+```
+### Space
+1. Insert tuple in space:
+```csharp
+  ClientOptions clientOptions = new ClientOptions($"{TarantoolHostIp}:3301");
+  using (var box = TarantoolContext.Connect(clientOptions))
+  {
+       var space = box.Schema["bands"];
+       var testTuple = TarantoolTuple.Create(15, "Black Sabbath", 1968);
+       var responseData = space.Insert(testTuple);
+       if (responseData != null && responseData.Data[0] != null)
+       {
+           var resultData = (TarantoolTuple)responseData.Data[0];
+           Console.WriteLine(resultData.ToString());
+       }
+  }
+```
+
+2. Getting and Select tuple from the space by key:
+```csharp
+  ClientOptions clientOptions = new ClientOptions($"{TarantoolHostIp}:3301");
+  using (var box = TarantoolContext.Connect(clientOptions))
+  {
+       var space = box.Schema["bands"];
+       var selectedTuple = space.GetTuple(TarantoolTuple.Create(15), TarantoolTupleType.Create(typeof(int), typeof(string), tupeof(uint));
+       Console.WriteLine(selectedTuple.ToString());
+       var responseData = space.Select(TarantoolTuple.Create(15));
+       if (responseData != null && responseData.Data[0] != null)
+       {
+           var resultData = (TarantoolTuple)responseData.Data[0];
+           Console.WriteLine(resultData.ToString());
+       }
+  }
+  ```
+
+3. Put, Update, Replace tuple from the space:
+ ```csharp
+  ClientOptions clientOptions = new ClientOptions($"{TarantoolHostIp}:3301");
+  using (var box = TarantoolContext.Connect(clientOptions))
+  {
+       var space = box.Schema["bands"];
+       var testTuple = TarantoolTuple.Create(16, "Nazareth", 1988);
+       var responseTuple = space.PutTuple(testTuple);
+       Console.WriteLine(responseTuple.ToString());
+       var responseData = space.Update(TarantoolTuple.Create(16), new UpdateOperation[] { UpdateOperation.CreateAssign(2, 1968) }, (TarantoolTupleType)testTuple.GetType());
+       if (responseData != null && responseData.Data[0] != null)
+       {
+           var resultData = (TarantoolTuple)responseData.Data[0];
+           Console.WriteLine(resultData.ToString());
+       }
+  }
+```
+4. Upsert tuple from the space:
+```csharp
+  ClientOptions clientOptions = new ClientOptions($"{TarantoolHostIp}:3301");
+  using (var box = TarantoolContext.Connect(clientOptions))
+  {
+       var space = box.Schema["bands"];
+       var testTuple = TarantoolTuple.Create(17, "BonJovi", 1983);
+       bool recordCreate = false;
+       space.Upsert(testTuple, new UpdateOperation[] { UpdateOperation.CreateStringSlice(1, 3, 0, " ") });
+       var selectedTuple = space.GetTuple(TarantoolTuple.Create(17), TarantoolTupleType.Create(typeof(int), typeof(string), tupeof(uint));
+       Console.WriteLine(selectedTuple.ToString());
+
+       space.Upsert(testTuple, new UpdateOperation[] { UpdateOperation.CreateStringSlice(1, 3, 0, " ") });
+       selectedTuple = space.GetTuple(TarantoolTuple.Create(17), TarantoolTupleType.Create(typeof(int), typeof(string), tupeof(uint));
+       Console.WriteLine(selectedTuple.ToString());
+  }
+```
+5. Delete tuple from the space:
+```csharp
+  ClientOptions clientOptions = new ClientOptions($"{TarantoolHostIp}:3301");
+  using (var box = TarantoolContext.Connect(clientOptions))
+  {
+       var space = box.Schema["bands"];
+       var deleteKeyTuple = TarantoolTuple.Create(17);
+
+       var responseData = space.Delete(deleteKeyTuple);
+       if (responseData != null && responseData.Data[0] != null)
+       {
+           var resultData = (TarantoolTuple)responseData.Data[0];
+           Console.WriteLine(resultData.ToString());
+       }
+  }
 ```
