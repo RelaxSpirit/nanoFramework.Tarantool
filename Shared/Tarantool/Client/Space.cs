@@ -5,6 +5,7 @@
 using System;
 #endif
 using System.Collections;
+using nanoFramework.Tarantool.Client.Connections;
 using nanoFramework.Tarantool.Client.Interfaces;
 using nanoFramework.Tarantool.Dto;
 using nanoFramework.Tarantool.Helpers;
@@ -83,7 +84,19 @@ namespace nanoFramework.Tarantool.Client
                 var index = _indexByName[name];
                 if (index == null)
                 {
-                    throw ExceptionHelper.InvalidIndexName(name, Name);
+                    index = GetIndexInfo(name);
+                    if (index == null)
+                    {
+                        throw ExceptionHelper.InvalidIndexName(name, Name);
+                    }
+                    else
+                    {
+                        Index innerIndex = (Index)index;
+                        innerIndex.LogicalConnection = LogicalConnection;
+
+                        _indexByName[innerIndex.Name] = innerIndex;
+                        _indexById[innerIndex.Id] = innerIndex;
+                    }
                 }
 
                 return (IIndex)index;
@@ -215,5 +228,23 @@ namespace nanoFramework.Tarantool.Client
             var selectRequest = new SelectRequest(Id, Schema.PrimaryIndexId, 1, 0, Iterator.Eq, key);
             return LogicalConnection?.SendRequest(selectRequest, TimeSpan.Zero, tarantoolTupleType != null ? TarantoolContext.Instance.GetTarantoolTupleArrayType(tarantoolTupleType) : tarantoolTupleType);
         }
+
+#nullable enable
+        private Index? GetIndexInfo(string name)
+        {
+            var request = new SelectRequest(Schema.VIndex, 1, 1, 0, Iterator.Eq, TarantoolTuple.Create(Id, name));
+
+            var response = LogicalConnection?.SendRequest(request, TimeSpan.Zero, typeof(Index[]));
+
+            if (response != null && response.Data is Index[] indexes)
+            {
+                return indexes[0];
+            }
+            else
+            {
+                return null;
+            }
+        }
+
     }
 }

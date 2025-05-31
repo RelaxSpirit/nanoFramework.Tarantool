@@ -32,6 +32,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Client\Stream\ResponseReader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\AuthenticationPacketConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\AutoIncrementKeyConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\BoxInfoConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\CallPacketConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\DeletePacketConverter.cs" />

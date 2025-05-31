@@ -15,7 +15,22 @@ Project("{11A8DD76-328B-46DF-9F39-F559912D0360}") = "NFUnitTest", "NFUnitTest\NF
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Tests", "Shared\Tests\Tests.shproj", "{D0ADC230-6C4C-44A6-8A49-693EA49B900C}"
 EndProject
-Project("{11A8DD76-328B-46DF-9F39-F559912D0360}") = "NFTestApp", "NFTestApp\NFTestApp.nfproj", "{5E9F2EED-77D2-4339-BA11-CABBD9AD2144}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WeatherTracker", "WeatherTracker", "{2C01738C-8E66-4ADF-99B1-00FF477623AA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NfWeatherTracker", "NfWeatherTracker", "{1F6A783A-6E9C-45C8-9FE0-53AF5ED9D4A1}"
+EndProject
+Project("{11A8DD76-328B-46DF-9F39-F559912D0360}") = "WeatherTracker", "Samples\WeatherTracker\NfWeatherTracker\WeatherTracker\WeatherTracker.nfproj", "{6A9E4C30-7617-48A4-8D4E-0E707E3387D4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebWeatherTracker", "WebWeatherTracker", "{6605FF81-753F-47B4-9A2A-4D4921A047D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherTracker", "Samples\WeatherTracker\WebWeatherTracker\WeatherTracker\WeatherTracker.csproj", "{389C2EF7-2D3B-4260-981A-213F42EF1992}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tarantool", "Tarantool", "{A3F5656A-277B-49F5-8B3F-8E055B38F3EE}"
+	ProjectSection(SolutionItems) = preProject
+		Dockerfile.txt = Dockerfile.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,15 +58,27 @@ Global
 		{756FBAFD-4545-44F5-B600-446DD557B9C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{756FBAFD-4545-44F5-B600-446DD557B9C5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{756FBAFD-4545-44F5-B600-446DD557B9C5}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{5E9F2EED-77D2-4339-BA11-CABBD9AD2144}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5E9F2EED-77D2-4339-BA11-CABBD9AD2144}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5E9F2EED-77D2-4339-BA11-CABBD9AD2144}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{5E9F2EED-77D2-4339-BA11-CABBD9AD2144}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5E9F2EED-77D2-4339-BA11-CABBD9AD2144}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5E9F2EED-77D2-4339-BA11-CABBD9AD2144}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{6A9E4C30-7617-48A4-8D4E-0E707E3387D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A9E4C30-7617-48A4-8D4E-0E707E3387D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A9E4C30-7617-48A4-8D4E-0E707E3387D4}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{6A9E4C30-7617-48A4-8D4E-0E707E3387D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A9E4C30-7617-48A4-8D4E-0E707E3387D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A9E4C30-7617-48A4-8D4E-0E707E3387D4}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{389C2EF7-2D3B-4260-981A-213F42EF1992}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{389C2EF7-2D3B-4260-981A-213F42EF1992}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{389C2EF7-2D3B-4260-981A-213F42EF1992}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{389C2EF7-2D3B-4260-981A-213F42EF1992}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2C01738C-8E66-4ADF-99B1-00FF477623AA} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{1F6A783A-6E9C-45C8-9FE0-53AF5ED9D4A1} = {2C01738C-8E66-4ADF-99B1-00FF477623AA}
+		{6A9E4C30-7617-48A4-8D4E-0E707E3387D4} = {1F6A783A-6E9C-45C8-9FE0-53AF5ED9D4A1}
+		{6605FF81-753F-47B4-9A2A-4D4921A047D6} = {2C01738C-8E66-4ADF-99B1-00FF477623AA}
+		{389C2EF7-2D3B-4260-981A-213F42EF1992} = {6605FF81-753F-47B4-9A2A-4D4921A047D6}
+		{A3F5656A-277B-49F5-8B3F-8E055B38F3EE} = {2C01738C-8E66-4ADF-99B1-00FF477623AA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BBBC5F5A-3C82-4CB9-8AB5-3BC3045EBF09}

@@ -184,8 +184,6 @@ namespace nanoFramework.Tarantool.Client.Stream
             }
 
             _disposed = true;
-
-            _thread.Join(100);
         }
     }
 }

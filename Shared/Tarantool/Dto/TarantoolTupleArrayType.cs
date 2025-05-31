@@ -18,7 +18,6 @@ namespace nanoFramework.Tarantool.Dto
     /// </summary>
     internal class TarantoolTupleArrayType : Type
     {
-        private static TarantoolContext _context = TarantoolContext.Instance;
         private static readonly Type DefaultTarantoolTupleArrayType = typeof(TarantoolTupleType[]);
         private readonly TarantoolTupleType _elementType;
         private string _name = string.Empty;
@@ -34,16 +33,6 @@ namespace nanoFramework.Tarantool.Dto
         }
 
         public new static bool IsArray => true;
-
-        internal static TarantoolTupleArrayType Create(TarantoolTuple element)
-        {
-            return _context.GetTarantoolTupleArrayType((TarantoolTupleType)element.GetType());
-        }
-
-        internal static TarantoolTupleArrayType Create(TarantoolTupleType elementType)
-        {
-            return _context.GetTarantoolTupleArrayType(elementType);
-        }
 
         public override Assembly Assembly => DefaultTarantoolTupleArrayType.Assembly;
 

@@ -24,8 +24,8 @@ namespace nanoFramework.Tarantool.Client
 
         private readonly ILogicalConnection _logicalConnection;
 
-        private Hashtable _indexByName = new Hashtable();
-        private Hashtable _indexById = new Hashtable();
+        private Hashtable _spaceByName = new Hashtable();
+        private Hashtable _spaceById = new Hashtable();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Schema"/> class.
@@ -40,10 +40,23 @@ namespace nanoFramework.Tarantool.Client
         {
             get
             {
-                var space = _indexByName[name];
+                var space = _spaceByName[name];
                 if (space == null)
                 {
-                    throw ExceptionHelper.InvalidSpaceName(name);
+                    space = GetSpaceInfo(name);
+
+                    if (space == null)
+                    {
+                        throw ExceptionHelper.InvalidSpaceName(name);
+                    }
+                    else
+                    {
+                        Space innerSpace = (Space)space;
+                        innerSpace.LogicalConnection = _logicalConnection;
+
+                        _spaceByName[innerSpace.Name] = innerSpace;
+                        _spaceById[innerSpace.Id] = innerSpace;
+                    }
                 }
 
                 return (ISpace)space;
@@ -54,7 +67,7 @@ namespace nanoFramework.Tarantool.Client
         {
             get
             {
-                var space = _indexById[id];
+                var space = _spaceById[id];
                 if (space == null)
                 {
                     throw ExceptionHelper.InvalidSpaceId(id);
@@ -80,12 +93,12 @@ namespace nanoFramework.Tarantool.Client
                 space.SetIndices((Index[])Select(VIndex, typeof(Index[]), Iterator.Eq, space.Id));
             }
 
-            _indexByName = indByName;
-            _indexById = indById;
+            _spaceByName = indByName;
+            _spaceById = indById;
             LastReloadTime = DateTime.UtcNow;
         }
 
-        public ICollection Spaces => _indexByName.Values;
+        public ICollection Spaces => _spaceByName.Values;
 
         private object[] Select(uint spaceId, Type responseType, Iterator iterator = Iterator.All, uint id = 0u)
         {
@@ -100,6 +113,23 @@ namespace nanoFramework.Tarantool.Client
             else
             {
                 return (object[])Array.CreateInstance(responseType, 0);
+            }
+        }
+
+#nullable enable
+        private Space? GetSpaceInfo(string name)
+        {
+            var request = new SelectRequest(VSpace, 2, 1, 0, Iterator.Eq, TarantoolTuple.Create(name));
+
+            var response = _logicalConnection.SendRequest(request, TimeSpan.Zero, typeof(Space[]));
+
+            if (response != null && response.Data is Space[] spaces)
+            {
+                return spaces[0];
+            }
+            else
+            {
+                return null;
             }
         }
     }

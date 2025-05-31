@@ -18,7 +18,6 @@ namespace nanoFramework.Tarantool.Dto
     /// </summary>
     public class TarantoolTupleType : Type
     {
-        private static TarantoolContext _context = TarantoolContext.Instance;
         private static readonly Type DefaultTarantoolTupleType = typeof(TarantoolTupleType);
 
         private string _name = string.Empty;
@@ -67,16 +66,6 @@ namespace nanoFramework.Tarantool.Dto
         /// Gets override base class property <see cref="MemberType"/>.
         /// </summary>
         public override MemberTypes MemberType => DefaultTarantoolTupleType.MemberType;
-
-        /// <summary>
-        /// Create <see cref="Tarantool"/> tuple type.
-        /// </summary>
-        /// <param name="tupleTypes">Tuple items types.</param>
-        /// <returns>Instance of the <see cref="TarantoolTupleType"/> class.</returns>
-        public static TarantoolTupleType Create(params Type[] tupleTypes)
-        {
-            return _context.GetTarantoolTupleType(tupleTypes);
-        }
 
 #if NANOFRAMEWORK_1_0
         /// <summary>

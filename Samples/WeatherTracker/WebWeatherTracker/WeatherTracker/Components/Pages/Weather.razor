@@ -1,0 +1,86 @@
+﻿@page "/weather"
+@using nanoFramework.Tarantool
+@using nanoFramework.Tarantool.Client.Interfaces
+@using nanoFramework.Tarantool.Dto
+@using nanoFramework.Tarantool.Model
+@inject IBox box;
+@attribute [StreamRendering]
+
+<PageTitle>Weather</PageTitle>
+
+<h1>Weather</h1>
+
+<p>This component demonstrates showing Tarantool data.</p>
+
+@if (forecasts == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th aria-label="Temperature in Celsius">Temp. (C)</th>
+                <th aria-label="Temperature in Farenheit">Temp. (F)</th>
+                <th aria-label="Pressure in Farenheit">Press. (hPa)</th>
+                <th>Device MAC address</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var forecast in forecasts)
+            {
+                <tr>
+                    <td>@forecast.Date</td>
+                    <td>@forecast.TemperatureC.GetValueOrDefault().ToString("F2")</td>
+                    <td>@forecast.TemperatureF.GetValueOrDefault().ToString("F2")</td>
+                    <td>@forecast.Pressure.GetValueOrDefault().ToString("F2")</td>
+                    <td>@forecast.DeviceMacAddress</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private WeatherForecast[]? forecasts;
+    private ISpace? space;
+    private TarantoolTupleType responseTarantoolTupleType = TarantoolContext.Instance.GetTarantoolTupleType(typeof(ulong), typeof(string), typeof(DateTime), typeof(double), typeof(double));
+
+    protected override async Task OnInitializedAsync()
+    {
+        space = box.Schema["weatherTracker"];
+        await FillWeatherForecast();
+    }
+
+    private Task FillWeatherForecast()
+    {
+        var response = space?.Select(TarantoolTuple.Empty, responseTarantoolTupleType);
+        if (response?.Data.Length > 0 && response?.Data is TarantoolTuple[] tuplesResult)
+        {
+            forecasts = tuplesResult.Select(c => new WeatherForecast()
+            {
+                DeviceMacAddress = c[1]?.ToString(),
+                Date = (DateTime?)c[2],
+                TemperatureC = (double?)c[3],
+                Pressure = (double?)c[4]
+            }).ToArray();
+        }
+        else
+        {
+            forecasts = Array.Empty<WeatherForecast>();
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private class WeatherForecast
+    {
+        public DateTime? Date { get; set; }
+        public double? TemperatureC { get; set; }
+        public double? Pressure{ get; set; }
+        public string? DeviceMacAddress { get; set; }
+        public double? TemperatureF => 32 + (TemperatureC.GetValueOrDefault() / 0.5556);
+    }
+}

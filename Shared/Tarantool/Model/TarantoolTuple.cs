@@ -16,6 +16,9 @@ namespace nanoFramework.Tarantool.Model
     public class TarantoolTuple
     {
 #nullable enable
+        private static object lockEmptyInstance = new object();
+        private static TarantoolTuple? emptyInstance;
+
         private readonly TarantoolTupleType _tarantoolTupleType;
         private readonly Type[] _tupleItemTypes;
         private readonly ArrayList _items = new ArrayList();
@@ -26,7 +29,7 @@ namespace nanoFramework.Tarantool.Model
         private TarantoolTuple()
         {
             _tupleItemTypes = new Type[0];
-            _tarantoolTupleType = TarantoolTupleType.Create(_tupleItemTypes);
+            _tarantoolTupleType = TarantoolContext.Instance.GetTarantoolTupleType(_tupleItemTypes);
         }
 
         /// <summary>
@@ -48,7 +51,7 @@ namespace nanoFramework.Tarantool.Model
                 _items.Add(tupleObjects[i]);
             }
 
-            _tarantoolTupleType = TarantoolTupleType.Create(_tupleItemTypes);
+            _tarantoolTupleType = TarantoolContext.Instance.GetTarantoolTupleType(_tupleItemTypes);
         }
 
         /// <summary>
@@ -72,7 +75,24 @@ namespace nanoFramework.Tarantool.Model
         /// <summary>
         /// Gets empty <see cref="Tarantool"/> tuple.
         /// </summary>
-        public static TarantoolTuple Empty { get; } = new TarantoolTuple();
+        public static TarantoolTuple Empty 
+        { 
+            get
+            {
+                if (emptyInstance == null)
+                {
+                    lock (lockEmptyInstance)
+                    {
+                        if (emptyInstance == null)
+                        {
+                            emptyInstance = new TarantoolTuple();
+                        }
+                    }
+                }
+
+                return emptyInstance;
+            }
+        }
 
         /// <summary>
         /// Create <see cref="Tarantool"/> tuple.

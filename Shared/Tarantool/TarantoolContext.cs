@@ -28,8 +28,8 @@ namespace nanoFramework.Tarantool
     /// </summary>
     public class TarantoolContext
     {        
-        private static readonly object LockInstance = new object();
-        private static readonly InsertReplacePacketConverter InsertReplacePacketConverter = new InsertReplacePacketConverter();
+        private static readonly object LockInstance;
+        private static readonly InsertReplacePacketConverter InsertReplacePacketConverter;
 #nullable enable
         private static TarantoolContext? _instance = null;
 #nullable disable
@@ -42,6 +42,12 @@ namespace nanoFramework.Tarantool
         private readonly object _tarantoolTupleTypeHashtableLock = new object();
         private readonly object _tarantoolTupleArrayTypeHashtableLock = new object();
 
+        static TarantoolContext()
+        {
+            LockInstance = new object();
+            InsertReplacePacketConverter = new InsertReplacePacketConverter();
+        }
+        
         /// <summary>
         /// Prevents a default instance of the <see cref="TarantoolContext" /> class from being created.
         /// </summary>
@@ -85,6 +91,7 @@ namespace nanoFramework.Tarantool
             ConverterContext.Add(typeof(SpaceField[]), new SimpleArrayConverter(typeof(SpaceField)));
             ConverterContext.Add(typeof(TarantoolTuple[][]), new SimpleArrayConverter(typeof(TarantoolTuple[])));
             ConverterContext.Add(typeof(TarantoolTuple[]), new SimpleArrayConverter(typeof(TarantoolTuple)));
+            ConverterContext.Add(typeof(InsertRequest.AutoIncrementKey), new AutoIncrementKeyConverter());
         }
 
         /// <summary>
@@ -94,6 +101,11 @@ namespace nanoFramework.Tarantool
         {
             get
             {
+                if (LockInstance == null)
+                {
+                    _instance = new TarantoolContext();
+                }
+
                 if (_instance == null)
                 {
                     lock (LockInstance)
@@ -205,6 +217,33 @@ namespace nanoFramework.Tarantool
             }
         }
 
+        /// <summary>
+        /// Create <see cref="Tarantool"/> tuple type.
+        /// </summary>
+        /// <param name="tupleItemsTypes">Tuple items types.</param>
+        /// <returns>Instance of the <see cref="TarantoolTupleType"/> class.</returns>
+        public TarantoolTupleType GetTarantoolTupleType(params Type[] tupleItemsTypes)
+        {
+            var typesFullName = GetTypeArrayTypesFullName(tupleItemsTypes);
+            var tarantoolTupleType = _tarantoolTupleTypeHashtable[typesFullName];
+
+            if (tarantoolTupleType == null)
+            {
+                lock (_tarantoolTupleTypeHashtableLock)
+                {
+                    tarantoolTupleType = _tarantoolTupleTypeHashtable[typesFullName];
+
+                    if (tarantoolTupleType == null)
+                    {
+                        tarantoolTupleType = new TarantoolTupleType(tupleItemsTypes);
+                        _tarantoolTupleTypeHashtable.Add(typesFullName, tarantoolTupleType);
+                    }
+                }
+            }
+
+            return (TarantoolTupleType)tarantoolTupleType;
+        }
+
         internal IConverter GetTarantoolTupleConverter(TarantoolTuple tarantoolTuple)
         {
             var tupleType = tarantoolTuple.GetType();
@@ -250,28 +289,6 @@ namespace nanoFramework.Tarantool
             }
 
             return (IConverter)converter;
-        }
-
-        internal TarantoolTupleType GetTarantoolTupleType(params Type[] tupleItemsTypes)
-        {
-            var typesFullName = GetTypeArrayTypesFullName(tupleItemsTypes);
-            var tarantoolTupleType = _tarantoolTupleTypeHashtable[typesFullName];
-
-            if (tarantoolTupleType == null)
-            {
-                lock (_tarantoolTupleTypeHashtableLock)
-                {
-                    tarantoolTupleType = _tarantoolTupleTypeHashtable[typesFullName];
-
-                    if (tarantoolTupleType == null)
-                    {
-                        tarantoolTupleType = new TarantoolTupleType(tupleItemsTypes);
-                        _tarantoolTupleTypeHashtable.Add(typesFullName, tarantoolTupleType);
-                    }
-                }
-            }
-
-            return (TarantoolTupleType)tarantoolTupleType;
         }
 
         internal TarantoolTupleArrayType GetTarantoolTupleArrayType(TarantoolTupleType arrayElementType)

@@ -131,8 +131,6 @@ namespace nanoFramework.Tarantool.Client.Stream
             _disposed = true;
 
             _physicalConnection.Dispose();
-            _readingThread.Join(100);
-            _processPackageThread.Join(100);
 
             lock (_pendingRequestsLock)
             {
@@ -318,13 +316,13 @@ namespace nanoFramework.Tarantool.Client.Stream
                 {
                     if (IsReadingPartsQueueFree())
                     {
-                        _physicalConnection.Read(_buffer, _readingOffset, _buffer.Length);
+                        int reader = _physicalConnection.Read(_buffer, _readingOffset, _buffer.Length);
                         ResponseHeader? responseHeader = GetResponseHeader(_buffer);
 
                         var errorPacketSegment = GetErrorResponsePacket($"The package size {packetSize.Value} bytes is too large, maximum packet size for reception {_buffer.Length} bytes", responseHeader);
 
                         //// Clear network stream
-                        while (_physicalConnection.Read(_buffer, _readingOffset, _buffer.Length) > 0)
+                        while ((reader += _physicalConnection.Read(_buffer, _readingOffset, _buffer.Length)) < packetSize.Value)
                         {
                             if (_disposed)
                             {

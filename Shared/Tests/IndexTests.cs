@@ -29,7 +29,7 @@ namespace nanoFramework.Tarantool.Tests
                 Assert.IsNotNull(box.Schema["bands"] as ISpace);
 
                 var index = box.Schema["bands"]["secondary"];
-                var responseTupleType = TarantoolTupleType.Create(typeof(int), typeof(string), typeof(uint));
+                var responseTupleType = TarantoolContext.Instance.GetTarantoolTupleType(typeof(int), typeof(string), typeof(uint));
 
                 var responseTuple = index.MinTuple(responseTupleType);
                 Assert.IsNotNull(responseTuple);
@@ -57,7 +57,7 @@ namespace nanoFramework.Tarantool.Tests
                 Assert.IsNotNull(box.Schema["bands"] as ISpace);
 
                 var index = box.Schema["bands"]["secondary"];
-                var responseTupleType = TarantoolTupleType.Create(typeof(int), typeof(string), typeof(uint));
+                var responseTupleType = TarantoolContext.Instance.GetTarantoolTupleType(typeof(int), typeof(string), typeof(uint));
 
                 var responseTuple = index.MaxTuple(responseTupleType);
                 Assert.IsNotNull(responseTuple);
