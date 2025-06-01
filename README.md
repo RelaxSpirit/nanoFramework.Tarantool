@@ -313,29 +313,36 @@ This repository contains the client library for working with [Tarantool](https:/
       }
    ```
 
-   4. Update tuple by index:
-   ```csharp
-      ClientOptions clientOptions = new ClientOptions($"{TarantoolHostIp}:3301");
-      using (var box = TarantoolContext.Connect(clientOptions))
-      {
-            var index = box.Schema["bands"]["secondary"];
-            var responseTupleType = TarantoolTupleType.Create(typeof(int), typeof(string), typeof(uint));
-    
-            //// TODO
-            ////...........
-      }
-   ```
+   4. Update tuple by index.
 
-   5. Delete tuple by index:
-   ```csharp
-      ClientOptions clientOptions = new ClientOptions($"{TarantoolHostIp}:3301");
-      using (var box = TarantoolContext.Connect(clientOptions))
-      {
-            var index = box.Schema["bands"]["secondary"];
-            var responseTupleType = TarantoolTupleType.Create(typeof(int), typeof(string), typeof(uint));
-    
-            //// TODO
-            ////...........
-      }
-   ```
+   5. Delete tuple by index.
 </details>
+
+An example of the direct implementation of interaction with Tarantool in a microcontroller can be seen in the corresponding repository of the [demo project](https://github.com/RelaxSpirit/nanoFramework.Tarantool/tree/master/Samples/WeatherTracker).
+
+## Acknowledgements
+
+The initial version of the MessagePack library was coded by [Spirin Dmitriy](https://github.com/RelaxSpirit), who has kindly handed over the library to the .NET **nanoFramework** project.
+
+## Feedback and documentation
+
+For documentation, providing feedback, issues, and finding out how to contribute, please refer to the [Home repo](https://github.com/nanoframework/Home).
+
+Join our Discord community [here](https://discord.gg/gCyBu8T).
+
+## Credits
+
+The list of contributors to this project can be found at [CONTRIBUTORS](https://github.com/nanoframework/Home/blob/main/CONTRIBUTORS.md).
+
+## License
+
+The **nanoFramework** WebServer library is licensed under the [MIT license](LICENSE.md).
+
+## Code of Conduct
+
+This project has adopted the code of conduct defined by the Contributor Covenant to clarify expected behaviour in our community.
+For more information see the [.NET Foundation Code of Conduct](https://dotnetfoundation.org/code-of-conduct).
+
+## .NET Foundation
+
+This project is supported by the [.NET Foundation](https://dotnetfoundation.org).
