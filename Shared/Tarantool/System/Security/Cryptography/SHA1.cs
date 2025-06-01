@@ -1,7 +1,6 @@
-﻿#if NANOFRAMEWORK_1_0
-// Licensed to the .NET Foundation under one or more agreements.
+﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
-
+#if NANOFRAMEWORK_1_0
 namespace System.Security.Cryptography
 {
     /// <summary>

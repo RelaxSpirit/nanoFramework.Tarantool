@@ -245,6 +245,5 @@ namespace nanoFramework.Tarantool.Client
                 return null;
             }
         }
-
     }
 }

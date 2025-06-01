@@ -6,7 +6,9 @@ using nanoFramework.TestFramework;
 #endif
 using nanoFramework.Tarantool.Model;
 using nanoFramework.Tarantool.Model.Responses;
+#if NANOFRAMEWORK_1_0
 using nanoFramework.Tarantool.Tests.Mocks;
+#endif
 
 namespace nanoFramework.Tarantool.Tests
 {
