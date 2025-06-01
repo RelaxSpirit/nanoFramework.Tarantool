@@ -323,7 +323,7 @@ An example of the direct implementation of interaction with Tarantool in a micro
 
 ## Acknowledgements
 
-The initial version of the MessagePack library was coded by [Spirin Dmitriy](https://github.com/RelaxSpirit), who has kindly handed over the library to the .NET **nanoFramework** project.
+The initial version of the nanoFramework.Tarantool library was coded by [Spirin Dmitriy](https://github.com/RelaxSpirit), who has kindly handed over the library to the .NET **nanoFramework** project.
 
 ## Feedback and documentation
 
