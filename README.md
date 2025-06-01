@@ -11,6 +11,7 @@ This repository contains the client library for working with [Tarantool](https:/
 2. Transfer of complex calculations to more productive platforms (Tarantool).
 3. Transfer of various data for subsequent storage, processing and aggregation.
 4. Integration via Tarantool with various [relational databases](https://www.tarantool.io/en/doc/latest/reference/reference_rock/dbms/). Such as MySQL or PostgreSQL.
+5. Integration via Tarantool with various Kafka and other products [through supported extension modules](https://www.tarantool.io/en/doc/latest/platform/app/rocksref/).
 
 # Limitations
 
