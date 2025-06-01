@@ -18,6 +18,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WeatherTracker", "WeatherTracker", "{2C01738C-8E66-4ADF-99B1-00FF477623AA}"
+	ProjectSection(SolutionItems) = preProject
+		Samples\WeatherTracker\README.md = Samples\WeatherTracker\README.md
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NfWeatherTracker", "NfWeatherTracker", "{1F6A783A-6E9C-45C8-9FE0-53AF5ED9D4A1}"
 EndProject
@@ -29,7 +32,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherTracker", "Samples\W
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tarantool", "Tarantool", "{A3F5656A-277B-49F5-8B3F-8E055B38F3EE}"
 	ProjectSection(SolutionItems) = preProject
-		Dockerfile.txt = Dockerfile.txt
+		Samples\WeatherTracker\Tarantool\Dokerfile = Samples\WeatherTracker\Tarantool\Dokerfile
+		Samples\WeatherTracker\Tarantool\sample_app.lua = Samples\WeatherTracker\Tarantool\sample_app.lua
 	EndProjectSection
 EndProject
 Global

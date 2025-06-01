@@ -26,10 +26,8 @@ namespace nanoFramework.WeatherTracker
         /// </summary>
         public static void Main()
         {
-            ////const string Ssid = "YourSSID";
-            ////const string Password = "YourWifiPassword";
-            const string Ssid = "Keenetic-0711";
-            const string Password = "UBztXG8x";
+            const string Ssid = "YourSSID";
+            const string Password = "YourWifiPassword";
 
             //// ESP-WROOM-32
             Configuration.SetPinFunction(21, DeviceFunction.I2C1_DATA);
@@ -58,8 +56,7 @@ namespace nanoFramework.WeatherTracker
             {
                 // bus id on the MCU
                 const int BusId = 1;
-                ////const string TarantoolHostIp = "YourTarantoolIpAddress";
-                const string TarantoolHostIp = "192.168.1.116";
+                const string TarantoolHostIp = "YourTarantoolIpAddress";
 
                 var networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
 
@@ -91,7 +88,8 @@ namespace nanoFramework.WeatherTracker
                         {
                             var space = box.Schema["weatherTracker"];
 
-                            I2cConnectionSettings i2cSettings = new I2cConnectionSettings(BusId, Bmp280.SecondaryI2cAddress);
+                            //// The I2C address of your sensor may vary see Bmp280.SecondaryI2cAddress
+                            I2cConnectionSettings i2cSettings = new I2cConnectionSettings(BusId, Bmp280.DefaultI2cAddress);
                             I2cDevice i2cDevice = I2cDevice.Create(i2cSettings);
 
                             using (var i2CBmp280 = new Bmp280(i2cDevice))
