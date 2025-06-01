@@ -114,7 +114,7 @@ namespace nanoFramework.WeatherTracker
                                     finally
                                     {
                                         //// Measured every 10 minutes
-                                        Thread.Sleep(60 * 10 * 1000);
+                                        Thread.Sleep(TimeSpan.FromMinutes(10));
                                     }
                                 }
                             }
