@@ -5,7 +5,12 @@ The solution is based on the use of the BMP280 temperature and pressure sensor.
 # Usage
 Important: before launching the demo project, you must [deploy the Tarantool instance](https://www.tarantool.io/en/download/os-installation/docker-hub/), for example, in docker.
 You must also have an appropriate microcontroller and a properly connected BMP280 sensor:
+ESP-WROOM-32:
 ![photo_5323712844040107582_y](https://github.com/user-attachments/assets/89d1561d-9229-4e3e-a9df-18c364889b28)
+
+XIAO_ESP32C3:
+![image](https://github.com/user-attachments/assets/f7011556-f9c0-4102-9f18-f080fd2c4bf8)
+
 
 ## Create docker image
 To create a docker image and launch a container, you can use the [prepared files](https://github.com/RelaxSpirit/nanoFramework.Tarantool/tree/master/Samples/WeatherTracker/Tarantool) and run the necessary commands:
