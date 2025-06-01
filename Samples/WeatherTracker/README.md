@@ -24,7 +24,7 @@ const string Password = "YourWifiPassword";
 const string TarantoolHostIp = "YourTarantoolIpAddress";
 ```
 
-## Saples result
+## Samples result
 If all the steps were performed correctly, after launching the microcontroller, recordings with weather tracks should appear in the Tarantool database, which can be observed in the demo Web application:
 ![image](https://github.com/user-attachments/assets/7a420e5e-6bf2-4629-b8c7-939e79cf1dca)
 
