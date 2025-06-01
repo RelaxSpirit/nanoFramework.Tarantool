@@ -32,8 +32,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherTracker", "Samples\W
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tarantool", "Tarantool", "{A3F5656A-277B-49F5-8B3F-8E055B38F3EE}"
 	ProjectSection(SolutionItems) = preProject
-		Samples\WeatherTracker\Tarantool\Dokerfile = Samples\WeatherTracker\Tarantool\Dokerfile
 		Samples\WeatherTracker\Tarantool\sample_app.lua = Samples\WeatherTracker\Tarantool\sample_app.lua
+		Samples\WeatherTracker\Tarantool\Dockerfile. = Samples\WeatherTracker\Tarantool\Dockerfile.
 	EndProjectSection
 EndProject
 Global

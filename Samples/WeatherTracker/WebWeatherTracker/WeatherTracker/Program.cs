@@ -2,8 +2,7 @@ using nanoFramework.Tarantool;
 using nanoFramework.Tarantool.Client.Interfaces;
 using WeatherTracker.Components;
 
-//string TarantoolHostIp = "";
-const string TarantoolHostIp = "192.168.1.116";
+const string TarantoolHostIp = "YourTarantoolIpAddress";
 
 var builder = WebApplication.CreateBuilder(args);
 
