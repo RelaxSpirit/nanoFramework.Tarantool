@@ -3,7 +3,7 @@ This repository contains the project is for demonstration purposes only.
 The solution is based on the use of the BMP280 temperature and pressure sensor.
 
 # Usage
-Important: before launching the demo project, you must [deploy the Tarantool instance](https://www.tarantool.io/en/download/os-installation/docker-hub/), for example, in docker. You must also have an appropriate microcontroller and a properly connected BMP280 sensorБ ESP-WROOM-32 or XIAO_ESP32C3.
+Important: before launching the demo project, you must [deploy the Tarantool instance](https://www.tarantool.io/en/download/os-installation/docker-hub/), for example, in docker. You must also have an appropriate microcontroller and a properly connected BMP280 sensor on ESP-WROOM-32 or XIAO_ESP32C3.
 
 ![image](https://github.com/user-attachments/assets/89d1561d-9229-4e3e-a9df-18c364889b28)
 
