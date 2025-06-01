@@ -48,7 +48,7 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
                         if (tupleItemsCount == 5)
                         {
                             var op = stringConverter.Read(arraySegment);
-                            updateOperations[opIndex] = UpdateOperation.CreateStringSlice(
+                            updateOperations[opIndex] = UpdateOperation.CreateStringSplice(
                                 (int)(intConverter.Read(arraySegment) ?? throw ExceptionHelper.ActualValueIsNullReference()),
                                 (int)(intConverter.Read(arraySegment) ?? throw ExceptionHelper.ActualValueIsNullReference()),
                                 (int)(intConverter.Read(arraySegment) ?? throw ExceptionHelper.ActualValueIsNullReference()),

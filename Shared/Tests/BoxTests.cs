@@ -20,44 +20,6 @@ namespace nanoFramework.Tarantool.Tests
     [TestClass]
     public sealed class BoxTests
     {
-        ////[TestMethod]
-        ////public void TestMockNetworkStream()
-        ////{
-        ////    var co = GetClientOptions(true, true);
-        ////    Assert.IsNotNull(co);
-        ////    Assert.IsNotNull(co.GetNetworkStream);
-
-        ////    byte[] buff = new byte[512];
-        ////    using (TarantoolStreamMock st = (TarantoolStreamMock)co.GetNetworkStream(co))
-        ////    {
-        ////        int r = st.Read(buff, 0, buff.Length);
-        ////        Assert.AreEqual(128, r);
-
-        ////        using (var stream = new MemoryStream())
-        ////        {
-        ////            var requestHeader = new RequestHeader(CommandCode.Eval, new RequestId(1));
-        ////            stream.Seek(Constants.PacketSizeBufferSize, SeekOrigin.Begin);
-        ////            MessagePackSerializer.Serialize(requestHeader, stream);
-        ////            MessagePackSerializer.Serialize(new EvalRequest("return box.info", TarantoolTuple.Empty), stream);
-        ////            var totalLength = stream.Position - Constants.PacketSizeBufferSize;
-        ////            var packetLength = new PacketSize((uint)totalLength);
-        ////            stream.Seek(0, SeekOrigin.Begin);
-        ////            MessagePackSerializer.Serialize(packetLength, stream);
-        ////            stream.Seek(0, SeekOrigin.Begin);
-        ////            System.Diagnostics.Debug.WriteLine("Write request begin.....");
-        ////            st.Write(stream.ToArray(), 0, (int)stream.Length);
-        ////            System.Diagnostics.Debug.WriteLine("Request writing.");
-        ////        }
-        ////        System.Diagnostics.Debug.WriteLine("Flash begin.....");
-        ////        st.Flush();
-        ////        System.Diagnostics.Debug.WriteLine("Flushing.");
-
-        ////        System.Diagnostics.Debug.WriteLine("Read begin.....");
-        ////        r = st.Read(buff, 0, buff.Length);
-        ////        System.Diagnostics.Debug.WriteLine($"Reading {r} bytes.");
-        ////    }
-        ////}
-
         /// <summary>
         /// Test <see cref="Tarantool"/> box network connections.
         /// </summary>

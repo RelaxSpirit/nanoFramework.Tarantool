@@ -134,7 +134,7 @@ namespace nanoFramework.Tarantool.Tests
                
                 var testTuple = TarantoolTuple.Create(17, "BonJovi", 1983);
                 bool recordCreate = false;
-                space.Upsert(testTuple, new UpdateOperation[] { UpdateOperation.CreateStringSlice(1, 3, 0, " ") });           
+                space.Upsert(testTuple, new UpdateOperation[] { UpdateOperation.CreateStringSplice(1, 3, 0, " ") });           
                 try
                 {
                     recordCreate = true;
@@ -142,7 +142,7 @@ namespace nanoFramework.Tarantool.Tests
                     var upsertTuple = space.GetTuple(TarantoolTuple.Create(17), (TarantoolTupleType)testTuple.GetType());
                     Assert.AreEqual("BonJovi", upsertTuple[1].ToString());
 
-                    space.Upsert(testTuple, new UpdateOperation[] { UpdateOperation.CreateStringSlice(1, 3, 0, " ") });
+                    space.Upsert(testTuple, new UpdateOperation[] { UpdateOperation.CreateStringSplice(1, 3, 0, " ") });
 
                     upsertTuple = space.GetTuple(TarantoolTuple.Create(17), (TarantoolTupleType)testTuple.GetType());
 

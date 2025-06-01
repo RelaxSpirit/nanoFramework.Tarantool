@@ -499,7 +499,7 @@ namespace nanoFramework.Tarantool.Model.UpdateOperations
         /// <param name="offset">Offset to slice.</param>
         /// <param name="argument">Argument update operation.</param>
         /// <returns>New <see cref="UpdateOperation"/> instances.</returns>
-        public static StringSpliceOperation CreateStringSlice(int fieldNumber, int position, int offset, string argument)
+        public static StringSpliceOperation CreateStringSplice(int fieldNumber, int position, int offset, string argument)
         {
             return new StringSpliceOperation(fieldNumber, position, offset, argument);
         }
