@@ -9,12 +9,11 @@ using System;
 #endif
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using nanoFramework.Tarantool.Model;
 
 namespace nanoFramework.Tarantool.Dto
 {
     /// <summary>
-    /// The <see cref="Tarantool"/> tuple array type class
+    /// The <see cref="Tarantool"/> tuple array type class.
     /// </summary>
     internal class TarantoolTupleArrayType : Type
     {
@@ -32,8 +31,6 @@ namespace nanoFramework.Tarantool.Dto
             _elementType = elementType;
         }
 
-        public new static bool IsArray => true;
-
         public override Assembly Assembly => DefaultTarantoolTupleArrayType.Assembly;
 
         public override MemberTypes MemberType => DefaultTarantoolTupleArrayType.MemberType;
@@ -43,7 +40,10 @@ namespace nanoFramework.Tarantool.Dto
             get
             {
                 if (string.IsNullOrEmpty(_name))
+                {
                     InitializeName();
+                }
+
                 return _name;
             }
         }
@@ -66,6 +66,12 @@ namespace nanoFramework.Tarantool.Dto
 
         public override Type BaseType => DefaultTarantoolTupleArrayType.BaseType;
 
+        /// <summary>
+        /// Overrides base class method <see cref="Type.GetField(string, BindingFlags)"/>.
+        /// </summary>
+        /// <param name="name">Field name.</param>
+        /// <param name="bindingAttr">Binding attributes flags.</param>
+        /// <returns>Field info or <see langword="null"/>.</returns>
         public override FieldInfo GetField(string name, BindingFlags bindingAttr)
         {
             return DefaultTarantoolTupleArrayType.GetField(name, bindingAttr);
@@ -77,9 +83,13 @@ namespace nanoFramework.Tarantool.Dto
             return DefaultTarantoolTupleArrayType.GetCustomAttributes(inherit);
         }
 
+        /// <summary>
+        /// Overrides base class method <see cref="Type.GetElementType()"/>.
+        /// </summary>
+        /// <returns>Element type.</returns>
         public override Type GetElementType()
         {
-            return _elementType;////typeof(TarantoolTuple);
+            return _elementType;
         }
 
         public override FieldInfo[] GetFields(BindingFlags bindingAttr)
@@ -115,7 +125,10 @@ namespace nanoFramework.Tarantool.Dto
             get
             {
                 if (string.IsNullOrEmpty(_fullName))
+                {
                     InitializeFullName();
+                }
+
                 return _fullName;
             }
         }
@@ -136,21 +149,6 @@ namespace nanoFramework.Tarantool.Dto
         public override string? Namespace => DefaultTarantoolTupleArrayType.Namespace;
 
         public override Type UnderlyingSystemType => DefaultTarantoolTupleArrayType.UnderlyingSystemType;
-
-        protected override TypeAttributes GetAttributeFlagsImpl()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override ConstructorInfo? GetConstructorImpl(
-            BindingFlags bindingAttr, 
-            Binder? binder, 
-            CallingConventions callConvention, 
-            Type[] types,
-            ParameterModifier[]? modifiers)
-        {
-            throw new NotImplementedException();
-        }
 
         public override ConstructorInfo[] GetConstructors(BindingFlags bindingAttr)
         {
@@ -178,11 +176,6 @@ namespace nanoFramework.Tarantool.Dto
             return DefaultTarantoolTupleArrayType.GetMembers(bindingAttr);
         }
 
-        protected override MethodInfo? GetMethodImpl(string name, BindingFlags bindingAttr, Binder? binder, CallingConventions callConvention, Type[]? types, ParameterModifier[]? modifiers)
-        {
-            throw new NotImplementedException();
-        }
-
         public override Type? GetNestedType(string name, BindingFlags bindingAttr)
         {
             return DefaultTarantoolTupleArrayType.GetNestedType(name, bindingAttr);
@@ -198,45 +191,12 @@ namespace nanoFramework.Tarantool.Dto
             return DefaultTarantoolTupleArrayType.GetProperties(bindingAttr);
         }
 
-        protected override PropertyInfo? GetPropertyImpl(string name, BindingFlags bindingAttr, Binder? binder, Type? returnType, Type[]? types, ParameterModifier[]? modifiers)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override bool HasElementTypeImpl()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override object? InvokeMember(string name, BindingFlags invokeAttr, Binder? binder, object? target, object?[]? args, ParameterModifier[]? modifiers, CultureInfo? culture, string[]? namedParameters)
+#pragma warning disable CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
+        public override object? InvokeMember(string name, BindingFlags invokeAttr, Binder? binder, object? target, object?[] args, ParameterModifier[] modifiers, CultureInfo? culture, string[] namedParameters)
         {
             return DefaultTarantoolTupleArrayType.InvokeMember(name, invokeAttr, binder, target, args);
         }
-
-        protected override bool IsArrayImpl()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override bool IsByRefImpl()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override bool IsCOMObjectImpl()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override bool IsPointerImpl()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override bool IsPrimitiveImpl()
-        {
-            throw new NotImplementedException();
-        }
+#pragma warning restore CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
 
         public override object[] GetCustomAttributes(Type attributeType, bool inherit)
         {
@@ -246,6 +206,129 @@ namespace nanoFramework.Tarantool.Dto
         public override bool IsDefined(Type attributeType, bool inherit)
         {
             return DefaultTarantoolTupleArrayType.IsDefined(attributeType, inherit);
+        }
+
+        /// <summary>
+        /// Overrides base class method <see cref="Type.GetAttributeFlagsImpl()"/>.
+        /// </summary>
+        /// <returns><see cref="NotImplementedException"/>.</returns>
+        /// <exception cref="NotImplementedException">Not implemented.</exception>
+        protected override TypeAttributes GetAttributeFlagsImpl()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Overrides base class method <see cref="Type.GetConstructorImpl(BindingFlags, Binder?, CallingConventions, Type[], ParameterModifier[])"/>.
+        /// </summary>
+        /// <param name="bindingAttr">Binding attribute.</param>
+        /// <param name="binder">Binder.</param>
+        /// <param name="callConvention">Call convention.</param>
+        /// <param name="types">Types.</param>
+        /// <param name="modifiers">Modifiers.</param>
+        /// <returns><see cref="NotImplementedException"/>.</returns>
+        /// <exception cref="NotImplementedException">Not implemented.</exception>
+#pragma warning disable CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
+        protected override ConstructorInfo? GetConstructorImpl(BindingFlags bindingAttr, Binder? binder, CallingConventions callConvention, Type[] types, ParameterModifier[] modifiers)
+#pragma warning restore CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Overrides base class method <see cref="Type.GetMethodImpl(string, BindingFlags, Binder?, CallingConventions, Type[], ParameterModifier[])"/>.
+        /// </summary>
+        /// <param name="name">Name.</param>
+        /// <param name="bindingAttr">Binding attribute.</param>
+        /// <param name="binder">Binder.</param>
+        /// <param name="callConvention">Call convention.</param>
+        /// <param name="types">Types.</param>
+        /// <param name="modifiers">Modifiers.</param>
+        /// <returns><see cref="NotImplementedException"/>.</returns>
+        /// <exception cref="NotImplementedException">Not implemented.</exception>
+#pragma warning disable CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
+        protected override MethodInfo? GetMethodImpl(string name, BindingFlags bindingAttr, Binder? binder, CallingConventions callConvention, Type[] types, ParameterModifier[] modifiers)
+#pragma warning restore CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Overrides base class method <see cref="Type.GetPropertyImpl(string, BindingFlags, Binder?, Type?, Type[], ParameterModifier[])"/>.
+        /// </summary>
+        /// <param name="name">Name.</param>
+        /// <param name="bindingAttr">Binding attribute.</param>
+        /// <param name="binder">Binder.</param>
+        /// <param name="returnType">Return type.</param>
+        /// <param name="types">Types.</param>
+        /// <param name="modifiers">Modifiers.</param>
+        /// <returns><see cref="NotImplementedException"/>.</returns>
+        /// <exception cref="NotImplementedException">Not implemented.</exception>
+#pragma warning disable CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
+        protected override PropertyInfo? GetPropertyImpl(string name, BindingFlags bindingAttr, Binder? binder, Type? returnType, Type[] types, ParameterModifier[] modifiers)
+#pragma warning restore CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Overrides base class method <see cref="Type.HasElementTypeImpl()"/>.
+        /// </summary>
+        /// <returns><see cref="NotImplementedException"/>.</returns>
+        /// <exception cref="NotImplementedException">Not implemented.</exception>
+        protected override bool HasElementTypeImpl()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Overrides base class method <see cref="Type.IsArrayImpl()"/>.
+        /// </summary>
+        /// <returns><see cref="NotImplementedException"/>.</returns>
+        /// <exception cref="NotImplementedException">Not implemented.</exception>
+        protected override bool IsArrayImpl()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Overrides base class method <see cref="Type.IsByRefImpl()"/>.
+        /// </summary>
+        /// <returns><see cref="NotImplementedException"/>.</returns>
+        /// <exception cref="NotImplementedException">Not implemented.</exception>
+        protected override bool IsByRefImpl()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Overrides base class method <see cref="Type.IsCOMObjectImpl()"/>.
+        /// </summary>
+        /// <returns><see cref="NotImplementedException"/>.</returns>
+        /// <exception cref="NotImplementedException">Not implemented.</exception>
+        protected override bool IsCOMObjectImpl()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Overrides base class method <see cref="Type.IsPointerImpl()"/>.
+        /// </summary>
+        /// <returns><see cref="NotImplementedException"/>.</returns>
+        /// <exception cref="NotImplementedException">Not implemented.</exception>
+        protected override bool IsPointerImpl()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Overrides base class method <see cref="Type.IsPrimitiveImpl()"/>.
+        /// </summary>
+        /// <returns><see cref="NotImplementedException"/>.</returns>
+        /// <exception cref="NotImplementedException">Not implemented.</exception>
+        protected override bool IsPrimitiveImpl()
+        {
+            throw new NotImplementedException();
         }
 #endif
     }
