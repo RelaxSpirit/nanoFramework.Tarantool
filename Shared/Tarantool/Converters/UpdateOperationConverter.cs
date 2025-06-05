@@ -1,9 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-#if NANOFRAMEWORK_1_0
 using System;
-#endif
 using System.Diagnostics.CodeAnalysis;
 using nanoFramework.MessagePack;
 using nanoFramework.MessagePack.Converters;
@@ -23,7 +21,14 @@ namespace nanoFramework.Tarantool.Converters
 
             ConverterContext.GetConverter(typeof(string)).Write(value.OperationType, writer);
             ConverterContext.GetConverter(typeof(int)).Write(value.FieldNumber, writer);
-            ConverterContext.GetConverter(value.Argument.GetType()).Write(value.Argument, writer);
+            if (value.Argument != null)
+            {
+                ConverterContext.GetConverter(value.Argument.GetType()).Write(value.Argument, writer);
+            }
+            else
+            {
+                ConverterContext.NullConverter.Write(value.Argument, writer);
+            }
         }
 
 #nullable enable

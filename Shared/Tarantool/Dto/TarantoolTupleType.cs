@@ -1,11 +1,9 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
-
+using System;
 #if !NANOFRAMEWORK_1_0
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-#else
-using System;
 #endif
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -300,7 +298,7 @@ namespace nanoFramework.Tarantool.Dto
         /// <param name="name">Name.</param>
         /// <param name="ignoreCase">Ignore case flag.</param>
         /// <returns>Nullable type.</returns>
-        [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)]
+        ////[return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)]
         public override Type? GetInterface(string name, bool ignoreCase)
         {
             return DefaultTarantoolTupleType.GetInterface(name, ignoreCase);

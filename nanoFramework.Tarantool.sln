@@ -32,9 +32,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherTracker", "Samples\W
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tarantool", "Tarantool", "{A3F5656A-277B-49F5-8B3F-8E055B38F3EE}"
 	ProjectSection(SolutionItems) = preProject
+		Samples\WeatherTracker\Tarantool\Dockerfile = Samples\WeatherTracker\Tarantool\Dockerfile
 		Samples\WeatherTracker\Tarantool\sample_app.lua = Samples\WeatherTracker\Tarantool\sample_app.lua
-		Samples\WeatherTracker\Tarantool\Dockerfile. = Samples\WeatherTracker\Tarantool\Dockerfile.
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{74F27230-6E43-42AF-B54B-FF113BCC5312}"
+	ProjectSection(SolutionItems) = preProject
+		NFUnitTest\nano.runsettings = NFUnitTest\nano.runsettings
+		nanoFramework.Tarantool.nuspec = nanoFramework.Tarantool.nuspec
+		README.md = README.md
+		version.json = version.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{8F8E34E2-A5AE-469A-B501-64B0FFD7F5F9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,6 +87,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{479007E1-6D58-4A98-88D5-922341CA7521} = {8F8E34E2-A5AE-469A-B501-64B0FFD7F5F9}
+		{D0ADC230-6C4C-44A6-8A49-693EA49B900C} = {8F8E34E2-A5AE-469A-B501-64B0FFD7F5F9}
 		{2C01738C-8E66-4ADF-99B1-00FF477623AA} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{1F6A783A-6E9C-45C8-9FE0-53AF5ED9D4A1} = {2C01738C-8E66-4ADF-99B1-00FF477623AA}
 		{6A9E4C30-7617-48A4-8D4E-0E707E3387D4} = {1F6A783A-6E9C-45C8-9FE0-53AF5ED9D4A1}

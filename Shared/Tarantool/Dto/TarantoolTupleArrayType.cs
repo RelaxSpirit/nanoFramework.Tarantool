@@ -1,11 +1,9 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-#if !NANOFRAMEWORK_1_0
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-#else
 using System;
+#if !NANOFRAMEWORK_1_0
+using System.Globalization;
 #endif
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -165,7 +163,7 @@ namespace nanoFramework.Tarantool.Dto
             return DefaultTarantoolTupleArrayType.GetEvents(bindingAttr);
         }
 
-        [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)]
+        //// [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)]
         public override Type? GetInterface(string name, bool ignoreCase)
         {
             return DefaultTarantoolTupleArrayType.GetInterface(name, ignoreCase);

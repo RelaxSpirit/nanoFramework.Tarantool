@@ -1,11 +1,8 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-#if NANOFRAMEWORK_1_0
 using System;
-#endif
 using System.Collections;
-using nanoFramework.Tarantool.Client.Connections;
 using nanoFramework.Tarantool.Client.Interfaces;
 using nanoFramework.Tarantool.Dto;
 using nanoFramework.Tarantool.Helpers;
@@ -156,7 +153,7 @@ namespace nanoFramework.Tarantool.Client
         public DataResponse? Select(TarantoolTuple selectKey, TarantoolTupleType? tarantoolTupleType = null)
         {
             var selectRequest = new SelectRequest(Id, Schema.PrimaryIndexId, uint.MaxValue, 0, Iterator.Eq, selectKey);
-            return LogicalConnection?.SendRequest(selectRequest, TimeSpan.Zero, tarantoolTupleType != null ? TarantoolContext.Instance.GetTarantoolTupleArrayType(tarantoolTupleType) : tarantoolTupleType);
+            return LogicalConnection?.SendRequest(selectRequest, TimeSpan.Zero, tarantoolTupleType != null ? TarantoolContext.Instance.GetTarantoolTupleArrayType(tarantoolTupleType) : null);
         }
         
         public DataResponse? Replace(TarantoolTuple tuple, TarantoolTupleType? tarantoolTupleType = null)
@@ -168,7 +165,7 @@ namespace nanoFramework.Tarantool.Client
         public DataResponse? Update(TarantoolTuple key, UpdateOperation[] updateOperations, TarantoolTupleType? tarantoolTupleType = null)
         {
             var updateRequest = new UpdateRequest(Id, Schema.PrimaryIndexId, key, updateOperations);
-            return LogicalConnection?.SendRequest(updateRequest, TimeSpan.Zero, tarantoolTupleType != null ? TarantoolContext.Instance.GetTarantoolTupleArrayType(tarantoolTupleType) : tarantoolTupleType);
+            return LogicalConnection?.SendRequest(updateRequest, TimeSpan.Zero, tarantoolTupleType != null ? (Type)TarantoolContext.Instance.GetTarantoolTupleArrayType(tarantoolTupleType) : null);
         }
 
         public DataResponse? Delete(TarantoolTuple key, TarantoolTupleType? tarantoolTupleType = null)
@@ -226,7 +223,7 @@ namespace nanoFramework.Tarantool.Client
         private DataResponse? Get(TarantoolTuple key, TarantoolTupleType? tarantoolTupleType = null)
         {
             var selectRequest = new SelectRequest(Id, Schema.PrimaryIndexId, 1, 0, Iterator.Eq, key);
-            return LogicalConnection?.SendRequest(selectRequest, TimeSpan.Zero, tarantoolTupleType != null ? TarantoolContext.Instance.GetTarantoolTupleArrayType(tarantoolTupleType) : tarantoolTupleType);
+            return LogicalConnection?.SendRequest(selectRequest, TimeSpan.Zero, tarantoolTupleType != null ? (Type)TarantoolContext.Instance.GetTarantoolTupleArrayType(tarantoolTupleType) : null);
         }
 
 #nullable enable
