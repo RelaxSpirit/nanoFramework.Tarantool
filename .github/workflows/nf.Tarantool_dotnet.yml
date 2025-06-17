@@ -30,7 +30,7 @@ jobs:
 
     - name: Copy nanoFramework build files to msbuild location
       shell: pwsh
-      run: Copy-Item -Path "$tempDir\nf-extension\`$MSBuild\nanoFramework" -Destination C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild -Recurse
+      run: Copy-Item -Path "C:\Temp\nf-extension\`$MSBuild\nanoFramework" -Destination "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild"" -Recurse
 
     - name: Restore dependencies
       run: dotnet restore /p:BuildWithNetFrameworkHostedCompiler=true
