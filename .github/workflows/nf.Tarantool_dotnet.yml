@@ -20,8 +20,17 @@ jobs:
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v2
   
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+    - name: Download nanoFramework Build component
+      shell: pwsh
+      run: Invoke-WebRequest -Uri https://github.com/nanoframework/nf-Visual-Studio-extension/releases/download/v2022.12.1.49/nanoFramework.Tools.VS2022.Extension.vsix -OutFile C:\Temp\nanoFramework.Tools.VS2022.Extension.zip
+
+    - name: UnZip nanoFramework Build component
+      shell: pwsh
+      run: Expand-Archive -LiteralPath C:\Temp\nanoFramework.Tools.VS2022.Extension.zip -DestinationPath C:\Temp\nf-extension\
+
+    - name: Copy nanoFramework build files to msbuild location
+      shell: pwsh
+      run: Copy-Item -Path "$tempDir\nf-extension\`$MSBuild\nanoFramework" -Destination C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild -Recurse
 
     - name: Restore dependencies
       run: dotnet restore /p:BuildWithNetFrameworkHostedCompiler=true
