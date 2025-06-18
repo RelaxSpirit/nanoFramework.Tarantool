@@ -50,11 +50,9 @@ jobs:
       run: |
           nuget restore nanoFramework.Tarantool.sln -UseLockFile
           nuget update nanoFramework.Tarantool.sln
-      
-    #- name: Restore dependencies
-    #  run: dotnet restore /p:BuildWithNetFrameworkHostedCompiler=true
 
     - name: Build
       run: msbuild /p:Configuration=Release /p:Platform="Any CPU"
-    #- name: Test
-    #  run: dotnet test Net.Tarantool.Tests/Net.Tarantool.Tests.csproj --no-build --verbosity normal
+      
+    - name: Test
+      run: vstest.console.exe NFUnitTest\bin\Release\NFUnitTest.dll /Settings:NFUnitTest\nano.runsettings
