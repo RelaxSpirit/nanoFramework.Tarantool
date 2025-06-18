@@ -42,8 +42,10 @@ jobs:
             
     - uses: nuget/setup-nuget@v2
     
-    - name: Install StyleCop.MSBuild
-      run: dotnet add package StyleCop.MSBuild --version 6.2.0
+    - name: Restore nanoFramework NuGet packages
+      run: |
+          nuget restore nanoFramework.Tarantool.sln -UseLockFile
+          nuget update nanoFramework.Tarantool.sln
       
     - name: Restore dependencies
       run: dotnet restore /p:BuildWithNetFrameworkHostedCompiler=true
