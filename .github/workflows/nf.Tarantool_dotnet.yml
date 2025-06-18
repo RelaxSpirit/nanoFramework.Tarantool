@@ -53,6 +53,12 @@ jobs:
 
     - name: Build
       run: msbuild /p:Configuration=Release /p:Platform="Any CPU"
+
+    - name: nanoFramework Unit Tests
+    - uses: CCSWE-nanoFramework/vstest-nanoframework@v1
+      with:
+        runSettings: '.\NFUnitTest\nano.runsettings'
+        artifactName: 'unit_test_results'
       
-    - name: Test
-      run: vstest.console.exe NFUnitTest\bin\Release\NFUnitTest.dll /Settings:NFUnitTest\nano.runsettings
+    #- name: .NET Unit Tests
+    #  run: vstest.console.exe NFUnitTest\bin\Release\NFUnitTest.dll /Settings:NFUnitTest\nano.runsettings
