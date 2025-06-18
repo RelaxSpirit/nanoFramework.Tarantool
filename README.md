@@ -27,7 +27,6 @@ This repository contains the client library for working with [Tarantool](https:/
      4. Drop
      5. Rename
      6. BSize
-     7. Alter
  * Schema methods
      1. CreateSpace
  * Space methods
