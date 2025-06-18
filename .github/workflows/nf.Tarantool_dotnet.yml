@@ -35,7 +35,7 @@ jobs:
     - name: Cache nanoFramework NuGet packages
       uses: actions/cache@v4
       with:
-        path: ${{ github.workspace }}\packages
+        path: ~/.nuget/packages
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
         restore-keys: |
             ${{ runner.os }}-nuget-
