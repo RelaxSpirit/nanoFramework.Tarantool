@@ -39,6 +39,11 @@ jobs:
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
         restore-keys: |
             ${{ runner.os }}-nuget-
+            
+    - uses: nuget/setup-nuget@v2
+    
+    - name: Install StyleCop.MSBuild
+      run: dotnet add package StyleCop.MSBuild --version 6.2.0
       
     - name: Restore dependencies
       run: dotnet restore /p:BuildWithNetFrameworkHostedCompiler=true
