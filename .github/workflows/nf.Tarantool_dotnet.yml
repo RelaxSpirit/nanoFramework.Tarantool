@@ -64,7 +64,7 @@ jobs:
     #  run: vstest.console.exe NFUnitTest\bin\Release\NFUnitTest.dll /Settings:NFUnitTest\nano.runsettings
 
     - name: Generate a NuGet package
-      run: nuget pack nanoFramework.Tarantool.nuspec -properties version=${{env.NBGV_NuGetPackageVersion}};commit=${{env.NBGV_GitCommitId}}
+      run: nuget pack nanoFramework.Tarantool.nuspec -properties version="${{env.NBGV_NuGetPackageVersion}}";commit="${{env.NBGV_GitCommitId}}"
       
     - name: Push Package to NuGet.org
       run: dotnet nuget push *.nupkg -k ${{ secrets.NUGET_ORG_API_KEY }} -s https://api.nuget.org/v3/index.json
