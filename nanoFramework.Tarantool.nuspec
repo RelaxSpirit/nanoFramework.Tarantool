@@ -3,7 +3,7 @@
   <metadata>
     <id>nf.Tarantool</id>
     <title>nanoframework.Tarantool</title>
-    <version>1.0.0</version>
+    <version>$version$</version>
     <authors>Spirin Dmitriy</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <license type="file">LICENSE.md</license>
@@ -12,7 +12,7 @@
     <readme>docs\README.md</readme>
     <developmentDependency>false</developmentDependency>
     <projectUrl>https://github.com/RelaxSpirit/nanoFramework.Tarantool</projectUrl>
-    <repository type="git" url="https://github.com/RelaxSpirit/nanoFramework.Tarantool"/>
+    <repository type="git" url="https://github.com/RelaxSpirit/nanoFramework.Tarantool" commit="$commit$"/>
     <copyright>Copyright (c) .NET Foundation and Contributors</copyright>
     <description>This client library is designed to work with the Tarantool NoSQL database for .NET nanoFramework, as well as implements the possibility of using it in netstandard2.1, net8.0 and net9.0 projects.</description>
     <tags>tarantool nanoframework net netstandard2.1 net8.0 net9.0</tags>

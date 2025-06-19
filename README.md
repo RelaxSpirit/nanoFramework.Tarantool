@@ -2,6 +2,12 @@
 
 This repository contains the client library for working with [Tarantool](https://www.tarantool.io/en/) NoSQL database for .NET nanoFramework.
 
+## Build status
+
+| Component | Build Status | NuGet Package |
+|:-|---|---|
+| nanoFramework.Tarantool | [![Build Status](https://github.com/RelaxSpirit/nanoFramework.Tarantool/actions/workflows/nf.Tarantool_dotnet.yml/badge.svg?branch=main)](https://github.com/RelaxSpirit/nanoFramework.Tarantool/actions/) | [![NuGet](https://img.shields.io/nuget/v/nf.Tarantool.svg?label=NuGet&style=flat&logo=nuget)](https://www.nuget.org/packages/nf.Tarantool/) |
+
 # Key features
  -  Getting closer to the most complete [IProto](https://www.tarantool.io/en/doc/latest/reference/internals/box_protocol/) protocol coverage.
 

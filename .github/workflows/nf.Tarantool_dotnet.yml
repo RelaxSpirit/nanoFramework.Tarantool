@@ -6,8 +6,8 @@ name: build&test nf.Tarantool
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  # pull_request:
+  #  branches: [ "main" ]
 
 jobs:
   build:
@@ -62,3 +62,9 @@ jobs:
       
     # - name: .NET Unit Tests
     #  run: vstest.console.exe NFUnitTest\bin\Release\NFUnitTest.dll /Settings:NFUnitTest\nano.runsettings
+
+    - name: Generate a NuGet package
+      run: dotnet pack --no-build -c Release -o .
+      
+    - name: Push Package to NuGet.org
+      run: dotnet nuget push *.nupkg -k ${{ secrets.NUGET_ORG_API_KEY }} -s https://api.nuget.org/v3/index.json
