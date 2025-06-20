@@ -1,3 +1,4 @@
+[![NuGet](https://img.shields.io/nuget/dt/nf.Tarantool.svg?label=NuGet&style=flat&logo=nuget)](https://www.nuget.org/packages/nf.Tarantool/)
 # Welcome to the .NET nanoFramework nanoFramework.Tarantool repository
 
 This repository contains the client library for working with [Tarantool](https://www.tarantool.io/en/) NoSQL database for .NET nanoFramework.
