@@ -165,7 +165,7 @@ namespace nanoFramework.Tarantool.Client.Connections
 
             //// Debug.WriteLine($"Authentication request send: {authenticateRequest}");
 
-            SendRequestWithEmptyResponse(authenticateRequest, TimeSpan.Zero);
+            SendRequestWithEmptyResponse(authenticateRequest, Timeout.InfiniteTimeSpan);
         }
 
         private ArraySegment? SendRequestImpl(IRequest request, TimeSpan timeout)
@@ -198,6 +198,7 @@ namespace nanoFramework.Tarantool.Client.Connections
 
                 if (buffer == null || buffer.Length < 1)
                 {
+                    _responseReader.PopResponseCompletionSource(requestId);
                     throw new InvalidOperationException("broken buffer");
                 }
 
@@ -213,17 +214,18 @@ namespace nanoFramework.Tarantool.Client.Connections
             {
                 WaitHandle[] waitHandles = new[] { _exitEvent, responseCompletionSource.ResponseEvent };
 
-                if (timeout > TimeSpan.Zero)
+                if (timeout > Timeout.InfiniteTimeSpan)
                 {
                     var waitResult = WaitHandle.WaitAny(waitHandles, (int)(timeout.Ticks / TimeSpan.TicksPerMillisecond), false);
-                    if (waitResult < 0)
-                    {
-                        throw new TimeoutException();
-                    }
 
                     if (waitResult == 0)
                     {
                         return null;
+                    }
+
+                    if (waitResult == WaitHandle.WaitTimeout)
+                    {
+                        throw new TimeoutException($"Timeout at the end of the waiting time {timeout}");
                     }
                 }
                 else
@@ -232,6 +234,11 @@ namespace nanoFramework.Tarantool.Client.Connections
                     if (waitResult == 0)
                     {
                         return null;
+                    }
+
+                    if(waitResult == WaitHandle.WaitTimeout)
+                    {
+                        throw new TimeoutException($"Timeout at the end of the waiting time {TimeSpan.FromMilliseconds(_clientOptions.RequestTimeout)}");
                     }
                 }
 
