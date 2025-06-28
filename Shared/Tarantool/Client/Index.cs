@@ -1,8 +1,8 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using nanoFramework.Tarantool.Client.Interfaces;
 using nanoFramework.Tarantool.Dto;
 using nanoFramework.Tarantool.Helpers;
@@ -65,11 +65,11 @@ namespace nanoFramework.Tarantool.Client
 
             if (responseType != null)
             {
-                return LogicalConnection?.SendRequest(selectRequest, TimeSpan.Zero, TarantoolContext.Instance.GetTarantoolTupleArrayType(responseType));
+                return LogicalConnection?.SendRequest(selectRequest, Timeout.InfiniteTimeSpan, TarantoolContext.Instance.GetTarantoolTupleArrayType(responseType));
             }
             else
             {
-                return LogicalConnection?.SendRequest(selectRequest, TimeSpan.Zero, responseType);
+                return LogicalConnection?.SendRequest(selectRequest, Timeout.InfiniteTimeSpan, responseType);
             }
         }
 
@@ -79,11 +79,11 @@ namespace nanoFramework.Tarantool.Client
 
             if (responseType != null)
             {
-                return LogicalConnection?.SendRequest(deleteRequest, TimeSpan.Zero, TarantoolContext.Instance.GetTarantoolTupleArrayType(responseType));
+                return LogicalConnection?.SendRequest(deleteRequest, Timeout.InfiniteTimeSpan, TarantoolContext.Instance.GetTarantoolTupleArrayType(responseType));
             }
             else
             {
-                return LogicalConnection?.SendRequest(deleteRequest, TimeSpan.Zero, responseType);
+                return LogicalConnection?.SendRequest(deleteRequest, Timeout.InfiniteTimeSpan, responseType);
             }
         }
 
@@ -97,11 +97,11 @@ namespace nanoFramework.Tarantool.Client
 
             if (responseType != null)
             {
-                return LogicalConnection?.SendRequest(updateRequest, TimeSpan.Zero, TarantoolContext.Instance.GetTarantoolTupleArrayType(responseType));
+                return LogicalConnection?.SendRequest(updateRequest, Timeout.InfiniteTimeSpan, TarantoolContext.Instance.GetTarantoolTupleArrayType(responseType));
             }
             else
             {
-                return LogicalConnection?.SendRequest(updateRequest, TimeSpan.Zero, responseType);
+                return LogicalConnection?.SendRequest(updateRequest, Timeout.InfiniteTimeSpan, responseType);
             }
         }
 
@@ -163,11 +163,11 @@ namespace nanoFramework.Tarantool.Client
 
             if (responseType != null)
             {
-                return LogicalConnection?.SendRequest(selectPacket, TimeSpan.Zero, new TarantoolTupleArrayType(responseType));
+                return LogicalConnection?.SendRequest(selectPacket, Timeout.InfiniteTimeSpan, new TarantoolTupleArrayType(responseType));
             }
             else
             {
-                return LogicalConnection?.SendRequest(selectPacket, TimeSpan.Zero, responseType);
+                return LogicalConnection?.SendRequest(selectPacket, Timeout.InfiniteTimeSpan, responseType);
             }
         }
 
@@ -184,11 +184,11 @@ namespace nanoFramework.Tarantool.Client
 
             if (responseType != null)
             {
-                return LogicalConnection?.SendRequest(selectPacket, TimeSpan.Zero, new TarantoolTupleArrayType(responseType));
+                return LogicalConnection?.SendRequest(selectPacket, Timeout.InfiniteTimeSpan, new TarantoolTupleArrayType(responseType));
             }
             else
             {
-                return LogicalConnection?.SendRequest(selectPacket, TimeSpan.Zero, responseType);
+                return LogicalConnection?.SendRequest(selectPacket, Timeout.InfiniteTimeSpan, responseType);
             }
         }
     }

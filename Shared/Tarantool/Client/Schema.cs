@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections;
+using System.Threading;
 using nanoFramework.Tarantool.Client.Interfaces;
 using nanoFramework.Tarantool.Helpers;
 using nanoFramework.Tarantool.Model;
@@ -102,7 +103,7 @@ namespace nanoFramework.Tarantool.Client
         {
             var request = new SelectRequest(spaceId, PrimaryIndexId, uint.MaxValue, 0, iterator, TarantoolTuple.Create(id));
 
-            var response = _logicalConnection.SendRequest(request, TimeSpan.Zero, responseType);
+            var response = _logicalConnection.SendRequest(request, Timeout.InfiniteTimeSpan, responseType);
 
             if (response != null)
             {
@@ -119,7 +120,7 @@ namespace nanoFramework.Tarantool.Client
         {
             var request = new SelectRequest(VSpace, 2, 1, 0, Iterator.Eq, TarantoolTuple.Create(name));
 
-            var response = _logicalConnection.SendRequest(request, TimeSpan.Zero, typeof(Space[]));
+            var response = _logicalConnection.SendRequest(request, Timeout.InfiniteTimeSpan, typeof(Space[]));
 
             if (response != null && response.Data is Space[] spaces)
             {

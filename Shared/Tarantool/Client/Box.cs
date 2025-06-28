@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System;
+using System.Threading;
 using nanoFramework.Tarantool.Client.Connections;
 using nanoFramework.Tarantool.Client.Extensions;
 using nanoFramework.Tarantool.Client.Interfaces;
@@ -81,13 +82,13 @@ namespace nanoFramework.Tarantool.Client
         public DataResponse? Call(string functionName, TarantoolTuple parameters, Type? responseDataType)
         {
             var callRequest = new CallRequest(functionName, parameters);
-            return _logicalConnection.SendRequest(callRequest, TimeSpan.Zero, responseDataType);
+            return _logicalConnection.SendRequest(callRequest, Timeout.InfiniteTimeSpan, responseDataType);
         }
 
         public DataResponse? Eval(string expression, TarantoolTuple parameters, Type? responseDataType)
         {
             var evalRequest = new EvalRequest(expression, parameters);
-            return _logicalConnection.SendRequest(evalRequest, TimeSpan.Zero, responseDataType);
+            return _logicalConnection.SendRequest(evalRequest, Timeout.InfiniteTimeSpan, responseDataType);
         }
 
         public DataResponse? Eval(string expression, Type? responseDataType)
@@ -113,7 +114,7 @@ namespace nanoFramework.Tarantool.Client
                 }
             }
 
-            return _logicalConnection.SendRequest(new ExecuteSqlRequest(query, parameters), TimeSpan.Zero, responseDataType);
+            return _logicalConnection.SendRequest(new ExecuteSqlRequest(query, parameters), Timeout.InfiniteTimeSpan, responseDataType);
         }
 
         public void Dispose()
