@@ -246,18 +246,18 @@ namespace nanoFramework.Tarantool.Client.Connections
 
                 return arraySegment;
             }
-            catch (ArgumentException)
-            {
-                _responseReader.PopResponseCompletionSource(requestId);
-
-                //// Debug.WriteLine($"Response with requestId {requestId} failed, content:\n{buffer.ToReadableString()} ");
-                
-                throw;
-            }
             catch (TimeoutException)
             {
                 _responseReader.PopResponseCompletionSource(requestId);
                 PingsFailedByTimeoutCount++;
+                throw;
+            }
+            catch (Exception)
+            {
+                _responseReader.PopResponseCompletionSource(requestId);
+
+                //// Debug.WriteLine($"Response with requestId {requestId} failed, content:\n{buffer.ToReadableString()} ");
+
                 throw;
             }
         }
