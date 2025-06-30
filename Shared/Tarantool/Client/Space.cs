@@ -230,7 +230,7 @@ namespace nanoFramework.Tarantool.Client
 #nullable enable
         private Index? GetIndexInfo(string name)
         {
-            var request = new SelectRequest(Schema.VIndex, 1, 1, 0, Iterator.Eq, TarantoolTuple.Create(Id, name));
+            var request = new SelectRequest(Schema.VIndex, 2, 1, 0, Iterator.Eq, TarantoolTuple.Create(Id, name));
 
             var response = LogicalConnection?.SendRequest(request, Timeout.InfiniteTimeSpan, typeof(Index[]));
 
