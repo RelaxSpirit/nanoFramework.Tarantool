@@ -242,6 +242,31 @@ namespace nanoFramework.Tarantool
             return (TarantoolTupleType)tarantoolTupleType;
         }
 
+        /// <summary>
+        /// Create <see cref="Tarantool"/> tuple array type.
+        /// </summary>
+        /// <param name="arrayElementType"><see cref="Tarantool"/> tuple type.</param>
+        /// <returns>Instance of the <see cref="TarantoolTupleArrayType"/> class.</returns>
+        public TarantoolTupleArrayType GetTarantoolTupleArrayType(TarantoolTupleType arrayElementType)
+        {
+            var elementTypeFullName = arrayElementType.FullName;
+            var tarantoolTupleArrayType = _tarantoolTupleArrayTypeHashtable[elementTypeFullName];
+            if (tarantoolTupleArrayType == null)
+            {
+                lock (_tarantoolTupleArrayTypeHashtableLock)
+                {
+                    tarantoolTupleArrayType = _tarantoolTupleArrayTypeHashtable[elementTypeFullName];
+                    if (tarantoolTupleArrayType == null)
+                    {
+                        tarantoolTupleArrayType = new TarantoolTupleArrayType(arrayElementType);
+                        _tarantoolTupleArrayTypeHashtable[elementTypeFullName] = tarantoolTupleArrayType;
+                    }
+                }
+            }
+
+            return (TarantoolTupleArrayType)tarantoolTupleArrayType;
+        }
+
         internal IConverter GetTarantoolTupleConverter(TarantoolTuple tarantoolTuple)
         {
             var tupleType = tarantoolTuple.GetType();
@@ -287,26 +312,6 @@ namespace nanoFramework.Tarantool
             }
 
             return (IConverter)converter;
-        }
-
-        internal TarantoolTupleArrayType GetTarantoolTupleArrayType(TarantoolTupleType arrayElementType)
-        {
-            var elementTypeFullName = arrayElementType.FullName;
-            var tarantoolTupleArrayType = _tarantoolTupleArrayTypeHashtable[elementTypeFullName];
-            if (tarantoolTupleArrayType == null)
-            {
-                lock (_tarantoolTupleArrayTypeHashtableLock)
-                {
-                    tarantoolTupleArrayType = _tarantoolTupleArrayTypeHashtable[elementTypeFullName];
-                    if (tarantoolTupleArrayType == null)
-                    {
-                        tarantoolTupleArrayType = new TarantoolTupleArrayType(arrayElementType);
-                        _tarantoolTupleArrayTypeHashtable[elementTypeFullName] = tarantoolTupleArrayType;
-                    }
-                }
-            }
-
-            return (TarantoolTupleArrayType)tarantoolTupleArrayType;
         }
 
         private ResponsePacketConverter GetResponsePacketConverter(Type dataType)

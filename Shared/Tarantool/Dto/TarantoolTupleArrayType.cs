@@ -13,7 +13,7 @@ namespace nanoFramework.Tarantool.Dto
     /// <summary>
     /// The <see cref="Tarantool"/> tuple array type class.
     /// </summary>
-    internal class TarantoolTupleArrayType : Type
+    public class TarantoolTupleArrayType : Type
     {
         private static readonly Type DefaultTarantoolTupleArrayType = typeof(TarantoolTupleType[]);
         private readonly TarantoolTupleType _elementType;
@@ -29,10 +29,19 @@ namespace nanoFramework.Tarantool.Dto
             _elementType = elementType;
         }
 
+        /// <summary>
+        /// Gets override base class property <see cref="Type.Assembly"/>.
+        /// </summary>
         public override Assembly Assembly => DefaultTarantoolTupleArrayType.Assembly;
 
+        /// <summary>
+        /// Gets override base class property <see cref="MemberType"/>.
+        /// </summary>
         public override MemberTypes MemberType => DefaultTarantoolTupleArrayType.MemberType;
 
+        /// <summary>
+        /// Gets override base class property <see cref="Name"/>.
+        /// </summary>
         public override string Name
         {
             get
@@ -47,6 +56,9 @@ namespace nanoFramework.Tarantool.Dto
         }
 
 #if NANOFRAMEWORK_1_0
+        /// <summary>
+        /// Gets override base class property <see cref="Type.FullName"/>.
+        /// </summary>
         public override string FullName
         {
             get
@@ -60,8 +72,14 @@ namespace nanoFramework.Tarantool.Dto
             }
         }
 
+        /// <summary>
+        /// Gets override base class property <see cref="Type.AssemblyQualifiedName"/>.
+        /// </summary>
         public override string AssemblyQualifiedName => DefaultTarantoolTupleArrayType.AssemblyQualifiedName;
 
+        /// <summary>
+        /// Gets override base class property <see cref="Type.BaseType"/>.
+        /// </summary>
         public override Type BaseType => DefaultTarantoolTupleArrayType.BaseType;
 
         /// <summary>
@@ -75,7 +93,11 @@ namespace nanoFramework.Tarantool.Dto
             return DefaultTarantoolTupleArrayType.GetField(name, bindingAttr);
         }
 #endif
-
+        /// <summary>
+        /// Overrides base class method <see cref="GetCustomAttributes(bool)"/>.
+        /// </summary>
+        /// <param name="inherit">Inherit flag.</param>
+        /// <returns>Objects array.</returns>
         public override object[] GetCustomAttributes(bool inherit)
         {
             return DefaultTarantoolTupleArrayType.GetCustomAttributes(inherit);
@@ -90,16 +112,30 @@ namespace nanoFramework.Tarantool.Dto
             return _elementType;
         }
 
+        /// <summary>
+        /// Overrides base class method <see cref="GetFields(BindingFlags)"/>.
+        /// </summary>
+        /// <param name="bindingAttr">Binding attributes flags.</param>
+        /// <returns>Field info array.</returns>
         public override FieldInfo[] GetFields(BindingFlags bindingAttr)
         {
             return DefaultTarantoolTupleArrayType.GetFields(bindingAttr);
         }
 
+        /// <summary>
+        /// Overrides base class method <see cref="Type.GetInterfaces()"/>.
+        /// </summary>
+        /// <returns>Types array.</returns>
         public override Type[] GetInterfaces()
         {
             return DefaultTarantoolTupleArrayType.GetInterfaces();
         }
 
+        /// <summary>
+        /// Overrides base class method <see cref="GetMethods(BindingFlags)"/>.
+        /// </summary>
+        /// <param name="bindingAttr">Binding attributes flags.</param>
+        /// <returns>Method info array.</returns>
         public override MethodInfo[] GetMethods(BindingFlags bindingAttr)
         {
             return DefaultTarantoolTupleArrayType.GetMethods(bindingAttr);
@@ -118,6 +154,9 @@ namespace nanoFramework.Tarantool.Dto
         }
 
 #if !NANOFRAMEWORK_1_0
+        /// <summary>
+        /// Gets type full name.
+        /// </summary>
         public override string? FullName
         {
             get
@@ -131,64 +170,143 @@ namespace nanoFramework.Tarantool.Dto
             }
         }
 
+        /// <summary>
+        /// Gets assembly qualified name.
+        /// </summary>
+        public override string? AssemblyQualifiedName => DefaultTarantoolTupleArrayType.AssemblyQualifiedName;
+
+        /// <summary>
+        /// Gets base type.
+        /// </summary>
+        public override Type? BaseType => DefaultTarantoolTupleArrayType.BaseType;
+
+        /// <summary>
+        /// Gets guid.
+        /// </summary>
+        public override Guid GUID => DefaultTarantoolTupleArrayType.GUID;
+
+        /// <summary>
+        /// Gets module.
+        /// </summary>
+        public override Module Module => DefaultTarantoolTupleArrayType.Module;
+
+        /// <summary>
+        /// Gets namespace.
+        /// </summary>
+        public override string? Namespace => DefaultTarantoolTupleArrayType.Namespace;
+
+        /// <summary>
+        /// Gets underlying system type.
+        /// </summary>
+        public override Type UnderlyingSystemType => DefaultTarantoolTupleArrayType.UnderlyingSystemType;
+
+        /// <summary>
+        /// Overrides base class method <see cref="Type.GetField(string, BindingFlags)"/>.
+        /// </summary>
+        /// <param name="name">Name.</param>
+        /// <param name="bindingAttr">Binding attributes flags.</param>
+        /// <returns>Nullable field info.</returns>
         public override FieldInfo? GetField(string name, BindingFlags bindingAttr)
         {
             return DefaultTarantoolTupleArrayType.GetField(name, bindingAttr);
         }
 
-        public override string? AssemblyQualifiedName => DefaultTarantoolTupleArrayType.AssemblyQualifiedName;
-
-        public override Type? BaseType => DefaultTarantoolTupleArrayType.BaseType;
-
-        public override Guid GUID => DefaultTarantoolTupleArrayType.GUID;
-
-        public override Module Module => DefaultTarantoolTupleArrayType.Module;
-
-        public override string? Namespace => DefaultTarantoolTupleArrayType.Namespace;
-
-        public override Type UnderlyingSystemType => DefaultTarantoolTupleArrayType.UnderlyingSystemType;
-
+        /// <summary>
+        /// Overrides base class method <see cref="Type.GetConstructors(BindingFlags)"/>.
+        /// </summary>
+        /// <param name="bindingAttr">Binding attributes flags.</param>
+        /// <returns>Constructor info array.</returns>
         public override ConstructorInfo[] GetConstructors(BindingFlags bindingAttr)
         {
             return DefaultTarantoolTupleArrayType.GetConstructors(bindingAttr);
         }
 
+        /// <summary>
+        /// Overrides base class method <see cref="Type.GetEvent(string, BindingFlags)"/>.
+        /// </summary>
+        /// <param name="name">Name.</param>
+        /// <param name="bindingAttr">Binding attributes flags.</param>
+        /// <returns>Event info array.</returns>
         public override EventInfo? GetEvent(string name, BindingFlags bindingAttr)
         {
             return DefaultTarantoolTupleArrayType.GetEvent(name, bindingAttr);
         }
 
+        /// <summary>
+        /// Overrides base class method <see cref="Type.GetEvents(BindingFlags)"/>.
+        /// </summary>
+        /// <param name="bindingAttr">Binding attributes flags.</param>
+        /// <returns>Event info array.</returns>
         public override EventInfo[] GetEvents(BindingFlags bindingAttr)
         {
             return DefaultTarantoolTupleArrayType.GetEvents(bindingAttr);
         }
 
+        /// <summary>
+        /// Overrides base class method <see cref="Type.GetInterface(string, bool)"/>.
+        /// </summary>
+        /// <param name="name">Name.</param>
+        /// <param name="ignoreCase">Ignore case flag.</param>
+        /// <returns>Nullable type.</returns>
         //// [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)]
         public override Type? GetInterface(string name, bool ignoreCase)
         {
             return DefaultTarantoolTupleArrayType.GetInterface(name, ignoreCase);
         }
 
+        /// <summary>
+        /// Overrides base class method <see cref="Type.GetMembers(BindingFlags)"/>.
+        /// </summary>
+        /// <param name="bindingAttr">Binding attributes flags.</param>
+        /// <returns>Member info array.</returns>
         public override MemberInfo[] GetMembers(BindingFlags bindingAttr)
         {
             return DefaultTarantoolTupleArrayType.GetMembers(bindingAttr);
         }
 
+        /// <summary>
+        /// Overrides base class method <see cref="Type.GetNestedType(string, BindingFlags)"/>.
+        /// </summary>
+        /// <param name="name">Nmae.</param>
+        /// <param name="bindingAttr">Binding attributes flags.</param>
+        /// <returns>Nullable type.</returns>
         public override Type? GetNestedType(string name, BindingFlags bindingAttr)
         {
             return DefaultTarantoolTupleArrayType.GetNestedType(name, bindingAttr);
         }
 
+        /// <summary>
+        /// Overrides base class method <see cref="Type.GetNestedTypes(BindingFlags)"/>.
+        /// </summary>
+        /// <param name="bindingAttr">Binding attributes flags.</param>
+        /// <returns>Tapes array.</returns>
         public override Type[] GetNestedTypes(BindingFlags bindingAttr)
         {
             return DefaultTarantoolTupleArrayType.GetNestedTypes(bindingAttr);
         }
 
+        /// <summary>
+        /// Overrides base class method <see cref="Type.GetProperties(BindingFlags)"/>.
+        /// </summary>
+        /// <param name="bindingAttr">Binding attributes flags.</param>
+        /// <returns>Property info array.</returns>
         public override PropertyInfo[] GetProperties(BindingFlags bindingAttr)
         {
             return DefaultTarantoolTupleArrayType.GetProperties(bindingAttr);
         }
 
+        /// <summary>
+        /// Overrides base class method <see cref="Type.InvokeMember(string, BindingFlags, Binder?, object?, object?[]?, ParameterModifier[]?, CultureInfo?, string[]?)"/>.
+        /// </summary>
+        /// <param name="name">Name.</param>
+        /// <param name="invokeAttr">Invoke attribute.</param>
+        /// <param name="binder">Binder.</param>
+        /// <param name="target">Target.</param>
+        /// <param name="args">Args.</param>
+        /// <param name="modifiers">Modifiers.</param>
+        /// <param name="culture">Culture.</param>
+        /// <param name="namedParameters">Named parameters.</param>
+        /// <returns>Nullable object.</returns>
 #pragma warning disable CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
         public override object? InvokeMember(string name, BindingFlags invokeAttr, Binder? binder, object? target, object?[] args, ParameterModifier[] modifiers, CultureInfo? culture, string[] namedParameters)
         {
@@ -196,11 +314,23 @@ namespace nanoFramework.Tarantool.Dto
         }
 #pragma warning restore CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
 
+        /// <summary>
+        /// Overrides base class method <see cref="Type.GetCustomAttributes(Type, bool)"/>.
+        /// </summary>
+        /// <param name="attributeType">Attribute type.</param>
+        /// <param name="inherit">Inherit flag.</param>
+        /// <returns>Objects array.</returns>
         public override object[] GetCustomAttributes(Type attributeType, bool inherit)
         {
             return DefaultTarantoolTupleArrayType.GetCustomAttributes(attributeType, inherit);
         }
 
+        /// <summary>
+        /// Overrides base class method <see cref="Type.IsDefined(Type, bool)"/>.
+        /// </summary>
+        /// <param name="attributeType">Attribute type.</param>
+        /// <param name="inherit">Inherit.</param>
+        /// <returns><see langword="true"/> or <see langword="false"/>.</returns>
         public override bool IsDefined(Type attributeType, bool inherit)
         {
             return DefaultTarantoolTupleArrayType.IsDefined(attributeType, inherit);
