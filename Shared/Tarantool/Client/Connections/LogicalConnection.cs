@@ -236,7 +236,7 @@ namespace nanoFramework.Tarantool.Client.Connections
                         return null;
                     }
 
-                    if(waitResult == WaitHandle.WaitTimeout)
+                    if (waitResult == WaitHandle.WaitTimeout)
                     {
                         throw new TimeoutException($"Timeout at the end of the waiting time {TimeSpan.FromMilliseconds(_clientOptions.RequestTimeout)}");
                     }
