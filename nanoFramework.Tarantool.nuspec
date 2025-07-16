@@ -28,13 +28,13 @@
         <dependency id="nanoFramework.System.Threading" version="1.1.52" />
       </group>
       <group targetFramework="netstandard2.1">
-        <dependency id="nf.MessagePack.Net" version="1.1.12" />
+        <dependency id="nf.MessagePack.Net" version="1.1.14" />
       </group>
       <group targetFramework="net8.0">
-        <dependency id="nf.MessagePack.Net" version="1.1.12" />
+        <dependency id="nf.MessagePack.Net" version="1.1.14" />
       </group>
       <group targetFramework="net9.0">
-        <dependency id="nf.MessagePack.Net" version="1.1.12" />
+        <dependency id="nf.MessagePack.Net" version="1.1.14" />
       </group>
     </dependencies>
   </metadata>
