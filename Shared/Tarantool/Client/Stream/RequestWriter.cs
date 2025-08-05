@@ -65,16 +65,14 @@ namespace nanoFramework.Tarantool.Client.Stream
 #endif
             }
 
-            bool shouldSignal = false;
             lock (_writeLock)
             {
                 _requestQueue.Enqueue(request);
-                shouldSignal = _requestQueue.Count == 1;
-            }
 
-            if (shouldSignal)
-            {
-                _newRequestsAvailable.Set();
+                if (_requestQueue.Count == 1)
+                {
+                    _newRequestsAvailable.Set();
+                }
             }
         }
 
@@ -124,7 +122,6 @@ namespace nanoFramework.Tarantool.Client.Stream
 
         private void WriteRequests(int bufferLength, int limit)
         {
-            var count = 0;
             ulong length = 0;
             ArrayList list = new ArrayList();
 
@@ -138,9 +135,7 @@ namespace nanoFramework.Tarantool.Client.Stream
 
                     list.Add(request);
 
-                    count++;
-
-                    if ((limit > 0 && count > limit) || length > (ulong)bufferLength)
+                    if ((limit > 0 && list.Count > limit) || length > (ulong)bufferLength)
                     {
                         break;
                     }
@@ -149,16 +144,30 @@ namespace nanoFramework.Tarantool.Client.Stream
 
             if (list.Count > 0)
             {
-                // merge requests into one buffer
-                var result = new byte[length];
-                int position = 0;
-                foreach (byte[] r in list)
+                if (list.Count > 1)
                 {
-                    Array.Copy(r, 0, result, position, r.Length);
-                    position += r.Length;
-                }
+                    // merge requests into one buffer
+                    var result = new byte[length];
+                    int position = 0;
+                    foreach (byte[] r in list)
+                    {
+                        Array.Copy(r, 0, result, position, r.Length);
+                        position += r.Length;
+                    }
 
-                _physicalConnection.Write(result, 0, result.Length);
+                    _physicalConnection.Write(result, 0, result.Length);
+                }
+                else
+                {
+                    if (list[0] is byte[] result)
+                    {
+                        _physicalConnection.Write(result, 0, result.Length);
+                    }
+                    else
+                    {
+                        throw new NullReferenceException();
+                    }
+                }
             }
 
             lock (_writeLock)
