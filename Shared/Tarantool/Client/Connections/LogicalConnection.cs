@@ -214,7 +214,7 @@ namespace nanoFramework.Tarantool.Client.Connections
             {
                 WaitHandle[] waitHandles = new[] { _exitEvent, responseCompletionSource.ResponseEvent };
 
-                if (timeout > Timeout.InfiniteTimeSpan)
+                if (timeout != Timeout.InfiniteTimeSpan)
                 {
                     var waitResult = WaitHandle.WaitAny(waitHandles, (int)(timeout.Ticks / TimeSpan.TicksPerMillisecond), false);
 
