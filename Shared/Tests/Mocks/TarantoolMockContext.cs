@@ -16,6 +16,7 @@ namespace nanoFramework.Tarantool.Tests.Mocks
         internal const string TarantoolHelloString = "Tarantool 3.4.0 (Binary) 790215f6-c2d8-427c-9bb9-687f71c7e18a  \nVcSniiMfX+m5JH+a+WSffyJjkjHYO4Ku+d6afsjIT68=                    ";
         internal const string AdminUserName = "testuser";
         internal const string AdminPassword = "test_password";
+
         internal static readonly RequestHeaderConverterMock RequestHeaderConverter = new RequestHeaderConverterMock();
         internal static readonly AuthenticationPacketConverterMock AuthenticationPacketConverter = new AuthenticationPacketConverterMock();
         internal static readonly SelectPacketConverterMock SelectPacketConverter = new SelectPacketConverterMock();
@@ -36,11 +37,12 @@ namespace nanoFramework.Tarantool.Tests.Mocks
 
         private TarantoolMockContext()
         {
+            _ = TarantoolContext.Instance;
             ConverterContext.Add(typeof(BoxInfoMock), new BoxInfoMock.BoxInfoConverterMock());
-            ConverterContext.Add(typeof(SpaceMock), new SpaceConverterMock());
             ConverterContext.Add(typeof(SpaceMock[]), new SimpleArrayConverter(typeof(SpaceMock)));
             ConverterContext.Add(typeof(SpaceFieldMock), new SpaceFieldConverterMock());
             ConverterContext.Add(typeof(SpaceFieldMock[]), new SimpleArrayConverter(typeof(SpaceFieldMock)));
+            ConverterContext.Add(typeof(SpaceMock), new SpaceConverterMock());
             ConverterContext.Add(typeof(IndexPartMock), new IndexPartConverterMock());
             ConverterContext.Add(typeof(IndexPartMock[]), new SimpleArrayConverter(typeof(IndexPartMock)));
             ConverterContext.Add(typeof(IndexCreationOptionsMock), new IndexCreationOptionsConverterMock());
@@ -48,6 +50,7 @@ namespace nanoFramework.Tarantool.Tests.Mocks
             ConverterContext.Add(typeof(IndexMock[]), new SimpleArrayConverter(typeof(IndexMock)));
             ConverterContext.Add(typeof(DataResponseMock), new ResponsePacketConverterMock());
             ConverterContext.Add(typeof(EmptyResponseMock), new EmptyResponseConverterMock());
+            TupleConverter = ConverterContext.GetConverter(typeof(TarantoolTuple));
         }
 
         public static TarantoolMockContext Instanse
@@ -68,6 +71,8 @@ namespace nanoFramework.Tarantool.Tests.Mocks
                 return _instance;
             }
         }
+
+        internal IConverter TupleConverter { get; }
 
         internal TarantoolTuple[] TestTable { get; } = new TarantoolTuple[]
         {

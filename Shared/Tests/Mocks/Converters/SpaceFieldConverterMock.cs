@@ -5,11 +5,9 @@
 using System;
 #endif
 using System.Diagnostics.CodeAnalysis;
-using nanoFramework.MessagePack;
 using nanoFramework.MessagePack.Stream;
 using nanoFramework.Tarantool.Client.Interfaces;
 using nanoFramework.Tarantool.Converters;
-using nanoFramework.Tarantool.Model.Enums;
 
 namespace nanoFramework.Tarantool.Tests.Mocks.Converters
 {
@@ -21,8 +19,8 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
             if (value is ISpaceField spaceField)
             {
                 writer.WriteMapHeader(2);
-                var stringConverter = ConverterContext.GetConverter(typeof(string));
-                var typeConverter = ConverterContext.GetConverter(typeof(FieldType));
+                var stringConverter = TarantoolContext.Instance.StringConverter;
+                var typeConverter = TarantoolContext.Instance.FieldTypeConverter;
 
                 stringConverter.Write("name", writer);
                 stringConverter.Write(spaceField.Name, writer);

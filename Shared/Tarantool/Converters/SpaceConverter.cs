@@ -3,7 +3,6 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using nanoFramework.MessagePack;
 using nanoFramework.MessagePack.Converters;
 using nanoFramework.MessagePack.Stream;
 using nanoFramework.Tarantool.Client;
@@ -28,24 +27,19 @@ namespace nanoFramework.Tarantool.Converters
                 throw ExceptionHelper.InvalidArrayLength(Expected, actual);
             }
 
-            var uintConverter = ConverterContext.GetConverter(typeof(uint));
-            var stringConverter = ConverterContext.GetConverter(typeof(string));
-            var engineConverter = ConverterContext.GetConverter(typeof(StorageEngine));
-            var fieldConverter = ConverterContext.GetConverter(typeof(SpaceField[]));
-
-            var id = (uint)(uintConverter.Read(reader) ?? ExceptionHelper.ActualValueIsNullReference());
+            var id = (uint)(TarantoolContext.Instance.UintConverter.Read(reader) ?? ExceptionHelper.ActualValueIsNullReference());
 
             //// TODO Find what skipped number means
             reader.SkipToken();
 
-            var name = (string)(stringConverter.Read(reader) ?? ExceptionHelper.ActualValueIsNullReference());
-            var engine = (StorageEngine)(engineConverter.Read(reader) ?? ExceptionHelper.ActualValueIsNullReference());
-            var fieldCount = (uint)(uintConverter.Read(reader) ?? ExceptionHelper.ActualValueIsNullReference());
+            var name = (string)(TarantoolContext.Instance.StringConverter.Read(reader) ?? ExceptionHelper.ActualValueIsNullReference());
+            var engine = (StorageEngine)(TarantoolContext.Instance.StorageEngineConverter.Read(reader) ?? ExceptionHelper.ActualValueIsNullReference());
+            var fieldCount = (uint)(TarantoolContext.Instance.UintConverter.Read(reader) ?? ExceptionHelper.ActualValueIsNullReference());
 
             //// TODO Find what skipped dictionary used for
             reader.SkipToken();
 
-            var fields = (SpaceField[])(fieldConverter.Read(reader) ?? ExceptionHelper.ActualValueIsNullReference());
+            var fields = (SpaceField[])(TarantoolContext.Instance.SpaceFieldsConverter.Read(reader) ?? ExceptionHelper.ActualValueIsNullReference());
 
             return new Space(id, fieldCount, name, engine, fields);
         }

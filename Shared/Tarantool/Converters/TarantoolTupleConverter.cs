@@ -19,6 +19,7 @@ namespace nanoFramework.Tarantool.Converters
     internal class TarantoolTupleConverter : IConverter
     {
         private readonly Type[] _tupleItemTypes;
+        private readonly IConverter[] _converters = new IConverter[0];
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TarantoolTupleConverter"/> class.
@@ -37,6 +38,13 @@ namespace nanoFramework.Tarantool.Converters
         internal TarantoolTupleConverter(params Type[] tupleItemTypes)
         {
             _tupleItemTypes = tupleItemTypes;
+
+            _converters = new IConverter[_tupleItemTypes.Length];
+
+            for (int i = 0; i < _tupleItemTypes.Length; i++)
+            {
+                _converters[i] = ConverterContext.GetConverter(_tupleItemTypes[i]);
+            }
         }
 
 #nullable enable
@@ -117,7 +125,7 @@ namespace nanoFramework.Tarantool.Converters
 
                     for (int i = 0; i < actual; i++)
                     {
-                        var converter = ConverterContext.GetConverter(_tupleItemTypes[i]);
+                        var converter = _converters[i];
 
                         if (converter != null)
                         {
@@ -134,9 +142,7 @@ namespace nanoFramework.Tarantool.Converters
                 {
                     messagePackToken.Seek(0, SeekOrigin.Begin);
 
-                    var arrayListConverter = ConverterContext.GetConverter(typeof(ArrayList));
-
-                    var arrayList = (ArrayList)(arrayListConverter.Read(messagePackToken) ?? throw ExceptionHelper.ActualValueIsNullReference());
+                    var arrayList = (ArrayList)(TarantoolContext.Instance.ArrayListConverter.Read(messagePackToken) ?? throw ExceptionHelper.ActualValueIsNullReference());
 
                     tupleObjects = arrayList.ToArray();
                 }

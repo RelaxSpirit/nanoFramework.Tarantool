@@ -21,15 +21,13 @@ namespace nanoFramework.Tarantool.Converters
         {
             if (value != null)
             {
-                var keyConverter = ConverterContext.GetConverter(typeof(uint));
-                var stringConverter = ConverterContext.GetConverter(typeof(string));
                 var tupleConverter = TarantoolContext.Instance.GetTarantoolTupleConverter(value.Tuple);
                 writer.WriteMapHeader(2);
 
-                keyConverter.Write(Key.FunctionName, writer);
-                stringConverter.Write(value.FunctionName, writer);
+                TarantoolContext.Instance.UintConverter.Write(Key.FunctionName, writer);
+                TarantoolContext.Instance.StringConverter.Write(value.FunctionName, writer);
 
-                keyConverter.Write(Key.Tuple, writer);
+                TarantoolContext.Instance.UintConverter.Write(Key.Tuple, writer);
                 tupleConverter.Write(value.Tuple, writer);
             }
             else

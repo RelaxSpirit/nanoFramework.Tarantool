@@ -18,7 +18,8 @@ namespace nanoFramework.Tarantool.Converters
     {
         public static void Write(PacketSize value, IMessagePackWriter writer)
         {
-            writer.Write(DataTypes.UInt32);
+            writer.Write(DataTypes.UInt32); 
+
             unchecked
             {
                 writer.Write((byte)((value.Value >> 24) & 0xff));
@@ -36,12 +37,13 @@ namespace nanoFramework.Tarantool.Converters
                 throw ExceptionHelper.UnexpectedDataType(DataTypes.UInt32, type);
             }
 
-            var temp = (uint)(reader.ReadByte() << 24);
-            temp += (uint)reader.ReadByte() << 16;
-            temp += (uint)reader.ReadByte() << 8;
-            temp += reader.ReadByte();
+            byte[] bytes = new byte[4];
+            bytes[3] = reader.ReadByte();
+            bytes[2] = reader.ReadByte();
+            bytes[1] = reader.ReadByte();
+            bytes[0] = reader.ReadByte();
 
-            return new PacketSize(temp);
+            return new PacketSize(BitConverter.ToUInt32(bytes, 0));
         }
 #nullable enable
         public void Write(object? value, [NotNull] IMessagePackWriter writer)

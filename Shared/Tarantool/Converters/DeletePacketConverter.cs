@@ -3,7 +3,6 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using nanoFramework.MessagePack;
 using nanoFramework.MessagePack.Converters;
 using nanoFramework.MessagePack.Stream;
 using nanoFramework.Tarantool.Model.Enums;
@@ -21,18 +20,16 @@ namespace nanoFramework.Tarantool.Converters
         {
             if (value != null)
             {
-                var uintConverter = ConverterContext.GetConverter(typeof(uint));
-                var keyConverter = uintConverter;
                 var selectKeyConverter = TarantoolContext.Instance.GetTarantoolTupleConverter(value.Key);
                 writer.WriteMapHeader(3);
 
-                keyConverter.Write(Key.SpaceId, writer);
-                uintConverter.Write(value.SpaceId, writer);
+                TarantoolContext.Instance.UintConverter.Write(Key.SpaceId, writer);
+                TarantoolContext.Instance.UintConverter.Write(value.SpaceId, writer);
 
-                keyConverter.Write(Key.IndexId, writer);
-                uintConverter.Write(value.IndexId, writer);
+                TarantoolContext.Instance.UintConverter.Write(Key.IndexId, writer);
+                TarantoolContext.Instance.UintConverter.Write(value.IndexId, writer);
 
-                keyConverter.Write(Key.Key, writer);
+                TarantoolContext.Instance.UintConverter.Write(Key.Key, writer);
                 selectKeyConverter.Write(value.Key, writer);
             }
             else

@@ -3,7 +3,6 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using nanoFramework.MessagePack;
 using nanoFramework.MessagePack.Converters;
 using nanoFramework.MessagePack.Stream;
 using nanoFramework.Tarantool.Helpers;
@@ -19,9 +18,7 @@ namespace nanoFramework.Tarantool.Converters
 #nullable enable
         private static IndexType Read(IMessagePackReader reader)
         {
-            var stringConverter = ConverterContext.GetConverter(typeof(string));
-
-            var enumString = (string)(stringConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+            var enumString = (string)(TarantoolContext.Instance.StringConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
 
             switch (enumString)
             {
@@ -40,21 +37,19 @@ namespace nanoFramework.Tarantool.Converters
 
         private static void Write(IndexType value, [NotNull] IMessagePackWriter writer)
         {
-            var stringConverter = ConverterContext.GetConverter(typeof(string));
-
             switch (value)
             {
                 case IndexType.Bitset:
-                    stringConverter.Write("bitset", writer);
+                    TarantoolContext.Instance.StringConverter.Write("bitset", writer);
                     break;
                 case IndexType.RTree:
-                    stringConverter.Write("rtree", writer);
+                    TarantoolContext.Instance.StringConverter.Write("rtree", writer);
                     break;
                 case IndexType.Hash:
-                    stringConverter.Write("hash", writer);
+                    TarantoolContext.Instance.StringConverter.Write("hash", writer);
                     break;
                 case IndexType.Tree:
-                    stringConverter.Write("tree", writer);
+                    TarantoolContext.Instance.StringConverter.Write("tree", writer);
                     break;
                 default:
                     throw ExceptionHelper.EnumValueExpected(value.GetType(), value);

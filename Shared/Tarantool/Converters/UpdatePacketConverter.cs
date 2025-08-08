@@ -20,19 +20,16 @@ namespace nanoFramework.Tarantool.Converters
         {
             writer.WriteMapHeader(4);
 
-            var uintConverter = ConverterContext.GetConverter(typeof(uint));
-            var keyConverter = uintConverter;
+            TarantoolContext.Instance.UintConverter.Write(Key.SpaceId, writer);
+            TarantoolContext.Instance.UintConverter.Write(value.SpaceId, writer);
 
-            keyConverter.Write(Key.SpaceId, writer);
-            uintConverter.Write(value.SpaceId, writer);
+            TarantoolContext.Instance.UintConverter.Write(Key.IndexId, writer);
+            TarantoolContext.Instance.UintConverter.Write(value.IndexId, writer);
 
-            keyConverter.Write(Key.IndexId, writer);
-            uintConverter.Write(value.IndexId, writer);
-
-            keyConverter.Write(Key.Key, writer);
+            TarantoolContext.Instance.UintConverter.Write(Key.Key, writer);
             TarantoolContext.Instance.GetTarantoolTupleConverter(value.Key).Write(value.Key, writer);
 
-            keyConverter.Write(Key.Tuple, writer);
+            TarantoolContext.Instance.UintConverter.Write(Key.Tuple, writer);
             writer.WriteArrayHeader((uint)value.UpdateOperations.Length);
 
             foreach (var updateOperation in value.UpdateOperations)

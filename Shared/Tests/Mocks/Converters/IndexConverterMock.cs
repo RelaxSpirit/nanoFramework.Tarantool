@@ -6,6 +6,7 @@ using System;
 #endif
 using System.Diagnostics.CodeAnalysis;
 using nanoFramework.MessagePack;
+using nanoFramework.MessagePack.Converters;
 using nanoFramework.MessagePack.Stream;
 using nanoFramework.Tarantool.Client.Interfaces;
 using nanoFramework.Tarantool.Converters;
@@ -23,11 +24,11 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
             {
                 writer.WriteArrayHeader(6);
 
-                var uintConverter = ConverterContext.GetConverter(typeof(uint));
-                var stringConverter = ConverterContext.GetConverter(typeof(string));
-                var indexTypeConverter = ConverterContext.GetConverter(typeof(IndexType));
-                var optionsConverter = ConverterContext.GetConverter(typeof(IndexCreationOptionsMock));
-                var indexPartsConverter = ConverterContext.GetConverter(typeof(IndexPartMock[]));
+                var uintConverter = TarantoolContext.Instance.UintConverter;
+                var stringConverter = TarantoolContext.Instance.StringConverter;
+                IConverter indexTypeConverter = ConverterContext.GetConverter(typeof(IndexType));
+                IConverter optionsConverter = ConverterContext.GetConverter(typeof(IndexCreationOptionsMock));
+                IConverter indexPartsConverter = ConverterContext.GetConverter(typeof(IndexPartMock[]));
 
                 uintConverter.Write(index.SpaceId, writer);
                 uintConverter.Write(index.Id, writer);

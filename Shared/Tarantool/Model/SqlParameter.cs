@@ -55,7 +55,7 @@ namespace nanoFramework.Tarantool.Model
             if (_name != null)
             {
                 writer.WriteMapHeader(1u);
-                ConverterContext.GetConverter(typeof(string)).Write(_name, writer);
+                TarantoolContext.Instance.StringConverter.Write(_name, writer);
             }
 
             ConverterContext.GetConverter(_typeValue).Write(_value, writer);

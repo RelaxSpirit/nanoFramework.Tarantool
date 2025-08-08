@@ -3,7 +3,6 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using nanoFramework.MessagePack;
 using nanoFramework.MessagePack.Converters;
 using nanoFramework.MessagePack.Stream;
 using nanoFramework.Tarantool.Helpers;
@@ -19,17 +18,15 @@ namespace nanoFramework.Tarantool.Converters
         public static IndexCreationOptions Read(IMessagePackReader reader)
         {
             var optionsCount = reader.ReadMapLength();
-            var stringConverter = ConverterContext.GetConverter(typeof(string));
-            var boolConverter = ConverterContext.GetConverter(typeof(bool));
 
             var unique = false;
             for (int i = 0; i < optionsCount; i++)
             {
-                var key = stringConverter.Read(reader);
+                var key = TarantoolContext.Instance.StringConverter.Read(reader);
                 switch (key)
                 {
                     case "unique":
-                        unique = (bool)(boolConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+                        unique = (bool)(TarantoolContext.Instance.BoolConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
                         break;
                     default:
                         reader.SkipToken();

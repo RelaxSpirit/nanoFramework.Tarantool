@@ -14,22 +14,23 @@ namespace nanoFramework.Tarantool.Converters
     internal class TarantoolTupleArrayConverter : IConverter
     {
         private readonly TarantoolTupleType _tupleType;
+        private readonly TarantoolTupleConverter _tupleConverter;
 
         internal TarantoolTupleArrayConverter(TarantoolTupleType tupleType)
         {
             _tupleType = tupleType;
+            _tupleConverter = (TarantoolTupleConverter)TarantoolContext.Instance.GetTarantoolTupleConverter(_tupleType);
         }
 
 #nullable enable
         public object? Read([NotNull] IMessagePackReader reader)
         {
-            TarantoolTupleConverter tupleConverter = (TarantoolTupleConverter)TarantoolContext.Instance.GetTarantoolTupleConverter(_tupleType);
             var length = reader.ReadArrayLength();
             TarantoolTuple[] tarantoolTuples = new TarantoolTuple[length];
 
             for (int i = 0; i < length; i++)
             {
-                tarantoolTuples[i] = (TarantoolTuple)(tupleConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+                tarantoolTuples[i] = _tupleConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference();
             }
 
             return tarantoolTuples;

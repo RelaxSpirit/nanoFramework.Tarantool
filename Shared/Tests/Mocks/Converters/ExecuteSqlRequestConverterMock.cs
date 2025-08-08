@@ -3,10 +3,13 @@
 
 #if NANOFRAMEWORK_1_0
 using System;
-using System.IO;
-#endif
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
+#else
+using System.Collections;
+using System.Diagnostics.CodeAnalysis;
+#endif
 using nanoFramework.MessagePack;
 using nanoFramework.MessagePack.Dto;
 using nanoFramework.MessagePack.Stream;
@@ -30,9 +33,8 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
                 throw ExceptionHelper.InvalidMapLength(length, 3);
             }
 
-            var keyConverter = ConverterContext.GetConverter(typeof(uint));
-            var stringConverter = ConverterContext.GetConverter(typeof(string));
-            var tupleConverter = ConverterContext.GetConverter(typeof(TarantoolTuple));
+            var keyConverter = TarantoolContext.Instance.UintConverter;
+            var stringConverter = TarantoolContext.Instance.StringConverter;
 
             string? query = null;
             ArrayList queryParameters = new ArrayList();
@@ -114,13 +116,13 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
                 case DataTypes.Str8:
                 case DataTypes.Str16:
                 case DataTypes.Str32:
-                    return ConverterContext.GetConverter(typeof(string)).Read(reader);
+                    return TarantoolContext.Instance.StringConverter.Read(reader);
                 case DataTypes.UInt8:
                     return ConverterContext.GetConverter(typeof(byte)).Read(reader);
                 case DataTypes.UInt16:
                     return ConverterContext.GetConverter(typeof(ushort)).Read(reader);
                 case DataTypes.UInt32:
-                    return ConverterContext.GetConverter(typeof(uint)).Read(reader);
+                    return TarantoolContext.Instance.UintConverter.Read(reader);
                 case DataTypes.UInt64:
                     return ConverterContext.GetConverter(typeof(ulong)).Read(reader);
                 case DataTypes.Int8:
@@ -150,7 +152,7 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
         {
             if (IndexPartConverter.GetHighBits(type, 3) == IndexPartConverter.GetHighBits(DataTypes.FixStr, 3))
             {
-                return ConverterContext.GetConverter(typeof(string)).Read(reader);
+                return TarantoolContext.Instance.StringConverter.Read(reader);
             }
 
             if (IndexPartConverter.GetHighBits(type, 4) == IndexPartConverter.GetHighBits(DataTypes.FixArray, 4))

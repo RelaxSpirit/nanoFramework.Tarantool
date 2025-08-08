@@ -199,9 +199,8 @@ namespace nanoFramework.Tarantool.Client.Stream
             }
         }
 
-        private void MatchResult(byte[] result)
+        private void MatchResult(ArraySegment arraySegment)
         {
-            ArraySegment arraySegment = new ArraySegment(result, 0, result.Length);
             var header = GetResponseHeader(arraySegment);
             if (header != null)
             {
@@ -211,7 +210,7 @@ namespace nanoFramework.Tarantool.Client.Stream
                 {
                     if (header.Code != CommandCode.Ping)
                     {
-                        LogUnMatchedResponse(result);
+                        LogUnMatchedResponse((byte[])arraySegment);
                     }
                 }
                 else
@@ -229,7 +228,7 @@ namespace nanoFramework.Tarantool.Client.Stream
             }
             else
             {
-                LogUnMatchedResponse(result);
+                LogUnMatchedResponse((byte[])arraySegment);
             }
         }
 

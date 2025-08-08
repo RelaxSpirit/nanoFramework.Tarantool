@@ -16,7 +16,7 @@ namespace nanoFramework.Tarantool.Converters
 #nullable enable
         public object? Read([NotNull] IMessagePackReader reader)
         {
-            return (ulong)(ConverterContext.GetConverter(typeof(ulong)).Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+            return (ulong)(TarantoolContext.Instance.UlongConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
         }
 
         public void Write(object? value, [NotNull] IMessagePackWriter writer)

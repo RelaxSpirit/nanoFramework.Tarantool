@@ -3,7 +3,6 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using nanoFramework.MessagePack;
 using nanoFramework.MessagePack.Converters;
 using nanoFramework.MessagePack.Stream;
 using nanoFramework.Tarantool.Model.UpdateOperations;
@@ -19,14 +18,11 @@ namespace nanoFramework.Tarantool.Converters
         {
             writer.WriteArrayHeader(5);
 
-            var stringConverter = ConverterContext.GetConverter(typeof(string));
-            var intConverter = ConverterContext.GetConverter(typeof(int));
-
-            stringConverter.Write(value.OperationType, writer);
-            intConverter.Write(value.FieldNumber, writer);
-            intConverter.Write(value.Position, writer);
-            intConverter.Write(value.Offset, writer);
-            stringConverter.Write(value.Argument, writer);
+            TarantoolContext.Instance.StringConverter.Write(value.OperationType, writer);
+            TarantoolContext.Instance.IntConverter.Write(value.FieldNumber, writer);
+            TarantoolContext.Instance.IntConverter.Write(value.Position, writer);
+            TarantoolContext.Instance.IntConverter.Write(value.Offset, writer);
+            TarantoolContext.Instance.StringConverter.Write(value.Argument, writer);
         }
 
 #nullable enable 

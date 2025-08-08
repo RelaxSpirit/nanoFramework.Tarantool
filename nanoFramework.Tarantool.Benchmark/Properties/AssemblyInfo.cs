@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("nanoFramework Tarantool")]
+[assembly: AssemblyTitle("nanoFramework Tarantool Benchmark")]
 [assembly: AssemblyCompany("nanoFramework Contributors")]
 [assembly: AssemblyCopyright("Copyright (c) .NET Foundation and Contributors")]
 
@@ -16,6 +16,3 @@ using System.Runtime.InteropServices;
 // to COM components.  If you need to access a type in this assembly from 
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
-
-[assembly: InternalsVisibleTo("NFUnitTest")]
-[assembly: InternalsVisibleTo("nanoFramework.Tarantool.Benchmark")]

@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics.CodeAnalysis;
-using nanoFramework.MessagePack;
 using nanoFramework.MessagePack.Dto;
 using nanoFramework.MessagePack.Stream;
 using nanoFramework.Tarantool.Converters;
@@ -20,8 +19,8 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
         {
             var updateOperationsCount = reader.ReadArrayLength();
             UpdateOperation[] updateOperations = new UpdateOperation[updateOperationsCount];
-            var stringConverter = ConverterContext.GetConverter(typeof(string));
-            var intConverter = ConverterContext.GetConverter(typeof(int));
+            var stringConverter = TarantoolContext.Instance.StringConverter;
+            var intConverter = TarantoolContext.Instance.IntConverter;
             for (int opIndex = 0; opIndex < updateOperationsCount; opIndex++)
             {
                 ArraySegment arraySegment = reader.ReadToken() ?? throw ExceptionHelper.ActualValueIsNullReference();
@@ -75,8 +74,7 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
                 throw ExceptionHelper.InvalidMapLength(length, 4);
             }
 
-            var keyConverter = ConverterContext.GetConverter(typeof(uint));
-            var tupleConverter = ConverterContext.GetConverter(typeof(TarantoolTuple));
+            var keyConverter = TarantoolContext.Instance.UintConverter;
 
             uint spaceId = uint.MaxValue;
             uint indexId = uint.MaxValue;
@@ -95,7 +93,7 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
                         indexId = (uint)(keyConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
                         break;
                     case Key.Key:
-                        tuple = (TarantoolTuple)(tupleConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+                        tuple = (TarantoolTuple)(TarantoolMockContext.Instanse.TupleConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
                         break;
                     case Key.Tuple:
                         updateOperations = GetUpdateOperations(reader);

@@ -3,7 +3,6 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using nanoFramework.MessagePack;
 using nanoFramework.MessagePack.Converters;
 using nanoFramework.MessagePack.Stream;
 using nanoFramework.Tarantool.Helpers;
@@ -22,21 +21,19 @@ namespace nanoFramework.Tarantool.Converters
         {
             var dictLength = reader.ReadMapLength();
 
-            var stringConverter = ConverterContext.GetConverter(typeof(string));
-            var typeConverter = ConverterContext.GetConverter(typeof(FieldType));
             string? name = null;
             var type = FieldType._;
 
             for (int i = 0; i < dictLength; i++)
             {
-                var key = (string)(stringConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+                var key = (string)(TarantoolContext.Instance.StringConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
                 switch (key)
                 {
                     case "name":
-                        name = (string?)stringConverter.Read(reader);
+                        name = (string?)TarantoolContext.Instance.StringConverter.Read(reader);
                         break;
                     case "type":
-                        type = (FieldType)(typeConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+                        type = (FieldType)(TarantoolContext.Instance.FieldTypeConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
                         break;
                     default:
                         reader.SkipToken();

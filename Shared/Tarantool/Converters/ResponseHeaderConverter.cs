@@ -3,7 +3,6 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using nanoFramework.MessagePack;
 using nanoFramework.MessagePack.Converters;
 using nanoFramework.MessagePack.Stream;
 using nanoFramework.Tarantool.Helpers;
@@ -21,13 +20,13 @@ namespace nanoFramework.Tarantool.Converters
         private static void Write(ResponseHeader value, IMessagePackWriter writer)
         {
             writer.WriteMapHeader(3u);
-            var uintConverter = ConverterContext.GetConverter(typeof(uint));
-            uintConverter.Write(Key.Code, writer);
-            uintConverter.Write((uint)value.Code, writer);
-            uintConverter.Write(Key.Sync, writer);
-            ConverterContext.GetConverter(typeof(RequestId)).Write(value.RequestId, writer);
-            uintConverter.Write(Key.SchemaId, writer);
-            ConverterContext.GetConverter(typeof(ulong)).Write(value.SchemaId, writer);
+
+            TarantoolContext.Instance.UintConverter.Write(Key.Code, writer);
+            TarantoolContext.Instance.UintConverter.Write((uint)value.Code, writer);
+            TarantoolContext.Instance.UintConverter.Write(Key.Sync, writer);
+            TarantoolContext.Instance.RequestIdConverter.Write(value.RequestId, writer);
+            TarantoolContext.Instance.UintConverter.Write(Key.SchemaId, writer);
+            TarantoolContext.Instance.UlongConverter.Write(value.SchemaId, writer);
         }
 
 #nullable enable
@@ -44,25 +43,20 @@ namespace nanoFramework.Tarantool.Converters
             RequestId? sync = null;
             ulong schemaId = 0;
 
-            var keyConverter = ConverterContext.GetConverter(typeof(uint));
-            var ulongConverter = ConverterContext.GetConverter(typeof(ulong));
-            var codeConverter = keyConverter;
-            var requestIdConverter = ConverterContext.GetConverter(typeof(RequestId));
-
             for (int i = 0; i < length; i++)
             {
-                var key = (Key)(keyConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+                var key = (Key)(TarantoolContext.Instance.UintConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
 
                 switch (key)
                 {
                     case Key.Code:
-                        code = (CommandCode)(codeConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+                        code = (CommandCode)(TarantoolContext.Instance.UintConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
                         break;
                     case Key.Sync:
-                        sync = (RequestId?)requestIdConverter.Read(reader);
+                        sync = (RequestId?)TarantoolContext.Instance.RequestIdConverter.Read(reader);
                         break;
                     case Key.SchemaId:
-                        schemaId = (ulong)(ulongConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+                        schemaId = (ulong)(TarantoolContext.Instance.UlongConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
             break;
                     default:
                         reader.SkipToken();

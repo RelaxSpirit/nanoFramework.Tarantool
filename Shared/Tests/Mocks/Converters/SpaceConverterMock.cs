@@ -6,10 +6,9 @@ using System;
 #endif
 using System.Diagnostics.CodeAnalysis;
 using nanoFramework.MessagePack;
+using nanoFramework.MessagePack.Converters;
 using nanoFramework.MessagePack.Stream;
-using nanoFramework.Tarantool.Client;
 using nanoFramework.Tarantool.Converters;
-using nanoFramework.Tarantool.Model.Enums;
 using nanoFramework.Tarantool.Tests.Mocks.Data;
 
 namespace nanoFramework.Tarantool.Tests.Mocks.Converters
@@ -23,12 +22,12 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
             {
                 writer.WriteArrayHeader(7);
 
-                var uintConverter = ConverterContext.GetConverter(typeof(uint));
-                var stringConverter = ConverterContext.GetConverter(typeof(string));
-                var engineConverter = ConverterContext.GetConverter(typeof(StorageEngine));
-                var fieldConverter = ConverterContext.GetConverter(typeof(SpaceFieldMock[]));
+                var uintConverter = TarantoolContext.Instance.UintConverter;
+                var stringConverter = TarantoolContext.Instance.StringConverter;
+                var engineConverter = TarantoolContext.Instance.StorageEngineConverter;
+                IConverter fieldConverter = ConverterContext.GetConverter(typeof(SpaceFieldMock[]));
 
-                uintConverter.Write(space.Id, writer);
+        uintConverter.Write(space.Id, writer);
                 ConverterContext.NullConverter.Write(null, writer);
                 stringConverter.Write(space.Name, writer);
                 engineConverter.Write(space.Engine, writer);

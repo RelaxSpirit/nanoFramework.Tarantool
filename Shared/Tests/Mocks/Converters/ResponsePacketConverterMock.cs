@@ -53,7 +53,7 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
                     }
                 }
 
-                var keyConverter = ConverterContext.GetConverter(typeof(uint));
+                var keyConverter = TarantoolContext.Instance.UintConverter;
 
                 if (dataResponse.TestData != null)
                 {
@@ -87,7 +87,7 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
         {
             writer.WriteArrayHeader((uint)fieldMetadata.Length);
 
-            var stringConverter = ConverterContext.GetConverter(typeof(string));
+            var stringConverter = TarantoolContext.Instance.StringConverter;
 
             foreach (var metaData in fieldMetadata)
             {

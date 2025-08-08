@@ -38,7 +38,7 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Data
                     writer.WriteArrayHeader(1);
                     writer.WriteMapHeader(6);
 
-                    var stringConverter = ConverterContext.GetConverter(typeof(string));
+                    var stringConverter = TarantoolContext.Instance.StringConverter;
                     var longConverter = ConverterContext.GetConverter(typeof(long));
                     var boolConverter = ConverterContext.GetConverter(typeof(bool));
 
