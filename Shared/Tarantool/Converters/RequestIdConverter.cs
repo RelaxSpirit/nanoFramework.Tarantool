@@ -20,28 +20,23 @@ namespace nanoFramework.Tarantool.Converters
         {
             writer.Write(DataTypes.UInt64);
 
-            var binary = BitConverter.GetBytes(value.Value);
-
-            byte[] bytes;
             if (BitConverter.IsLittleEndian)
             {
-                bytes = new[]
+                unchecked
                 {
-                    binary[7],
-                    binary[6],
-                    binary[5],
-                    binary[4],
-                    binary[3],
-                    binary[2],
-                    binary[1],
-                    binary[0]
-                };
-
-                writer.Write(bytes);
+                    writer.Write((byte)((value.Value >> 56) & 0xff));
+                    writer.Write((byte)((value.Value >> 48) & 0xff));
+                    writer.Write((byte)((value.Value >> 40) & 0xff));
+                    writer.Write((byte)((value.Value >> 32) & 0xff));
+                    writer.Write((byte)((value.Value >> 24) & 0xff));
+                    writer.Write((byte)((value.Value >> 16) & 0xff));
+                    writer.Write((byte)((value.Value >> 8) & 0xff));
+                    writer.Write((byte)(value.Value & 0xff));
+                }
             }
             else
             {
-                writer.Write(binary);
+                writer.Write(BitConverter.GetBytes(value.Value));
             }
         }
 
@@ -53,25 +48,24 @@ namespace nanoFramework.Tarantool.Converters
                 throw ExceptionHelper.UnexpectedDataType(DataTypes.UInt64, type);
             }
 
-            var binary = (byte[])reader.ReadBytes(8);
             if (BitConverter.IsLittleEndian)
             {
-                byte[] bytes = new[]
-                {
-                    binary[7],
-                    binary[6],
-                    binary[5],
-                    binary[4],
-                    binary[3],
-                    binary[2],
-                    binary[1],
-                    binary[0]
-                };
+                byte[] bytes = new byte[8];
+
+                bytes[7] = reader.ReadByte();
+                bytes[6] = reader.ReadByte();
+                bytes[5] = reader.ReadByte();
+                bytes[4] = reader.ReadByte();
+                bytes[3] = reader.ReadByte();
+                bytes[2] = reader.ReadByte();
+                bytes[1] = reader.ReadByte();
+                bytes[0] = reader.ReadByte();
+
                 return new RequestId(BitConverter.ToUInt64(bytes, 0));
             }
             else
             {
-                return new RequestId(BitConverter.ToUInt64(binary, 0));
+                return new RequestId(BitConverter.ToUInt64((byte[])reader.ReadBytes(8), 0));
             }
         }
 

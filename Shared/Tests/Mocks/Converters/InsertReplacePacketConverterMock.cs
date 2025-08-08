@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics.CodeAnalysis;
-using nanoFramework.MessagePack;
 using nanoFramework.MessagePack.Stream;
 using nanoFramework.Tarantool.Converters;
 using nanoFramework.Tarantool.Helpers;
@@ -31,9 +30,8 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
                 throw ExceptionHelper.InvalidMapLength(length, 2);
             }
 
-            var uintConverter = ConverterContext.GetConverter(typeof(uint));
+            var uintConverter = TarantoolContext.Instance.UintConverter;
             var keyConverter = uintConverter;
-            var tupleConverter = ConverterContext.GetConverter(typeof(TarantoolTuple));
 
             uint spaceId = uint.MaxValue;
             TarantoolTuple? tuple = null;
@@ -47,7 +45,7 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
                         spaceId = (uint)(uintConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
                         break;
                     case Key.Tuple:
-                        tuple = (TarantoolTuple)(tupleConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+                        tuple = (TarantoolTuple)(TarantoolMockContext.Instanse.TupleConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
                         break;
                 }
             }

@@ -19,8 +19,8 @@ namespace nanoFramework.Tarantool.Converters
         {
             writer.WriteArrayHeader(3);
 
-            ConverterContext.GetConverter(typeof(string)).Write(value.OperationType, writer);
-            ConverterContext.GetConverter(typeof(int)).Write(value.FieldNumber, writer);
+            TarantoolContext.Instance.StringConverter.Write(value.OperationType, writer);
+            TarantoolContext.Instance.IntConverter.Write(value.FieldNumber, writer);
             if (value.Argument != null)
             {
                 ConverterContext.GetConverter(value.Argument.GetType()).Write(value.Argument, writer);

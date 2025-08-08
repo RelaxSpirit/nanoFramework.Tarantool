@@ -37,35 +37,31 @@ namespace nanoFramework.Tarantool.Model
                     return null;
                 }
 
-                var stringConverter = ConverterContext.GetConverter(typeof(string));
-                var longConverter = ConverterContext.GetConverter(typeof(long));
-                var boolConverter = ConverterContext.GetConverter(typeof(bool));
-
                 var result = new BoxInfo();
                 for (var i = 0; i < mapLength; i++)
                 {
-                    var fieldName = stringConverter.Read(reader);
+                    var fieldName = TarantoolContext.Instance.StringConverter.Read(reader);
                     if (fieldName != null)
                     {
                         switch ((string)fieldName)
                         {
                             case "id":
-                                result.Id = (long)(longConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+                                result.Id = (long)(TarantoolContext.Instance.LongConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
                                 break;
                             case "lsn":
-                                result.Lsn = (long)(longConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+                                result.Lsn = (long)(TarantoolContext.Instance.LongConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
                                 break;
                             case "pid":
-                                result.Pid = (long)(longConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+                                result.Pid = (long)(TarantoolContext.Instance.LongConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
                                 break;
                             case "ro":
-                                result.ReadOnly = (bool)(boolConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+                                result.ReadOnly = (bool)(TarantoolContext.Instance.BoolConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
                                 break;
                             case "uuid":
-                                result.Uuid = new Guid((string)(stringConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference()));
+                                result.Uuid = new Guid((string)(TarantoolContext.Instance.StringConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference()));
                                 break;
                             case "version":
-                                result.Version = TarantoolVersion.Parse((string)(stringConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference()));
+                                result.Version = TarantoolVersion.Parse((string)(TarantoolContext.Instance.StringConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference()));
                                 break;
                             default:
                                 reader.SkipToken();

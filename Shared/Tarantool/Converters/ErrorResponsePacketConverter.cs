@@ -3,7 +3,6 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using nanoFramework.MessagePack;
 using nanoFramework.MessagePack.Converters;
 using nanoFramework.MessagePack.Stream;
 using nanoFramework.Tarantool.Helpers;
@@ -20,25 +19,23 @@ namespace nanoFramework.Tarantool.Converters
         public static void Write(ErrorResponse value, IMessagePackWriter writer)
         {
             writer.WriteMapHeader(1u);
-            ConverterContext.GetConverter(typeof(uint)).Write(Key.Error24, writer);
-            ConverterContext.GetConverter(typeof(string)).Write(value.ErrorMessage, writer);
+            TarantoolContext.Instance.UintConverter.Write(Key.Error24, writer);
+            TarantoolContext.Instance.StringConverter.Write(value.ErrorMessage, writer);
         }
 
         public static ErrorResponse Read(IMessagePackReader reader)
         {
             string errorMessage = string.Empty;
-            var keyConverter = ConverterContext.GetConverter(typeof(uint));
-            var stringConverter = ConverterContext.GetConverter(typeof(string));
             var length = reader.ReadMapLength();
 
             for (var i = 0; i < length; i++)
             {
-                var errorKey = (Key)(keyConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+                var errorKey = (Key)(TarantoolContext.Instance.UintConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
 
                 switch (errorKey)
                 {
                     case Key.Error24:
-                        errorMessage = (string)(stringConverter.Read(reader) ?? string.Empty);
+                        errorMessage = (string)(TarantoolContext.Instance.StringConverter.Read(reader) ?? string.Empty);
                         break;
                     case Key.Error:
                         // TODO: add parsing of new error metadata

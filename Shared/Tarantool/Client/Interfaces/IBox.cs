@@ -90,5 +90,12 @@ namespace nanoFramework.Tarantool.Client.Interfaces
         /// <param name="parameters">SQL query parameters.</param>
         /// <returns><see cref="Tarantool"/> data response.</returns>
         DataResponse? ExecuteSql(string query, Type? responseDataType = null, params SqlParameter[] parameters);
+
+        /// <summary>
+        /// Call <see cref="Tarantool"/> function.
+        /// </summary>
+        /// <param name="functionName">Function name.</param>
+        /// <param name="parameters"><see cref="Tarantool"/> function parameters.</param>
+        void CallWithEmptyResponse(string functionName, TarantoolTuple? parameters);
     }
 }

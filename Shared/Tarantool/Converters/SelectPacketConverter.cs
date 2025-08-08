@@ -3,7 +3,6 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using nanoFramework.MessagePack;
 using nanoFramework.MessagePack.Converters;
 using nanoFramework.MessagePack.Stream;
 using nanoFramework.Tarantool.Model;
@@ -20,27 +19,23 @@ namespace nanoFramework.Tarantool.Converters
         public static void Write(SelectRequest value, IMessagePackWriter writer)
         {
             writer.WriteMapHeader(6);
-
-            var uintConverter = ConverterContext.GetConverter(typeof(uint));
-            var keyConverter = uintConverter;
-            var iteratorConverter = uintConverter;
             
-            keyConverter.Write(Key.SpaceId, writer);
-            uintConverter.Write(value.SpaceId, writer);
+            TarantoolContext.Instance.UintConverter.Write(Key.SpaceId, writer);
+            TarantoolContext.Instance.UintConverter.Write(value.SpaceId, writer);
 
-            keyConverter.Write(Key.IndexId, writer);
-            uintConverter.Write(value.IndexId, writer);
+            TarantoolContext.Instance.UintConverter.Write(Key.IndexId, writer);
+            TarantoolContext.Instance.UintConverter.Write(value.IndexId, writer);
 
-            keyConverter.Write(Key.Limit, writer);
-            uintConverter.Write(value.Limit, writer);
+            TarantoolContext.Instance.UintConverter.Write(Key.Limit, writer);
+            TarantoolContext.Instance.UintConverter.Write(value.Limit, writer);
 
-            keyConverter.Write(Key.Offset, writer);
-            uintConverter.Write(value.Offset, writer);
+            TarantoolContext.Instance.UintConverter.Write(Key.Offset, writer);
+            TarantoolContext.Instance.UintConverter.Write(value.Offset, writer);
 
-            keyConverter.Write(Key.Iterator, writer);
-            iteratorConverter.Write(value.Iterator, writer);
+            TarantoolContext.Instance.UintConverter.Write(Key.Iterator, writer);
+            TarantoolContext.Instance.UintConverter.Write(value.Iterator, writer);
 
-            keyConverter.Write(Key.Key, writer);
+            TarantoolContext.Instance.UintConverter.Write(Key.Key, writer);
 
             if (value.SelectKey != null)
             {

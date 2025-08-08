@@ -16,7 +16,9 @@ namespace nanoFramework.Tarantool.Client
         [MethodImpl(MethodImplOptions.Synchronized)]
         internal RequestId GetRequestId()
         {
-            return (RequestId)(++_currentRequestId);
+            var retValue = new RequestId(_currentRequestId);
+            _currentRequestId++;
+            return retValue;
         }
     }
 }

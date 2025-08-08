@@ -25,20 +25,16 @@ namespace nanoFramework.Tarantool.Converters
                 return;
             }
 
-            var keyConverter = ConverterContext.GetConverter(typeof(uint));
-            var bytesConverter = ConverterContext.GetConverter(typeof(byte[]));
-            var stringConverter = ConverterContext.GetConverter(typeof(string));
-
             writer.WriteMapHeader(2);
 
-            keyConverter.Write(Key.Username, writer);
-            stringConverter.Write(value.Username, writer);
+            TarantoolContext.Instance.UintConverter.Write(Key.Username, writer);
+            TarantoolContext.Instance.StringConverter.Write(value.Username, writer);
 
-            keyConverter.Write(Key.Tuple, writer);
+            TarantoolContext.Instance.UintConverter.Write(Key.Tuple, writer);
 
             writer.WriteArrayHeader(2);
-            stringConverter.Write("chap-sha1", writer);
-            bytesConverter.Write(value.Scramble, writer);
+            TarantoolContext.Instance.StringConverter.Write("chap-sha1", writer);
+            TarantoolContext.Instance.BytesConverter.Write(value.Scramble, writer);
         }
 
         public virtual object? Read([NotNull] IMessagePackReader reader)

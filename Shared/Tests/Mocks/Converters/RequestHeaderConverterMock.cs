@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics.CodeAnalysis;
-using nanoFramework.MessagePack;
 using nanoFramework.MessagePack.Stream;
 using nanoFramework.Tarantool.Converters;
 using nanoFramework.Tarantool.Helpers;
@@ -24,9 +23,9 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
                 throw ExceptionHelper.InvalidMapLength(length, 2);
             }
 
-            var keyConverter = ConverterContext.GetConverter(typeof(uint));
-            var requestIdConverter = ConverterContext.GetConverter(typeof(RequestId));
-            var codeConverter = ConverterContext.GetConverter(typeof(uint));
+            var keyConverter = TarantoolContext.Instance.UintConverter;
+            var requestIdConverter = TarantoolContext.Instance.RequestIdConverter;
+            var codeConverter = TarantoolContext.Instance.UintConverter;
 
             CommandCode commandCode = CommandCode._;
             RequestId? requestId = null;

@@ -3,7 +3,6 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using nanoFramework.MessagePack;
 using nanoFramework.MessagePack.Converters;
 using nanoFramework.MessagePack.Stream;
 using nanoFramework.Tarantool.Helpers;
@@ -16,9 +15,7 @@ namespace nanoFramework.Tarantool.Converters
 #nullable enable
         internal static FieldType Read(IMessagePackReader reader)
         {
-            var stringConverter = ConverterContext.GetConverter(typeof(string));
-
-            var enumString = (string)(stringConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+            var enumString = (string)(TarantoolContext.Instance.StringConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
 
             switch (enumString)
             {
@@ -73,78 +70,76 @@ namespace nanoFramework.Tarantool.Converters
 
         internal static void Write(FieldType value, [NotNull] IMessagePackWriter writer)
         {
-            var stringConverter = ConverterContext.GetConverter(typeof(string));
-
             switch (value)
             {
                 case FieldType.Decimal:
-                    stringConverter.Write("decimal", writer);
+                    TarantoolContext.Instance.StringConverter.Write("decimal", writer);
                     break;
                 case FieldType.Number:
-                    stringConverter.Write("number", writer);
+                    TarantoolContext.Instance.StringConverter.Write("number", writer);
                     break;
                 case FieldType.Datetime:
-                    stringConverter.Write("datetime", writer);
+                    TarantoolContext.Instance.StringConverter.Write("datetime", writer);
                     break;
                 case FieldType.Uuid:
-                    stringConverter.Write("uuid", writer);
+                    TarantoolContext.Instance.StringConverter.Write("uuid", writer);
                     break;
                 case FieldType.Uint:
-                    stringConverter.Write("uint", writer);
+                    TarantoolContext.Instance.StringConverter.Write("uint", writer);
                     break;
                 case FieldType.Int:
-                    stringConverter.Write("int", writer);
+                    TarantoolContext.Instance.StringConverter.Write("int", writer);
                     break;
                 case FieldType.Varbinary:
-                    stringConverter.Write("varbinary", writer);
+                    TarantoolContext.Instance.StringConverter.Write("varbinary", writer);
                     break;
                 case FieldType.Star:
-                    stringConverter.Write("*", writer);
+                    TarantoolContext.Instance.StringConverter.Write("*", writer);
                     break;
                 case FieldType.Str:
-                    stringConverter.Write("str", writer);
+                    TarantoolContext.Instance.StringConverter.Write("str", writer);
                     break;
                 case FieldType.Num:
-                    stringConverter.Write("num", writer);
+                    TarantoolContext.Instance.StringConverter.Write("num", writer);
                     break;
                 case FieldType.String:
-                    stringConverter.Write("string", writer);
+                    TarantoolContext.Instance.StringConverter.Write("string", writer);
                     break;
                 case FieldType.Unsigned:
-                    stringConverter.Write("unsigned", writer);
+                    TarantoolContext.Instance.StringConverter.Write("unsigned", writer);
                     break;
                 case FieldType.Any:
-                    stringConverter.Write("any", writer);
+                    TarantoolContext.Instance.StringConverter.Write("any", writer);
                     break;
                 case FieldType.Nil:
-                    stringConverter.Write("nil", writer);
+                    TarantoolContext.Instance.StringConverter.Write("nil", writer);
                     break;
                 case FieldType.Integer:
-                    stringConverter.Write("integer", writer);
+                    TarantoolContext.Instance.StringConverter.Write("integer", writer);
                     break;
                 case FieldType.Array:
-                    stringConverter.Write("array", writer);
+                    TarantoolContext.Instance.StringConverter.Write("array", writer);
                     break;
                 case FieldType.Map:
-                    stringConverter.Write("map", writer);
+                    TarantoolContext.Instance.StringConverter.Write("map", writer);
                     break;
                 case FieldType.Binary:
-                    stringConverter.Write("binary", writer);
+                    TarantoolContext.Instance.StringConverter.Write("binary", writer);
                     break;
                 case FieldType.Boolean:
-                    stringConverter.Write("boolean", writer);
+                    TarantoolContext.Instance.StringConverter.Write("boolean", writer);
                     break;
                 case FieldType.Double:
-                    stringConverter.Write("double", writer);
+                    TarantoolContext.Instance.StringConverter.Write("double", writer);
                     break;
                 case FieldType.Float:
-                    stringConverter.Write("float", writer);
+                    TarantoolContext.Instance.StringConverter.Write("float", writer);
                     break;
                 case FieldType.Extension:
-                    stringConverter.Write("extension", writer);
+                    TarantoolContext.Instance.StringConverter.Write("extension", writer);
                     break;
                 case FieldType.Scalar:
-                    stringConverter.Write("scalar", writer);
+                    TarantoolContext.Instance.StringConverter.Write("scalar", writer);
                     break;
                 default:
                     throw ExceptionHelper.EnumValueExpected(value.GetType(), value);

@@ -3,7 +3,6 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using nanoFramework.MessagePack;
 using nanoFramework.MessagePack.Converters;
 using nanoFramework.MessagePack.Stream;
 using nanoFramework.Tarantool.Helpers;
@@ -18,9 +17,7 @@ namespace nanoFramework.Tarantool.Converters
     {
         private static StorageEngine Read(IMessagePackReader reader)
         {
-            var stringConverter = ConverterContext.GetConverter(typeof(string));
-
-            var enumString = (string)(stringConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+            var enumString = (string)(TarantoolContext.Instance.StringConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
 
             switch (enumString)
             {
@@ -43,27 +40,25 @@ namespace nanoFramework.Tarantool.Converters
 
         internal static void Write(StorageEngine value, [NotNull] IMessagePackWriter writer)
         {
-            var stringConverter = ConverterContext.GetConverter(typeof(string));
-
             switch (value)
             {
                 case StorageEngine.Service:
-                    stringConverter.Write("service", writer);
+                    TarantoolContext.Instance.StringConverter.Write("service", writer);
                     break;
                 case StorageEngine.Memtx:
-                    stringConverter.Write("memtx", writer);
+                    TarantoolContext.Instance.StringConverter.Write("memtx", writer);
                     break;
                 case StorageEngine.Sophia:
-                    stringConverter.Write("sophia", writer);
+                    TarantoolContext.Instance.StringConverter.Write("sophia", writer);
                     break;
                 case StorageEngine.Sysview:
-                    stringConverter.Write("sysview", writer);
+                    TarantoolContext.Instance.StringConverter.Write("sysview", writer);
                     break;
                 case StorageEngine.Blackhole:
-                    stringConverter.Write("blackhole", writer);
+                    TarantoolContext.Instance.StringConverter.Write("blackhole", writer);
                     break;
                 case StorageEngine.Vinyl:
-                    stringConverter.Write("vinyl", writer);
+                    TarantoolContext.Instance.StringConverter.Write("vinyl", writer);
                     break;
                 default:
                     throw ExceptionHelper.EnumValueExpected(value.GetType(), value);

@@ -37,9 +37,7 @@ namespace nanoFramework.Tarantool.Converters
                 throw ExceptionHelper.InvalidMapLength(length, 1u, 2u);
             }
 
-            var keyConverter = ConverterContext.GetConverter(typeof(uint));
             var dataConverter = ConverterContext.GetConverter(_dataType);
-            var intConverter = ConverterContext.GetConverter(typeof(int));
 
             object? data = null;
             var dataWasSet = false;
@@ -48,7 +46,7 @@ namespace nanoFramework.Tarantool.Converters
 
             for (var i = 0; i < length; i++)
             {
-                var dataKey = (Key)(keyConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+                var dataKey = (Key)(TarantoolContext.Instance.UintConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
                 switch (dataKey)
                 {
                     case Key.Data:
@@ -56,13 +54,13 @@ namespace nanoFramework.Tarantool.Converters
                         dataWasSet = true;
                         break;
                     case Key.Metadata:
-                        metadata = ReadMetadata(reader, keyConverter);
+                        metadata = ReadMetadata(reader, TarantoolContext.Instance.UintConverter);
                         break;
                     case Key.SqlInfo:
-                        sqlInfo = SqlInfoResponsePacketConverter.ReadSqlInfo(reader, keyConverter, intConverter);
+                        sqlInfo = SqlInfoResponsePacketConverter.ReadSqlInfo(reader, TarantoolContext.Instance.UintConverter, TarantoolContext.Instance.IntConverter);
                         break;
                     case Key.SqlInfo_2_0_4:
-                        sqlInfo = SqlInfoResponsePacketConverter.ReadSqlInfo(reader, keyConverter, intConverter);
+                        sqlInfo = SqlInfoResponsePacketConverter.ReadSqlInfo(reader, TarantoolContext.Instance.UintConverter, TarantoolContext.Instance.IntConverter);
                         break;
                     default:
                         throw ExceptionHelper.UnexpectedKey(dataKey, Key.Data, Key.Metadata);
@@ -74,9 +72,9 @@ namespace nanoFramework.Tarantool.Converters
                 throw ExceptionHelper.NoDataInDataResponse();
             }
 
-            if (metadata != null)
+            if (metadata is FieldMetadata[] fieldMetaData)
             {
-                return new DataResponse(data, (FieldMetadata[])metadata, sqlInfo);
+                return new DataResponse(data, fieldMetaData, sqlInfo);
             }
             else
             {
@@ -92,7 +90,6 @@ namespace nanoFramework.Tarantool.Converters
                 return null;
             }
 
-            var stringConverter = ConverterContext.GetConverter(typeof(string));
             var result = new FieldMetadata?[length];
 
             for (var i = 0; i < length; i++)
@@ -110,10 +107,10 @@ namespace nanoFramework.Tarantool.Converters
                     switch (key)
                     {
                         case Key.FieldName:
-                            result[i] = new FieldMetadata((string)(stringConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference()));
+                            result[i] = new FieldMetadata((string)(TarantoolContext.Instance.StringConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference()));
                             continue;
                         case Key.FieldName_2_0_4:
-                            result[i] = new FieldMetadata((string)(stringConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference()));
+                            result[i] = new FieldMetadata((string)(TarantoolContext.Instance.StringConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference()));
                             continue;
                         default:
                             reader.SkipToken();

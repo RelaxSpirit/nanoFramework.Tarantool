@@ -3,7 +3,6 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using nanoFramework.MessagePack;
 using nanoFramework.MessagePack.Converters;
 using nanoFramework.MessagePack.Stream;
 using nanoFramework.Tarantool.Helpers;
@@ -27,18 +26,12 @@ namespace nanoFramework.Tarantool.Converters
                 throw ExceptionHelper.InvalidArrayLength(6u, length);
             }
 
-            var uintConverter = ConverterContext.GetConverter(typeof(uint));
-            var stringConverter = ConverterContext.GetConverter(typeof(string));
-            var indexTypeConverter = ConverterContext.GetConverter(typeof(IndexType));
-            var optionsConverter = ConverterContext.GetConverter(typeof(IndexCreationOptions));
-            var indexPartsConverter = ConverterContext.GetConverter(typeof(IndexPart[]));
-
-            var spaceId = uintConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference();
-            var id = uintConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference();
-            var name = stringConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference();
-            var type = indexTypeConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference();
-            var options = optionsConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference();
-            var indexParts = indexPartsConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference();
+            var spaceId = TarantoolContext.Instance.UintConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference();
+            var id = TarantoolContext.Instance.UintConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference();
+            var name = TarantoolContext.Instance.StringConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference();
+            var type = TarantoolContext.Instance.IndexTypeConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference();
+            var options = TarantoolContext.Instance.IndexOptionsConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference();
+            var indexParts = TarantoolContext.Instance.IndexPartsConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference();
 
             return new Index((uint)id, (uint)spaceId, (string)name, ((IndexCreationOptions)options).Unique, (IndexType)type, (IndexPart[])indexParts);
         }

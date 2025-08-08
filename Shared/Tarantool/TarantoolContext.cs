@@ -60,23 +60,41 @@ namespace nanoFramework.Tarantool
             ConverterContext.Add(typeof(ErrorResponse), new ErrorResponsePacketConverter());
             ConverterContext.Add(typeof(EvalRequest), new EvalPacketConverter());
             ConverterContext.Add(typeof(ExecuteSqlRequest), new ExecuteSqlRequestConverter());
-            ConverterContext.Add(typeof(FieldType), new FieldTypeConverter());
+
+            FieldTypeConverter = new FieldTypeConverter();
+            ConverterContext.Add(typeof(FieldType), FieldTypeConverter);
+
             ConverterContext.Add(typeof(Index), new IndexConverter());
-            ConverterContext.Add(typeof(IndexCreationOptions), new IndexCreationOptionsConverter());
-            ConverterContext.Add(typeof(IndexPart), new IndexPartConverter());
-            ConverterContext.Add(typeof(IndexPart[]), new SimpleArrayConverter(typeof(IndexPart)));
-            ConverterContext.Add(typeof(IndexType), new IndexTypeConverter());
+
+            IndexOptionsConverter = new IndexCreationOptionsConverter();
+            ConverterContext.Add(typeof(IndexCreationOptions), IndexOptionsConverter);
+
+            IndexPartConverter = new IndexPartConverter();
+            ConverterContext.Add(typeof(IndexPart), IndexPartConverter);
+
+            IndexPartsConverter = new SimpleArrayConverter(typeof(IndexPart));
+            ConverterContext.Add(typeof(IndexPart[]), IndexPartsConverter);
+            
+            IndexTypeConverter = new IndexTypeConverter();
+            ConverterContext.Add(typeof(IndexType), IndexTypeConverter);
+
             ConverterContext.Add(typeof(InsertReplaceRequest), InsertReplacePacketConverter);
             ConverterContext.Add(typeof(InsertRequest), InsertReplacePacketConverter);
             ConverterContext.Add(typeof(ReplaceRequest), InsertReplacePacketConverter);
             ConverterContext.Add(typeof(PacketSize), new PacketSizeConverter());
             ConverterContext.Add(typeof(RequestHeader), new RequestHeaderConverter());
-            ConverterContext.Add(typeof(RequestId), new RequestIdConverter());
+
+            RequestIdConverter = new RequestIdConverter();
+            ConverterContext.Add(typeof(RequestId), RequestIdConverter);
+
             ConverterContext.Add(typeof(ResponseHeader), new ResponseHeaderConverter());
             ConverterContext.Add(typeof(SelectRequest), new SelectPacketConverter());
             ConverterContext.Add(typeof(Space), new SpaceConverter());
             ConverterContext.Add(typeof(SpaceField), new SpaceFieldConverter());
-            ConverterContext.Add(typeof(StorageEngine), new StorageEngineConverter());
+
+            StorageEngineConverter = new StorageEngineConverter();
+            ConverterContext.Add(typeof(StorageEngine), StorageEngineConverter);
+
             ConverterContext.Add(typeof(StringSpliceOperation), new StringSpliceOperationConverter());
             ConverterContext.Add(typeof(UpdateOperation), new UpdateOperationConverter());
             ConverterContext.Add(typeof(UpdateRequest), new UpdatePacketConverter());
@@ -86,7 +104,10 @@ namespace nanoFramework.Tarantool
             ConverterContext.Add(typeof(DataResponse), new ResponsePacketConverter(typeof(ArrayList)));
             ConverterContext.Add(typeof(Space[]), new SimpleArrayConverter(typeof(Space)));
             ConverterContext.Add(typeof(Index[]), new SimpleArrayConverter(typeof(Index)));
-            ConverterContext.Add(typeof(SpaceField[]), new SimpleArrayConverter(typeof(SpaceField)));
+
+            SpaceFieldsConverter = new SimpleArrayConverter(typeof(SpaceField));
+            ConverterContext.Add(typeof(SpaceField[]), SpaceFieldsConverter);
+
             ConverterContext.Add(typeof(TarantoolTuple[][]), new SimpleArrayConverter(typeof(TarantoolTuple[])));
             ConverterContext.Add(typeof(TarantoolTuple[]), new SimpleArrayConverter(typeof(TarantoolTuple)));
             ConverterContext.Add(typeof(InsertRequest.AutoIncrementKey), new AutoIncrementKeyConverter());
@@ -119,11 +140,45 @@ namespace nanoFramework.Tarantool
             }
         }
 
+        #region Converters
+        internal IConverter UintConverter { get; } = ConverterContext.GetConverter(typeof(uint));
+
+        internal IConverter IntConverter { get; } = ConverterContext.GetConverter(typeof(int));
+
+        internal IConverter BytesConverter { get; } = ConverterContext.GetConverter(typeof(byte[]));
+
+        internal IConverter StringConverter { get; }  = ConverterContext.GetConverter(typeof(string));
+
+        internal IConverter LongConverter { get; } = ConverterContext.GetConverter(typeof(long));
+
+        internal IConverter UlongConverter { get; } = ConverterContext.GetConverter(typeof(ulong));
+
+        internal IConverter BoolConverter { get; } = ConverterContext.GetConverter(typeof(bool));
+
+        internal IConverter ArrayListConverter { get; } = ConverterContext.GetConverter(typeof(ArrayList));
+
+        internal IConverter IndexTypeConverter { get; }
+
+        internal IConverter IndexOptionsConverter { get; }
+
+        internal IConverter IndexPartsConverter { get; }
+
+        internal IConverter IndexPartConverter { get; }
+
+        internal IConverter FieldTypeConverter { get; }
+
+        internal IConverter RequestIdConverter { get; }
+
+        internal IConverter SpaceFieldsConverter { get; }
+
+        internal IConverter StorageEngineConverter { get; }
+        #endregion
+
         internal static string GetTypeArrayTypesFullName(Type[] tupleItemsTypes)
         {
             if (tupleItemsTypes.Length < 1)
             {
-                return typeof(Type[]).FullName ?? typeof(Type[]).Name;
+                return typeof(TarantoolTuple).FullName;
             }
 
             StringBuilder sbFullName = new StringBuilder();

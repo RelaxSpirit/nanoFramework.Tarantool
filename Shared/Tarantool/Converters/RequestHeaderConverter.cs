@@ -3,10 +3,8 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using nanoFramework.MessagePack;
 using nanoFramework.MessagePack.Converters;
 using nanoFramework.MessagePack.Stream;
-using nanoFramework.Tarantool.Model;
 using nanoFramework.Tarantool.Model.Enums;
 using nanoFramework.Tarantool.Model.Headers;
 
@@ -19,17 +17,13 @@ namespace nanoFramework.Tarantool.Converters
     {
         private static void Write(RequestHeader value, IMessagePackWriter writer)
         {
-            var keyConverter = ConverterContext.GetConverter(typeof(uint));
-            var requestIdConverter = ConverterContext.GetConverter(typeof(RequestId));
-            var codeConverter = ConverterContext.GetConverter(typeof(uint));
-
             writer.WriteMapHeader(2u);
 
-            keyConverter.Write(Key.Code, writer);
-            codeConverter.Write(value.Code, writer);
+            TarantoolContext.Instance.UintConverter.Write(Key.Code, writer);
+            TarantoolContext.Instance.UintConverter.Write(value.Code, writer);
 
-            keyConverter.Write(Key.Sync, writer);
-            requestIdConverter.Write(value.RequestId, writer);
+            TarantoolContext.Instance.UintConverter.Write(Key.Sync, writer);
+            TarantoolContext.Instance.RequestIdConverter.Write(value.RequestId, writer);
         }
 
 #nullable enable

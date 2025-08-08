@@ -3,7 +3,6 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using nanoFramework.MessagePack;
 using nanoFramework.MessagePack.Converters;
 using nanoFramework.MessagePack.Stream;
 using nanoFramework.Tarantool.Helpers;
@@ -26,21 +25,18 @@ namespace nanoFramework.Tarantool.Converters
                 throw ExceptionHelper.InvalidMapLength(length, 1u, 2u);
             }
 
-            var keyConverter = ConverterContext.GetConverter(typeof(uint));
-            var intConverter = ConverterContext.GetConverter(typeof(int));
-
             var sqlInfo = default(SqlInfo);
 
             for (var i = 0; i < length; i++)
             {
-                var dataKey = (Key)(keyConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+                var dataKey = (Key)(TarantoolContext.Instance.UintConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
                 switch (dataKey)
                 {
                     case Key.SqlInfo:
-                        sqlInfo = ReadSqlInfo(reader, keyConverter, intConverter);
+                        sqlInfo = ReadSqlInfo(reader, TarantoolContext.Instance.UintConverter, TarantoolContext.Instance.IntConverter);
                         break;
                     case Key.SqlInfo_2_0_4:
-                        sqlInfo = ReadSqlInfo(reader, keyConverter, intConverter);
+                        sqlInfo = ReadSqlInfo(reader, TarantoolContext.Instance.UintConverter, TarantoolContext.Instance.IntConverter);
                         break;
                     default:
                         throw ExceptionHelper.UnexpectedKey(dataKey, Key.Data, Key.Metadata);

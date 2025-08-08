@@ -18,22 +18,19 @@ namespace nanoFramework.Tarantool.Converters
     {
         public static void Write(ExecuteSqlRequest value, IMessagePackWriter writer)
         {
-            var keyConverter = ConverterContext.GetConverter(typeof(uint));
-            var stringConverter = ConverterContext.GetConverter(typeof(string));
-
             writer.WriteMapHeader(3u);
 
-            keyConverter.Write(Key.SqlQueryText, writer);
-            stringConverter.Write(value.Query, writer);
+            TarantoolContext.Instance.UintConverter.Write(Key.SqlQueryText, writer);
+            TarantoolContext.Instance.StringConverter.Write(value.Query, writer);
 
-            keyConverter.Write(Key.SqlParameters, writer);
+            TarantoolContext.Instance.UintConverter.Write(Key.SqlParameters, writer);
             writer.WriteArrayHeader((uint)value.Parameters.Length);
             foreach (var parameter in value.Parameters)
             {
                 parameter.Write(writer);
             }
 
-            keyConverter.Write(Key.SqlOptions, writer);
+            TarantoolContext.Instance.UintConverter.Write(Key.SqlOptions, writer);
 
             ConverterContext.NullConverter.Write(null, writer);
         }

@@ -56,11 +56,8 @@ namespace nanoFramework.Tarantool.Converters
                 throw ExceptionHelper.InvalidArrayLength(2u, length);
             }
 
-            var uintConverter = ConverterContext.GetConverter(typeof(uint));
-            var indexPartTypeConverter = ConverterContext.GetConverter(typeof(FieldType));
-
-            var fieldNo = uintConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference();
-            var indexPartType = indexPartTypeConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference();
+            var fieldNo = TarantoolContext.Instance.UintConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference();
+            var indexPartType = TarantoolContext.Instance.FieldTypeConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference();
 
             return new IndexPart((uint)fieldNo, (FieldType)indexPartType);
         }
@@ -70,18 +67,15 @@ namespace nanoFramework.Tarantool.Converters
             uint fieldNo = uint.MaxValue;
             FieldType indexPartType = FieldType._;
 
-            var uintConverter = ConverterContext.GetConverter(typeof(uint));
-            var indexPartTypeConverter = ConverterContext.GetConverter(typeof(FieldType));
-            var stringConverter = ConverterContext.GetConverter(typeof(string));
             for (var i = 0; i < length; i++)
             {
-                switch ((string)(stringConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference()))
+                switch ((string)(TarantoolContext.Instance.StringConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference()))
                 {
                     case "field":
-                        fieldNo = (uint)(uintConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+                        fieldNo = (uint)(TarantoolContext.Instance.UintConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
                         break;
                     case "type":
-                        indexPartType = (FieldType)(indexPartTypeConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+                        indexPartType = (FieldType)(TarantoolContext.Instance.FieldTypeConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
                         break;
                     default:
                         reader.SkipToken();

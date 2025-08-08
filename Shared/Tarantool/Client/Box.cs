@@ -74,6 +74,12 @@ namespace nanoFramework.Tarantool.Client
             Schema.Reload();
         }
 
+        public void CallWithEmptyResponse(string functionName, TarantoolTuple? parameters)
+        {
+            var callRequest = new CallRequest(functionName, parameters ?? TarantoolTuple.Empty);
+            _logicalConnection.SendRequestWithEmptyResponse(callRequest, Timeout.InfiniteTimeSpan);
+        }
+
         public DataResponse? Call(string functionName, Type? responseDataType)
         {
             return Call(functionName, TarantoolTuple.Empty, responseDataType);

@@ -6,9 +6,7 @@ using nanoFramework.TestFramework;
 #endif
 using nanoFramework.Tarantool.Model;
 using nanoFramework.Tarantool.Model.Responses;
-#if NANOFRAMEWORK_1_0
 using nanoFramework.Tarantool.Tests.Mocks;
-#endif
 
 namespace nanoFramework.Tarantool.Tests
 {
@@ -49,6 +47,7 @@ namespace nanoFramework.Tarantool.Tests
             ClientOptions clientOptions = new ClientOptions(replicationSource);
             clientOptions.ConnectionOptions.ReadSchemaOnConnect = isReadSchemaOnConnect;
             clientOptions.ConnectionOptions.ReadBoxInfoOnConnect = isReadBoxInfoOnConnect;
+            clientOptions.ConnectionOptions.WriteThrottlePeriodInMs = 0;
 #if NANOFRAMEWORK_1_0
             clientOptions.ConnectionOptions.WriteStreamBufferSize = writeStreamBufferSize > 512 ? 512 : writeStreamBufferSize;
             clientOptions.ConnectionOptions.ReadStreamBufferSize = readStreamBufferSize > 512 ? 512 : readStreamBufferSize;
