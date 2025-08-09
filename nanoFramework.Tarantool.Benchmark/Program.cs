@@ -20,10 +20,8 @@ namespace nanoFramework.Tarantool.Benchmark
         /// </summary>
         public static void Main()
         {
-            ////const string Ssid = "YourSSID";
-            ////const string Password = "YourWifiPassword";
-            const string Ssid = "Keenetic-0711";
-            const string Password = "UBztXG8x";
+            const string Ssid = "YourSSID";
+            const string Password = "YourWifiPassword";
 
             CancellationTokenSource cs = new CancellationTokenSource(60000);
 
