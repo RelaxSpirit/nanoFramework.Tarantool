@@ -6,12 +6,12 @@ using System;
 namespace nanoFramework.Tarantool.Model
 {
     /// <summary>
-    /// <see cref="Tarantool"/> major version class.
+    /// <see cref="Tarantool"/> major version struct.
     /// </summary>
-    public class MajorVersion : IComparable
+    public struct MajorVersion : IComparable
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="MajorVersion"/> class.
+        /// Initializes a new instance of the <see cref="MajorVersion"/> struct.
         /// </summary>
         /// <param name="majorFirst">Major version first number.</param>
         /// <param name="majorSecond">Major version second number.</param>
@@ -32,7 +32,7 @@ namespace nanoFramework.Tarantool.Model
         public int MajorSecond { get; }
 
         /// <summary>
-        /// Overrides base method <see cref="object.ToString"/>.
+        /// Overrides base method <see cref="object.ToString()"/>.
         /// </summary>
         /// <returns>Major version string.</returns>
         public override string ToString()
@@ -41,7 +41,7 @@ namespace nanoFramework.Tarantool.Model
         }
 
         /// <summary>
-        /// Overrides base method <see cref="object.GetHashCode"/>.
+        /// Overrides base method <see cref="object.GetHashCode()"/>.
         /// </summary>
         /// <returns>Major version hash code.</returns>
         public override int GetHashCode()

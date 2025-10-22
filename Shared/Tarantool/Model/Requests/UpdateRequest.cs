@@ -9,10 +9,10 @@ namespace nanoFramework.Tarantool.Model.Requests
     /// <summary>
     /// Update <see cref="Tarantool"/> request.
     /// </summary>
-    public class UpdateRequest : IRequest
+    public struct UpdateRequest : IRequest
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="UpdateRequest"/> class.
+        /// Initializes a new instance of the <see cref="UpdateRequest"/> struct.
         /// </summary>
         /// <param name="spaceId"><see cref="Tarantool"/> space id.</param>
         /// <param name="indexId"><see cref="Tarantool"/> index id.</param>

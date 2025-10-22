@@ -112,7 +112,7 @@ namespace nanoFramework.Tarantool.Client
         /// <exception cref="NullReferenceException">If box info or <see cref="Tarantool"/> version is <see langword="null"/>.</exception>
         public DataResponse? ExecuteSql(string query, Type? responseDataType, params SqlParameter[] parameters)
         {
-            if (Info != null && Info.Version is null)
+            if (Info != null && Info.Version == TarantoolVersion.Empty)
             {
                 if (!_sqlReady)
                 {

@@ -40,7 +40,7 @@ namespace nanoFramework.Tarantool.Converters
             }
 
             CommandCode code = CommandCode._;
-            RequestId? sync = null;
+            RequestId sync = RequestId.Empty;
             ulong schemaId = 0;
 
             for (int i = 0; i < length; i++)
@@ -53,11 +53,11 @@ namespace nanoFramework.Tarantool.Converters
                         code = (CommandCode)(TarantoolContext.Instance.UintConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
                         break;
                     case Key.Sync:
-                        sync = (RequestId?)TarantoolContext.Instance.RequestIdConverter.Read(reader);
+                        sync = (RequestId)(TarantoolContext.Instance.RequestIdConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
                         break;
                     case Key.SchemaId:
                         schemaId = (ulong)(TarantoolContext.Instance.UlongConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
-            break;
+                        break;
                     default:
                         reader.SkipToken();
                         break;
@@ -69,7 +69,7 @@ namespace nanoFramework.Tarantool.Converters
                 throw ExceptionHelper.PropertyUnspecified("Code");
             }
 
-            if (sync == null)
+            if (sync == RequestId.Empty)
             {
                 throw ExceptionHelper.PropertyUnspecified("Sync");
             }

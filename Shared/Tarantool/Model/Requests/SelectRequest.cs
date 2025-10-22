@@ -8,10 +8,10 @@ namespace nanoFramework.Tarantool.Model.Requests
     /// <summary>
     /// Select <see cref="Tarantool"/> request.
     /// </summary>
-    public class SelectRequest : IRequest
+    public struct SelectRequest : IRequest
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SelectRequest"/> class.
+        /// Initializes a new instance of the <see cref="SelectRequest"/> struct.
         /// </summary>
         /// <param name="spaceId"><see cref="Tarantool"/> space id.</param>
         /// <param name="indexId"><see cref="Tarantool"/> index id.</param>

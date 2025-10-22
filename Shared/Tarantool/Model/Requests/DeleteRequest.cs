@@ -8,10 +8,10 @@ namespace nanoFramework.Tarantool.Model.Requests
     /// <summary>
     /// Delete <see cref="Tarantool"/> request.
     /// </summary>
-    public class DeleteRequest : IRequest
+    public struct DeleteRequest : IRequest
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="DeleteRequest"/> class.
+        /// Initializes a new instance of the <see cref="DeleteRequest"/> struct.
         /// </summary>
         /// <param name="spaceId"><see cref="Tarantool"/> space id.</param>
         /// <param name="indexId"><see cref="Tarantool"/> index id.</param>

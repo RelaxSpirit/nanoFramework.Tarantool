@@ -8,12 +8,12 @@ namespace nanoFramework.Tarantool.Model.Requests
     /// <summary>
     /// Execute <see cref="Tarantool"/> SQL query request.
     /// </summary>
-    public class ExecuteSqlRequest : IRequest
+    public struct ExecuteSqlRequest : IRequest
     {
         private static readonly SqlParameter[] Empty = new SqlParameter[0];
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExecuteSqlRequest"/> class.
+        /// Initializes a new instance of the <see cref="ExecuteSqlRequest"/> struct.
         /// </summary>
         /// <param name="query"><see cref="Tarantool"/> SQL query text.</param>
         /// <param name="parameters"><see cref="Tarantool"/> SQL query <see cref="SqlParameter"/> array.</param>

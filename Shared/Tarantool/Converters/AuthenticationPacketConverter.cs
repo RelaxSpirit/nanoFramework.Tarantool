@@ -17,14 +17,8 @@ namespace nanoFramework.Tarantool.Converters
     internal class AuthenticationPacketConverter : IConverter
     {
 #nullable enable
-        private static void Write(AuthenticationRequest? value, IMessagePackWriter writer)
+        private static void Write(AuthenticationRequest value, IMessagePackWriter writer)
         {
-            if (value == null)
-            {
-                ConverterContext.NullConverter.Write(null, writer);
-                return;
-            }
-
             writer.WriteMapHeader(2);
 
             TarantoolContext.Instance.UintConverter.Write(Key.Username, writer);
@@ -44,7 +38,14 @@ namespace nanoFramework.Tarantool.Converters
 
         public void Write(object? value, [NotNull] IMessagePackWriter writer)
         {
-            Write((AuthenticationRequest?)value, writer);
+            if (value == null)
+            {
+                ConverterContext.NullConverter.Write(null, writer);
+            }
+            else
+            {
+                Write((AuthenticationRequest)value, writer);
+            }
         }
     }
 }

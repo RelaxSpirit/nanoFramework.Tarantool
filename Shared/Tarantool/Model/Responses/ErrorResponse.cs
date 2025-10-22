@@ -4,12 +4,12 @@
 namespace nanoFramework.Tarantool.Model.Responses
 {
     /// <summary>
-    /// The <see cref="Tarantool"/> error response class.
+    /// The <see cref="Tarantool"/> error response struct.
     /// </summary>
-    internal class ErrorResponse
+    internal struct ErrorResponse
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ErrorResponse"/> class.
+        /// Initializes a new instance of the <see cref="ErrorResponse"/> struct.
         /// </summary>
         /// <param name="errorMessage">Error message.</param>
         internal ErrorResponse(string errorMessage)

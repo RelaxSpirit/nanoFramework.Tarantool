@@ -8,7 +8,7 @@ namespace nanoFramework.Tarantool.Model.Requests
     /// <summary>
     /// Replace <see cref="Tarantool"/> request.
     /// </summary>
-    public class ReplaceRequest : InsertReplaceRequest
+    public sealed class ReplaceRequest : InsertReplaceRequest
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ReplaceRequest"/> class.

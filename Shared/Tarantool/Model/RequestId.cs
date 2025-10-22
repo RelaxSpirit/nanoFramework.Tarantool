@@ -4,12 +4,14 @@
 namespace nanoFramework.Tarantool.Model
 {
     /// <summary>
-    /// The <see cref="Tarantool"/> request id class.
+    /// The <see cref="Tarantool"/> request id struct.
     /// </summary>
-    internal sealed class RequestId
+    internal struct RequestId
     {
+        internal static readonly RequestId Empty = new RequestId(ulong.MaxValue);
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="RequestId"/> class.
+        /// Initializes a new instance of the <see cref="RequestId"/> struct.
         /// </summary>
         /// <param name="value">Request id value.</param>
         internal RequestId(ulong value)
@@ -32,6 +34,16 @@ namespace nanoFramework.Tarantool.Model
             return new RequestId(id);
         }
 
+        public static bool operator ==(RequestId left, RequestId right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(RequestId left, RequestId right)
+        {
+            return !left.Equals(right);
+        }
+
         public override string ToString()
         {
             return Value.ToString();
@@ -45,14 +57,7 @@ namespace nanoFramework.Tarantool.Model
 #nullable enable
         public override bool Equals(object? obj)
         {
-            if (obj is RequestId requestId)
-            {
-                return Value == requestId.Value;
-            }
-            else
-            {
-                return base.Equals(obj);
-            }
+            return obj is RequestId requestId && Value == requestId.Value;
         }
     }
 }

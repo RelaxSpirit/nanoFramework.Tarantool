@@ -32,7 +32,7 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
             {
                 if (dataResponse.TestData != null)
                 {
-                    if (dataResponse.MetaData.Length > 0 || dataResponse.SqlInfo != null)
+                    if (dataResponse.MetaData.Length > 0 || dataResponse.SqlInfo != SqlInfo.Empty)
                     {
                         writer.WriteMapHeader(2);
                     }
@@ -43,7 +43,7 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
                 }
                 else
                 {
-                    if (dataResponse.MetaData.Length < 1 && dataResponse.SqlInfo == null)
+                    if (dataResponse.MetaData.Length < 1 && dataResponse.SqlInfo == SqlInfo.Empty)
                     {
                         writer.WriteMapHeader(1);
                     }
@@ -68,7 +68,7 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
                 }
                 else
                 {
-                    if (dataResponse.SqlInfo != null)
+                    if (dataResponse.SqlInfo != SqlInfo.Empty)
                     {
                         keyConverter.Write(Key.SqlInfo_2_0_4, writer);
                         writer.WriteMapHeader(1);

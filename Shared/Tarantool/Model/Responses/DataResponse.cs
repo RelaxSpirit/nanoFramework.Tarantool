@@ -17,7 +17,7 @@ namespace nanoFramework.Tarantool.Model.Responses
         /// <param name="metadata">Response metadata.</param>
         /// <param name="sqlInfo">Response SQL info.</param>
 #nullable enable
-        internal DataResponse(object? data, FieldMetadata[] metadata, SqlInfo? sqlInfo) : this(data, sqlInfo)
+        internal DataResponse(object? data, FieldMetadata[] metadata, SqlInfo sqlInfo) : this(data, sqlInfo)
         {
             MetaData = metadata;
         }
@@ -27,7 +27,7 @@ namespace nanoFramework.Tarantool.Model.Responses
         /// </summary>
         /// <param name="data">Response data object.</param>
         /// <param name="sqlInfo">Response SQL info.</param>
-        internal DataResponse(object? data, SqlInfo? sqlInfo) : base(sqlInfo)
+        internal DataResponse(object? data, SqlInfo sqlInfo) : base(sqlInfo)
         {
             if (data is ArrayList arrayList)
             {

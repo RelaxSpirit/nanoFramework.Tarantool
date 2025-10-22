@@ -53,14 +53,34 @@ namespace nanoFramework.Tarantool.Client
 
         public IndexPart[] Parts { get; }
 
-        public DataResponse? Select(TarantoolTuple key, SelectOptions? options = null, TarantoolTupleType? responseType = null)
+        public DataResponse? Select(TarantoolTuple key, SelectOptions options, TarantoolTupleType? responseType = null)
         {
             var selectRequest = new SelectRequest(
                 SpaceId,
                 Id,
-                options != null ? options.Limit : uint.MaxValue,
-                options != null ? options.Offset : 0,
-                options != null ? options.Iterator : Iterator.Eq,
+                options.Limit,
+                options.Offset,
+                options.Iterator,
+                key);
+
+            if (responseType != null)
+            {
+                return LogicalConnection?.SendRequest(selectRequest, Timeout.InfiniteTimeSpan, TarantoolContext.Instance.GetTarantoolTupleArrayType(responseType));
+            }
+            else
+            {
+                return LogicalConnection?.SendRequest(selectRequest, Timeout.InfiniteTimeSpan, responseType);
+            }
+        }
+
+        public DataResponse? Select(TarantoolTuple key, TarantoolTupleType? responseType = null)
+        {
+            var selectRequest = new SelectRequest(
+                SpaceId,
+                Id,
+                SelectOptions.Default.Limit,
+                SelectOptions.Default.Offset,
+                SelectOptions.Default.Iterator,
                 key);
 
             if (responseType != null)

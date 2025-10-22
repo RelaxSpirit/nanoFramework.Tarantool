@@ -56,7 +56,15 @@ namespace nanoFramework.Tarantool.Client.Interfaces
         /// <param name="responseType"><see cref="Tarantool"/> tuple return data type.</param>
         /// <returns><see cref="Tarantool"/> data response.</returns>
 #nullable enable
-        DataResponse? Select(TarantoolTuple key, SelectOptions? options = null, TarantoolTupleType? responseType = null);
+        DataResponse? Select(TarantoolTuple key, SelectOptions options, TarantoolTupleType? responseType = null);
+
+        /// <summary>
+        /// Search for a <see cref="Tarantool"/> tuple or a set of tuples by the current index. To search by the primary index in the specified space.
+        /// </summary>
+        /// <param name="key">A <see cref="Tarantool"/> tuple value to be matched against the index key, which may be multi-part.</param>
+        /// <param name="responseType"><see cref="Tarantool"/> tuple return data type.</param>
+        /// <returns><see cref="Tarantool"/> data response.</returns>
+        DataResponse? Select(TarantoolTuple key, TarantoolTupleType? responseType = null);
 
         /// <summary>
         /// Delete a <see cref="Tarantool"/> tuple identified by a key.

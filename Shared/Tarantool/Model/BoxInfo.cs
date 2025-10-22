@@ -39,6 +39,6 @@ namespace nanoFramework.Tarantool.Model
         /// Gets or sets the <see cref="Tarantool"/> version.
         /// </summary>
 #nullable enable
-        public TarantoolVersion? Version { get; protected set; }
+        public TarantoolVersion Version { get; protected set; }
     }
 }

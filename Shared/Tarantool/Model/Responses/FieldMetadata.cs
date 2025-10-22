@@ -10,10 +10,10 @@ namespace nanoFramework.Tarantool.Model.Responses
     /// <summary>
     /// <see cref="Tarantool"/> field metadata.
     /// </summary>
-    public class FieldMetadata
+    public struct FieldMetadata
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="FieldMetadata"/> class.
+        /// Initializes a new instance of the <see cref="FieldMetadata"/> struct.
         /// </summary>
         /// <param name="name">Field name.</param>
         /// <exception cref="ArgumentNullException">If field name is null.</exception>
@@ -62,22 +62,7 @@ namespace nanoFramework.Tarantool.Model.Responses
         /// <returns><see langword="true"/> if two object is equal as <see cref="FieldMetadata"/>, other <see langword="false"/>.</returns>
         public override bool Equals(object? obj)
         {
-            if (obj is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-
-            if (obj.GetType() != GetType())
-            {
-                return false;
-            }
-
-            return Equals((FieldMetadata)obj);
+            return obj is FieldMetadata fieldMetadata && Equals(fieldMetadata);
         }
 
         /// <summary>
@@ -91,16 +76,6 @@ namespace nanoFramework.Tarantool.Model.Responses
 
         private bool Equals(FieldMetadata other)
         {
-            if (other is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(this, other))
-            {
-                return true;
-            }
-
             return string.Equals(Name, other.Name);
         }
     }

@@ -10,10 +10,10 @@ namespace nanoFramework.Tarantool.Model.Requests
     /// Since the argument is a Lua expression, this is <see cref="Tarantool"/>’s way to handle non-binary with the binary protocol.
     /// Any request that does not have its own code, for example , will be handled either with <see cref="CallRequest"/> or <see cref="EvalRequest"/>.
     /// </summary>
-    public class EvalRequest : IRequest
+    public struct EvalRequest : IRequest
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="EvalRequest"/> class.
+        /// Initializes a new instance of the <see cref="EvalRequest"/> struct.
         /// </summary>
         /// <param name="expression"><see cref="Tarantool"/> expression text to be eval.</param>
         /// <param name="tuple"><see cref="TarantoolTuple"/> parameter for eval.</param>
