@@ -9,10 +9,10 @@ namespace nanoFramework.Tarantool.Model.Requests
     /// <summary>
     /// Upsert <see cref="Tarantool"/> request.
     /// </summary>
-    public class UpsertRequest : IRequest
+    public struct UpsertRequest : IRequest
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="UpsertRequest"/> class.
+        /// Initializes a new instance of the <see cref="UpsertRequest"/> struct.
         /// </summary>
         /// <param name="spaceId"><see cref="Tarantool"/> space id.</param>
         /// <param name="tuple"><see cref="Tarantool"/> tuple to upsert.</param>

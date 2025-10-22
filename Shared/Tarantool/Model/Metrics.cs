@@ -8,12 +8,12 @@ namespace nanoFramework.Tarantool.Model
     /// <summary>
     /// Network connection statistics.
     /// </summary>
-    public class Metrics
+    public struct Metrics
     {
         private readonly ILogicalConnection _logicalConnection;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Metrics"/> class.
+        /// Initializes a new instance of the <see cref="Metrics"/> struct.
         /// </summary>
         /// <param name="logicalConnection">Network logical connection interface <see cref="ILogicalConnection"/>.</param>
         internal Metrics(ILogicalConnection logicalConnection)

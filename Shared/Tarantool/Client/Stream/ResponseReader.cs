@@ -80,19 +80,13 @@ namespace nanoFramework.Tarantool.Client.Stream
         }
 
 #nullable enable
-        private static ArraySegment GetErrorResponsePacket(string message, ResponseHeader? responseHeader)
+        private static ArraySegment GetErrorResponsePacket(string message, ResponseHeader responseHeader)
         {
             using (MemoryStream ms = new MemoryStream())
             {
                 //// CommandCode.ErrorMask is a Unknown error
-                if (responseHeader != null)
-                {
-                    MessagePackSerializer.Serialize(new ResponseHeader(CommandCode.ErrorMask, responseHeader.RequestId, responseHeader.SchemaId), ms);
-                }
-                else
-                {
-                    MessagePackSerializer.Serialize(new ResponseHeader(CommandCode.ErrorMask, new RequestId(0), 0), ms);
-                }
+                
+                MessagePackSerializer.Serialize(new ResponseHeader(CommandCode.ErrorMask, responseHeader.RequestId, responseHeader.SchemaId), ms);
 
                 MessagePackSerializer.Serialize(new ErrorResponse(message), ms);
 
@@ -101,9 +95,9 @@ namespace nanoFramework.Tarantool.Client.Stream
             }
         }
 
-        private static ResponseHeader? GetResponseHeader(ArraySegment buffer)
+        private static ResponseHeader GetResponseHeader(ArraySegment buffer)
         {
-            ResponseHeader? responseHeader = null;
+            ResponseHeader responseHeader = ResponseHeader.Empty;
             try
             {
                 responseHeader = ResponseHeaderConverter.Read(buffer);
@@ -202,33 +196,26 @@ namespace nanoFramework.Tarantool.Client.Stream
         private void MatchResult(ArraySegment arraySegment)
         {
             var header = GetResponseHeader(arraySegment);
-            if (header != null)
-            {
-                var cs = ((IResponseReader)this).PopResponseCompletionSource(header.RequestId);
+            var cs = ((IResponseReader)this).PopResponseCompletionSource(header.RequestId);
 
-                if (cs?.CompleteResultCallback == null)
+            if (cs?.CompleteResultCallback == null)
+            {
+                if (header.Code != CommandCode.Ping)
                 {
-                    if (header.Code != CommandCode.Ping)
-                    {
-                        LogUnMatchedResponse((byte[])arraySegment);
-                    }
-                }
-                else
-                {
-                    if ((header.Code & CommandCode.ErrorMask) == CommandCode.ErrorMask)
-                    {
-                        var errorResponse = ErrorResponsePacketConverter.Read(arraySegment);
-                        cs.CompleteResultCallback.Invoke(ExceptionHelper.TarantoolError(header, errorResponse));
-                    }
-                    else
-                    {
-                        cs.CompleteResultCallback.Invoke(arraySegment);
-                    }
+                    LogUnMatchedResponse((byte[])arraySegment);
                 }
             }
             else
             {
-                LogUnMatchedResponse((byte[])arraySegment);
+                if ((header.Code & CommandCode.ErrorMask) == CommandCode.ErrorMask)
+                {
+                    var errorResponse = ErrorResponsePacketConverter.Read(arraySegment);
+                    cs.CompleteResultCallback.Invoke(ExceptionHelper.TarantoolError(header, errorResponse));
+                }
+                else
+                {
+                    cs.CompleteResultCallback.Invoke(arraySegment);
+                }
             }
         }
 
@@ -302,7 +289,7 @@ namespace nanoFramework.Tarantool.Client.Stream
         private void ReadNetworkStream()
         {
             var packetSize = GetPacketSize();
-            if (packetSize != null)
+            if (packetSize != PacketSize.Empty)
             {
                 //// DOTO The response packet may be too large (maximum 2 Gb).
                 //// For a microcontroller, this may lead to the exhaustion of all memory.
@@ -311,7 +298,7 @@ namespace nanoFramework.Tarantool.Client.Stream
                     if (IsReadingPartsQueueFree())
                     {
                         int reader = _physicalConnection.Read(_buffer, _readingOffset, _buffer.Length);
-                        ResponseHeader? responseHeader = GetResponseHeader(_buffer);
+                        ResponseHeader responseHeader = GetResponseHeader(_buffer);
 
                         var errorPacketSegment = GetErrorResponsePacket($"The package size {packetSize.Value} bytes is too large, maximum packet size for reception {_buffer.Length} bytes", responseHeader);
 
@@ -347,13 +334,13 @@ namespace nanoFramework.Tarantool.Client.Stream
             }
         }
 
-        private PacketSize? GetPacketSize()
+        private PacketSize GetPacketSize()
         {
             var readByteCount = _physicalConnection.Read(_packetSizeBuffer, 0, _packetSizeBuffer.Length);
             
             if (_disposed)
             {
-                return null;
+                return PacketSize.Empty;
             }
 
             while (readByteCount < _packetSizeBuffer.Length && readByteCount > 0)
@@ -361,13 +348,13 @@ namespace nanoFramework.Tarantool.Client.Stream
                 var reading = _physicalConnection.Read(_packetSizeBuffer, readByteCount, _packetSizeBuffer.Length - readByteCount);
                 if (reading < 1 || _disposed)
                 {
-                    return null;
+                    return PacketSize.Empty;
                 }
 
                 readByteCount += reading;
             }
 
-            return (PacketSize?)MessagePackSerializer.Deserialize(typeof(PacketSize), _packetSizeBuffer);
+            return (PacketSize)(MessagePackSerializer.Deserialize(typeof(PacketSize), _packetSizeBuffer) ?? throw ExceptionHelper.ActualValueIsNullReference());
         }
 
         private void EnqueuePacket(int packetSize)

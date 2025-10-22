@@ -82,7 +82,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Model\Enums\Iterator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Model\Enums\Key.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Model\Enums\StorageEngine.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Model\Headers\HeaderBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Model\Headers\RequestHeader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Model\Headers\ResponseHeader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Model\IndexCreationOptions.cs" />

@@ -15,7 +15,7 @@ namespace nanoFramework.Tarantool.Client.Extensions
 #nullable enable
         internal static bool IsSqlAvailable(this BoxInfo? info)
         {
-            if (info?.Version is null)
+            if (info == null || info.Version == TarantoolVersion.Empty)
             {
                 return true;
             }

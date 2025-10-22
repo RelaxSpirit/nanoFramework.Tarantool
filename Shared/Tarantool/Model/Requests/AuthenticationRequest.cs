@@ -10,12 +10,12 @@ using nanoFramework.Tarantool.Model.Responses;
 namespace nanoFramework.Tarantool.Model.Requests
 {
     /// <summary>
-    /// The <see cref="Tarantool"/> authentication request class.
+    /// The <see cref="Tarantool"/> authentication request struct.
     /// </summary>
-    internal class AuthenticationRequest : IRequest
+    internal struct AuthenticationRequest : IRequest
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AuthenticationRequest"/> class.
+        /// Initializes a new instance of the <see cref="AuthenticationRequest"/> struct.
         /// </summary>
         /// <param name="username">User name.</param>
         /// <param name="scramble">Scramble byte array.</param>

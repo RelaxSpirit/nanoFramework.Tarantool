@@ -17,23 +17,16 @@ namespace nanoFramework.Tarantool.Converters
     internal class CallPacketConverter : IConverter
     {
 #nullable enable
-        public static void Write(CallRequest? value, [NotNull] IMessagePackWriter writer)
+        public static void Write(CallRequest value, [NotNull] IMessagePackWriter writer)
         {
-            if (value != null)
-            {
-                var tupleConverter = TarantoolContext.Instance.GetTarantoolTupleConverter(value.Tuple);
-                writer.WriteMapHeader(2);
+            var tupleConverter = TarantoolContext.Instance.GetTarantoolTupleConverter(value.Tuple);
+            writer.WriteMapHeader(2);
 
-                TarantoolContext.Instance.UintConverter.Write(Key.FunctionName, writer);
-                TarantoolContext.Instance.StringConverter.Write(value.FunctionName, writer);
+            TarantoolContext.Instance.UintConverter.Write(Key.FunctionName, writer);
+            TarantoolContext.Instance.StringConverter.Write(value.FunctionName, writer);
 
-                TarantoolContext.Instance.UintConverter.Write(Key.Tuple, writer);
-                tupleConverter.Write(value.Tuple, writer);
-            }
-            else
-            {
-                throw new NullReferenceException();
-            }
+            TarantoolContext.Instance.UintConverter.Write(Key.Tuple, writer);
+            tupleConverter.Write(value.Tuple, writer);
         }
 
         public virtual object? Read([NotNull] IMessagePackReader reader)
@@ -43,7 +36,7 @@ namespace nanoFramework.Tarantool.Converters
 
         public void Write(object? value, [NotNull] IMessagePackWriter writer)
         {
-            Write((CallRequest?)value, writer);
+            Write((CallRequest)(value ?? throw new ArgumentException()), writer);
         }
     }
 }

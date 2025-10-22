@@ -9,13 +9,13 @@ namespace nanoFramework.Tarantool.Model.Responses
     /// <summary>
     /// The <see cref="Tarantool"/> greetings response class.
     /// </summary>
-    internal class GreetingsResponse
+    internal struct GreetingsResponse
     {
         private const int GreetingsMessageLength = 64;
         private const int GreetingsSaltLength = 44;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GreetingsResponse"/> class.
+        /// Initializes a new instance of the <see cref="GreetingsResponse"/> struct.
         /// </summary>
         /// <param name="response">Byte array by response.</param>
         internal GreetingsResponse(byte[] response)

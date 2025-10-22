@@ -6,18 +6,29 @@ using nanoFramework.Tarantool.Model.Enums;
 namespace nanoFramework.Tarantool.Model.Headers
 {
     /// <summary>
-    /// The <see cref="Tarantool"/> request header class.
+    /// The <see cref="Tarantool"/> request header struct.
     /// </summary>
-    internal class RequestHeader : HeaderBase
+    internal struct RequestHeader
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="RequestHeader"/> class.
+        /// Initializes a new instance of the <see cref="RequestHeader"/> struct.
         /// </summary>
         /// <param name="code"><see cref="Tarantool"/> command code.</param>
         /// <param name="requestId">Request id.</param>
         internal RequestHeader(CommandCode code, RequestId requestId)
-            : base(code, requestId)
         {
+            Code = code;
+            RequestId = requestId;
         }
+
+        /// <summary>
+        /// Gets <see cref="Tarantool"/> command code.
+        /// </summary>
+        internal CommandCode Code { get; }
+
+        /// <summary>
+        /// Gets or sets request id number.
+        /// </summary>
+        internal RequestId RequestId { get; set; }
     }
 }

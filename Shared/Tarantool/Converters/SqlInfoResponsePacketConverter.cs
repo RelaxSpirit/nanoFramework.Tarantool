@@ -25,7 +25,7 @@ namespace nanoFramework.Tarantool.Converters
                 throw ExceptionHelper.InvalidMapLength(length, 1u, 2u);
             }
 
-            var sqlInfo = default(SqlInfo);
+            var sqlInfo = SqlInfo.Empty;
 
             for (var i = 0; i < length; i++)
             {
@@ -46,15 +46,16 @@ namespace nanoFramework.Tarantool.Converters
             return new SqlInfoResponse(sqlInfo);
         }
 
-        internal static SqlInfo? ReadSqlInfo(IMessagePackReader reader, IConverter keyConverter, IConverter intConverter)
+        internal static SqlInfo ReadSqlInfo(IMessagePackReader reader, IConverter keyConverter, IConverter intConverter)
         {
+            SqlInfo result = SqlInfo.Empty;
+
             var length = reader.ReadMapLength();
             if (length == uint.MaxValue)
             {
-                return null;
+                return result;
             }
 
-            SqlInfo? result = null;
             for (var i = 0; i < length; i++)
             {
                 var keyValue = (Key)(keyConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());

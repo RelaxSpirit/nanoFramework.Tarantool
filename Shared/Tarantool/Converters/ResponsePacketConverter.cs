@@ -42,7 +42,7 @@ namespace nanoFramework.Tarantool.Converters
             object? data = null;
             var dataWasSet = false;
             object? metadata = null;
-            SqlInfo? sqlInfo = null;
+            SqlInfo sqlInfo = SqlInfo.Empty;
 
             for (var i = 0; i < length; i++)
             {
@@ -67,7 +67,7 @@ namespace nanoFramework.Tarantool.Converters
                 }
             }
 
-            if (!dataWasSet && sqlInfo == null)
+            if (!dataWasSet && sqlInfo == SqlInfo.Empty)
             {
                 throw ExceptionHelper.NoDataInDataResponse();
             }
@@ -90,14 +90,14 @@ namespace nanoFramework.Tarantool.Converters
                 return null;
             }
 
-            var result = new FieldMetadata?[length];
+            var result = new FieldMetadata[length];
 
             for (var i = 0; i < length; i++)
             {
                 var metadataLength = reader.ReadMapLength();
                 if (metadataLength == uint.MaxValue)
                 {
-                    result[i] = null;
+                    result[i] = default;
                     continue;
                 }
 

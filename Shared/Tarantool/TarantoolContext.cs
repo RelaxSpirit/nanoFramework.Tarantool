@@ -36,9 +36,6 @@ namespace nanoFramework.Tarantool
         private readonly Hashtable _tarantoolTupleArrayTypeHashtable = new Hashtable();
         private readonly object _converterContextTupleTypeLock = new object();
         private readonly object _converterContextTupleArrayTypeLock = new object();
-        private readonly object _tarantoolConvertersHashtableLock = new object();
-        private readonly object _tarantoolTupleTypeHashtableLock = new object();
-        private readonly object _tarantoolTupleArrayTypeHashtableLock = new object();
 
         static TarantoolContext()
         {
@@ -282,7 +279,7 @@ namespace nanoFramework.Tarantool
 
             if (tarantoolTupleType == null)
             {
-                lock (_tarantoolTupleTypeHashtableLock)
+                lock (_tarantoolTupleTypeHashtable.SyncRoot)
                 {
                     tarantoolTupleType = _tarantoolTupleTypeHashtable[typesFullName];
 
@@ -308,7 +305,7 @@ namespace nanoFramework.Tarantool
             var tarantoolTupleArrayType = _tarantoolTupleArrayTypeHashtable[elementTypeFullName];
             if (tarantoolTupleArrayType == null)
             {
-                lock (_tarantoolTupleArrayTypeHashtableLock)
+                lock (_tarantoolTupleArrayTypeHashtable.SyncRoot)
                 {
                     tarantoolTupleArrayType = _tarantoolTupleArrayTypeHashtable[elementTypeFullName];
                     if (tarantoolTupleArrayType == null)
@@ -354,7 +351,7 @@ namespace nanoFramework.Tarantool
 
             if (converter == null)
             {
-                lock (_tarantoolConvertersHashtableLock)
+                lock (_tarantoolConvertersHashtable.SyncRoot)
                 {
                     converter = _tarantoolConvertersHashtable[dataType.Name];
 

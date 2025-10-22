@@ -8,7 +8,7 @@ namespace nanoFramework.Tarantool.Model.Requests
     /// <summary>
     /// The <see cref="Tarantool"/> ping request class.
     /// </summary>
-    internal class PingRequest : IRequest
+    internal struct PingRequest : IRequest
     {
         /// <summary>
         /// Gets <see cref="CommandCode.Ping"/> command code.

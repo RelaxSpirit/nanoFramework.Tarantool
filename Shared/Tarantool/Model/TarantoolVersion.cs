@@ -7,12 +7,17 @@ using nanoFramework.Tarantool.Helpers;
 namespace nanoFramework.Tarantool.Model
 {
     /// <summary>
-    /// <see cref="Tarantool"/> version class.
+    /// <see cref="Tarantool"/> version struct.
     /// </summary>
-    public class TarantoolVersion : IComparable
+    public struct TarantoolVersion : IComparable
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TarantoolVersion"/> class.
+        /// Empty <see cref="TarantoolVersion"/> instance struct.
+        /// </summary>
+        public static readonly TarantoolVersion Empty = new TarantoolVersion(new MajorVersion(0, 0), 0, 0, string.Empty);
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TarantoolVersion"/> struct.
         /// </summary>
         /// <param name="major">Major <see cref="Tarantool"/> version.</param>
         /// <param name="minor">Minor <see cref="Tarantool"/> version number.</param>
@@ -144,22 +149,7 @@ namespace nanoFramework.Tarantool.Model
 #nullable enable
         public override bool Equals(object? obj)
         {
-            if (obj is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-
-            if (obj.GetType() != GetType())
-            {
-                return false;
-            }
-
-            return Equals((TarantoolVersion)obj);
+            return obj is TarantoolVersion tarantoolVersion && Equals(tarantoolVersion);
         }
 
         /// <summary>
@@ -173,11 +163,6 @@ namespace nanoFramework.Tarantool.Model
             if (obj is null)
             {
                 return 1;
-            }
-
-            if (ReferenceEquals(this, obj))
-            {
-                return 0;
             }
 
             return obj is TarantoolVersion version
@@ -201,31 +186,11 @@ namespace nanoFramework.Tarantool.Model
 
         private bool Equals(TarantoolVersion other)
         {
-            if (other is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(this, other))
-            {
-                return true;
-            }
-
-            return Major.Equals(other.Major) && Minor == other.Minor && Build == other.Build && string.Equals(CommitHash, other.CommitHash);
+           return Major.Equals(other.Major) && Minor == other.Minor && Build == other.Build && string.Equals(CommitHash, other.CommitHash);
         }
 
         private int CompareTo(TarantoolVersion other)
         {
-            if (ReferenceEquals(this, other))
-            {
-                return 0;
-            }
-
-            if (other is null)
-            {
-                return 1;
-            }
-
             var majorComparison = Major.CompareTo(other.Major);
             if (majorComparison != 0)
             {

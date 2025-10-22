@@ -13,12 +13,12 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Data
             TestData = data;
         }
 
-        internal DataResponseMock(object? data) : base(data, null)
+        internal DataResponseMock(object? data) : base(data, SqlInfo.Empty)
         {
             TestData = data;
         }
 
-        internal DataResponseMock(object? data, FieldMetadata[] metadata, SqlInfo? sqlInfo) : base(data, metadata, sqlInfo)
+        internal DataResponseMock(object? data, FieldMetadata[] metadata, SqlInfo sqlInfo) : base(data, metadata, sqlInfo)
         {
             TestData = data;
         }

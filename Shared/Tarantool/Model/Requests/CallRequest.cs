@@ -10,12 +10,12 @@ namespace nanoFramework.Tarantool.Model.Requests
     /// This is a remote stored-procedure call. <see cref="Tarantool"/> 1.6 and earlier made use of the <see cref="CommandCode.OldCall"/> request (code: 0x06).
     /// It is now deprecated and superseded by <see cref="CommandCode.Call"/>.
     /// </summary>
-    public class CallRequest : IRequest
+    public struct CallRequest : IRequest
     {
         private readonly bool _use17;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CallRequest"/> class.
+        /// Initializes a new instance of the <see cref="CallRequest"/> struct.
         /// </summary>
         /// <param name="functionName">Stored-procedure name.</param>
         /// <param name="tuple">Stored-procedure parameter <see cref="TarantoolTuple"/>.</param>

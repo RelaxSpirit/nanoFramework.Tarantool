@@ -9,7 +9,7 @@ namespace nanoFramework.Tarantool.Model.Responses
     /// </summary>
     public class SqlInfoResponse
     {
-        internal SqlInfoResponse(SqlInfo? sqlInfo)
+        internal SqlInfoResponse(SqlInfo sqlInfo)
         {
             SqlInfo = sqlInfo;
         }
@@ -17,6 +17,6 @@ namespace nanoFramework.Tarantool.Model.Responses
         /// <summary>
         /// Gets SQL info.
         /// </summary>
-        public SqlInfo? SqlInfo { get; }
+        public SqlInfo SqlInfo { get; }
     }
 }

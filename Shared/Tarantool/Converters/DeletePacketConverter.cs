@@ -16,26 +16,19 @@ namespace nanoFramework.Tarantool.Converters
     internal class DeletePacketConverter : IConverter
     {
 #nullable enable
-        public static void Write(DeleteRequest? value, IMessagePackWriter writer)
+        public static void Write(DeleteRequest value, IMessagePackWriter writer)
         {
-            if (value != null)
-            {
-                var selectKeyConverter = TarantoolContext.Instance.GetTarantoolTupleConverter(value.Key);
-                writer.WriteMapHeader(3);
+            var selectKeyConverter = TarantoolContext.Instance.GetTarantoolTupleConverter(value.Key);
+            writer.WriteMapHeader(3);
 
-                TarantoolContext.Instance.UintConverter.Write(Key.SpaceId, writer);
-                TarantoolContext.Instance.UintConverter.Write(value.SpaceId, writer);
+            TarantoolContext.Instance.UintConverter.Write(Key.SpaceId, writer);
+            TarantoolContext.Instance.UintConverter.Write(value.SpaceId, writer);
 
-                TarantoolContext.Instance.UintConverter.Write(Key.IndexId, writer);
-                TarantoolContext.Instance.UintConverter.Write(value.IndexId, writer);
+            TarantoolContext.Instance.UintConverter.Write(Key.IndexId, writer);
+            TarantoolContext.Instance.UintConverter.Write(value.IndexId, writer);
 
-                TarantoolContext.Instance.UintConverter.Write(Key.Key, writer);
-                selectKeyConverter.Write(value.Key, writer);
-            }
-            else
-            {
-                throw new NullReferenceException();
-            }
+            TarantoolContext.Instance.UintConverter.Write(Key.Key, writer);
+            selectKeyConverter.Write(value.Key, writer);
         }
 
         public virtual object? Read([NotNull] IMessagePackReader reader)
@@ -45,7 +38,7 @@ namespace nanoFramework.Tarantool.Converters
 
         public void Write(object? value, [NotNull] IMessagePackWriter writer)
         {
-            Write((DeleteRequest?)value, writer);
+            Write((DeleteRequest)(value ?? throw new ArgumentException()), writer);
         }
     }
 }
