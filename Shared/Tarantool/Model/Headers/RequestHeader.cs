@@ -27,8 +27,8 @@ namespace nanoFramework.Tarantool.Model.Headers
         internal CommandCode Code { get; }
 
         /// <summary>
-        /// Gets or sets request id number.
+        /// Gets request id number.
         /// </summary>
-        internal RequestId RequestId { get; set; }
+        internal RequestId RequestId { get; }
     }
 }

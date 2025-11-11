@@ -38,7 +38,7 @@ namespace nanoFramework.Tarantool.Client.Connections
         /// </summary>
         /// <param name="options">Client options.</param>
         /// <param name="requestIdCounter"><see cref="Tarantool"/> request id counter.</param>
-        public LogicalConnection(ClientOptions options, RequestIdCounter requestIdCounter)
+        internal LogicalConnection(ClientOptions options, RequestIdCounter requestIdCounter)
         {
             _clientOptions = options;
             _requestIdCounter = requestIdCounter;

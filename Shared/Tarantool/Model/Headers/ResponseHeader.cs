@@ -8,7 +8,7 @@ namespace nanoFramework.Tarantool.Model.Headers
     /// <summary>
     /// The <see cref="Tarantool"/> response header class.
     /// </summary>
-    internal struct ResponseHeader //: HeaderBase
+    internal struct ResponseHeader
     {
         internal static readonly ResponseHeader Empty = new ResponseHeader(CommandCode._, RequestId.Empty, 0);
 
@@ -18,7 +18,7 @@ namespace nanoFramework.Tarantool.Model.Headers
         /// <param name="code"><see cref="Tarantool"/> command code.</param>
         /// <param name="requestId">Request id.</param>
         /// <param name="schemaId"><see cref="Tarantool"/> schema id.</param>
-        internal ResponseHeader(CommandCode code, RequestId requestId, ulong schemaId)// : base(code, requestId)
+        internal ResponseHeader(CommandCode code, RequestId requestId, ulong schemaId)
         {
             SchemaId = schemaId;
             Code = code;
@@ -36,8 +36,8 @@ namespace nanoFramework.Tarantool.Model.Headers
         internal CommandCode Code { get; }
 
         /// <summary>
-        /// Gets or sets request id number.
+        /// Gets request id number.
         /// </summary>
-        internal RequestId RequestId { get; set; }
+        internal RequestId RequestId { get; }
     }
 }

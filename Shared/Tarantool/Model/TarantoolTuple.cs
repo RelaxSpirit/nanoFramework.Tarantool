@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System;
-using System.Collections;
 using System.Text;
 using nanoFramework.Tarantool.Dto;
 
@@ -14,12 +13,14 @@ namespace nanoFramework.Tarantool.Model
     public class TarantoolTuple
     {
 #nullable enable
-        private static object lockEmptyInstance = new object();
-        private static TarantoolTuple? emptyInstance;
+        /// <summary>
+        /// Gets empty <see cref="Tarantool"/> tuple.
+        /// </summary>
+        public static readonly TarantoolTuple Empty = new TarantoolTuple();
 
         private readonly TarantoolTupleType _tarantoolTupleType;
         private readonly Type[] _tupleItemTypes;
-        private readonly ArrayList _items = new ArrayList();
+        private readonly object?[] _items;
 
         /// <summary>
         ///  Prevents a default instance of the <see cref="TarantoolTuple" /> class from being created.
@@ -27,6 +28,7 @@ namespace nanoFramework.Tarantool.Model
         private TarantoolTuple()
         {
             _tupleItemTypes = new Type[0];
+            _items = new object[0];
             _tarantoolTupleType = TarantoolContext.Instance.GetTarantoolTupleType(_tupleItemTypes);
         }
 
@@ -37,6 +39,7 @@ namespace nanoFramework.Tarantool.Model
         private TarantoolTuple(params object?[] tupleObjects)
         {
             _tupleItemTypes = new Type[tupleObjects.Length];
+            _items = new object[tupleObjects.Length];
 
             for (int i = 0; i < tupleObjects.Length; i++)
             {
@@ -46,7 +49,7 @@ namespace nanoFramework.Tarantool.Model
                     _tupleItemTypes[i] = itemObject.GetType();
                 }
 
-                _items.Add(tupleObjects[i]);
+                _items[i] = tupleObjects[i];
             }
 
             _tarantoolTupleType = TarantoolContext.Instance.GetTarantoolTupleType(_tupleItemTypes);
@@ -68,29 +71,7 @@ namespace nanoFramework.Tarantool.Model
         /// <summary>
         /// Gets <see cref="Tarantool"/> tuple length (items count).
         /// </summary>
-        public int Length => _tupleItemTypes.Length;
-
-        /// <summary>
-        /// Gets empty <see cref="Tarantool"/> tuple.
-        /// </summary>
-        public static TarantoolTuple Empty 
-        { 
-            get
-            {
-                if (emptyInstance == null)
-                {
-                    lock (lockEmptyInstance)
-                    {
-                        if (emptyInstance == null)
-                        {
-                            emptyInstance = new TarantoolTuple();
-                        }
-                    }
-                }
-
-                return emptyInstance;
-            }
-        }
+        public int Length => _items.Length;
 
         /// <summary>
         /// Create <see cref="Tarantool"/> tuple.
@@ -129,7 +110,7 @@ namespace nanoFramework.Tarantool.Model
 #nullable disable
 
         /// <summary>
-        /// Overrides base class method <see cref="object.GetHashCode"/>
+        /// Overrides base class method <see cref="object.GetHashCode()"/>
         /// </summary>
         /// <returns>Hash code <see cref="Tarantool"/> tuple.</returns>
         public override int GetHashCode()
@@ -145,7 +126,7 @@ namespace nanoFramework.Tarantool.Model
         }
 
         /// <summary>
-        /// Overrides base class method <see cref="object.ToString"/>
+        /// Overrides base class method <see cref="object.ToString()"/>
         /// </summary>
         /// <returns><see cref="Tarantool"/> tuple string.</returns>
         public override string ToString()
@@ -167,7 +148,7 @@ namespace nanoFramework.Tarantool.Model
         }
 
         /// <summary>
-        /// Overrides base class method <see cref="object.GetType"/>
+        /// Overrides base class method <see cref="object.GetType()"/>
         /// </summary>
         /// <returns><see cref="Type"/> <see cref="TarantoolTuple"/> instance.</returns>
         public new Type GetType()
@@ -177,17 +158,17 @@ namespace nanoFramework.Tarantool.Model
 
         internal object[] GetItems()
         {
-            return _items.ToArray();
+            return _items;
         }
 
         private bool Equals(TarantoolTuple other)
         {
-            if (_items.Count != other._items.Count)
+            if (_items.Length != other._items.Length)
             {
                 return false;
             }
 
-            for (int i = 0; i < _items.Count; i++)
+            for (int i = 0; i < _items.Length; i++)
             {
                 if (_tupleItemTypes[i] != other._tupleItemTypes[i] || !this[i].Equals(other[i]))
                 {
