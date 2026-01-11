@@ -36,7 +36,7 @@
       <HintPath>..\packages\nanoFramework.CoreLibrary.1.17.11\lib\mscorlib.dll</HintPath>
     </Reference>
     <Reference Include="nanoFramework.MessagePack">
-      <HintPath>..\packages\nanoFramework.MessagePack.1.0.29\lib\netnano1.0\nanoFramework.MessagePack.dll</HintPath>
+      <HintPath>..\packages\nanoFramework.MessagePack.1.0.42\lib\netnano1.0\nanoFramework.MessagePack.dll</HintPath>
     </Reference>
     <Reference Include="nanoFramework.System.Collections">
       <HintPath>..\packages\nanoFramework.System.Collections.1.5.67\lib\nanoFramework.System.Collections.dll</HintPath>
