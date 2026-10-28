@@ -23,7 +23,6 @@ namespace nanoFramework.Tarantool.Client.Connections
     /// </summary>
     internal class LogicalConnection : ILogicalConnection
     {
-        private readonly ResponsePacketConverter _responseConverter = (ResponsePacketConverter)ConverterContext.GetConverter(typeof(DataResponse));
         private readonly ClientOptions _clientOptions;
         private readonly RequestIdCounter _requestIdCounter;
         private readonly NetworkStreamPhysicalConnection _physicalConnection;
@@ -125,14 +124,7 @@ namespace nanoFramework.Tarantool.Client.Connections
 
             if (arraySegment != null)
             {
-                if (responseDataType == null)
-                {
-                    return _responseConverter.Read(arraySegment);
-                }
-
-                var converter = TarantoolContext.Instance.GetDataResponseDataTypeConverter(responseDataType);
-
-                return (DataResponse?)converter.Read(arraySegment);
+                return ResponsePacketConverter.Read(arraySegment, responseDataType);
             }
             else
             {

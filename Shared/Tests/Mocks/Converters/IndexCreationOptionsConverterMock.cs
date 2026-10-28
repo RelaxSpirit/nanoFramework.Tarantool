@@ -18,7 +18,7 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
         {
             if (value is IndexCreationOptions options)
             {
-                writer.WriteMapHeader(1);
+                writer.WriteMapHeader(1u);
 
                 var stringConverter = TarantoolContext.Instance.StringConverter;
                 var boolConverter = TarantoolContext.Instance.BoolConverter;

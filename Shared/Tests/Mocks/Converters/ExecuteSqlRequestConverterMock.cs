@@ -12,6 +12,7 @@ using System.Diagnostics.CodeAnalysis;
 #endif
 using nanoFramework.MessagePack;
 using nanoFramework.MessagePack.Dto;
+using nanoFramework.MessagePack.Exceptions;
 using nanoFramework.MessagePack.Stream;
 using nanoFramework.Tarantool.Converters;
 using nanoFramework.Tarantool.Helpers;
@@ -33,7 +34,6 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
                 throw ExceptionHelper.InvalidMapLength(length, 3);
             }
 
-            var keyConverter = TarantoolContext.Instance.UintConverter;
             var stringConverter = TarantoolContext.Instance.StringConverter;
 
             string? query = null;
@@ -41,7 +41,7 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
 
             for (var i = 0; i < length; i++)
             {
-                Key key = (Key)(keyConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+                Key key = (Key)(TarantoolContext.Instance.KeyConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
 
                 switch (key)
                 {
@@ -110,39 +110,39 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
                 case DataTypes.False:
                     return false;
                 case DataTypes.Double:
-                    return ConverterContext.GetConverter(typeof(double)).Read(reader);
+                    return (ConverterContext.GetConverter(typeof(double)) ?? throw new ConverterNotFoundException(typeof(double))).Read(reader);
                 case DataTypes.Single:
-                    return ConverterContext.GetConverter(typeof(float)).Read(reader);
+                    return (ConverterContext.GetConverter(typeof(float)) ?? throw new ConverterNotFoundException(typeof(float))).Read(reader);
                 case DataTypes.Str8:
                 case DataTypes.Str16:
                 case DataTypes.Str32:
                     return TarantoolContext.Instance.StringConverter.Read(reader);
                 case DataTypes.UInt8:
-                    return ConverterContext.GetConverter(typeof(byte)).Read(reader);
+                    return (ConverterContext.GetConverter(typeof(byte)) ?? throw new ConverterNotFoundException(typeof(byte))).Read(reader);
                 case DataTypes.UInt16:
-                    return ConverterContext.GetConverter(typeof(ushort)).Read(reader);
+                    return (ConverterContext.GetConverter(typeof(ushort)) ?? throw new ConverterNotFoundException(typeof(ushort))).Read(reader);
                 case DataTypes.UInt32:
                     return TarantoolContext.Instance.UintConverter.Read(reader);
                 case DataTypes.UInt64:
-                    return ConverterContext.GetConverter(typeof(ulong)).Read(reader);
+                    return TarantoolContext.Instance.UlongConverter.Read(reader);
                 case DataTypes.Int8:
-                    return ConverterContext.GetConverter(typeof(sbyte)).Read(reader);
+                    return (ConverterContext.GetConverter(typeof(sbyte)) ?? throw new ConverterNotFoundException(typeof(sbyte))).Read(reader);
                 case DataTypes.Int16:
-                    return ConverterContext.GetConverter(typeof(short)).Read(reader);
+                    return (ConverterContext.GetConverter(typeof(short)) ?? throw new ConverterNotFoundException(typeof(short))).Read(reader);
                 case DataTypes.Int32:
-                    return ConverterContext.GetConverter(typeof(int)).Read(reader);
+                    return TarantoolContext.Instance.IntConverter.Read(reader);
                 case DataTypes.Int64:
-                    return ConverterContext.GetConverter(typeof(long)).Read(reader);
+                    return TarantoolContext.Instance.LongConverter.Read(reader);
                 case DataTypes.Bin8:
                 case DataTypes.Bin16:
                 case DataTypes.Bin32:
-                    return ConverterContext.GetConverter(typeof(byte[])).Read(reader);
+                    return TarantoolContext.Instance.BytesConverter.Read(reader);
                 case DataTypes.Array16:
                 case DataTypes.Array32:
-                    return ConverterContext.GetConverter(typeof(ArrayList)).Read(reader);
+                    return TarantoolContext.Instance.ArrayListConverter.Read(reader);
                 case DataTypes.Map16:
                 case DataTypes.Map32:
-                    return ConverterContext.GetConverter(typeof(Hashtable)).Read(reader);
+                    return (ConverterContext.GetConverter(typeof(Hashtable)) ?? throw new ConverterNotFoundException(typeof(Hashtable))).Read(reader);
                 default:
                     return ReadObject(type, reader);
             }
@@ -157,12 +157,12 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
 
             if (IndexPartConverter.GetHighBits(type, 4) == IndexPartConverter.GetHighBits(DataTypes.FixArray, 4))
             {
-                return ConverterContext.GetConverter(typeof(ArrayList)).Read(reader);
+                return TarantoolContext.Instance.ArrayListConverter.Read(reader);
             }
 
             if (IndexPartConverter.GetHighBits(type, 4) == IndexPartConverter.GetHighBits(DataTypes.FixMap, 4))
             {
-                return ConverterContext.GetConverter(typeof(Hashtable)).Read(reader);
+                return (ConverterContext.GetConverter(typeof(Hashtable)) ?? throw new ConverterNotFoundException(typeof(Hashtable))).Read(reader);
             }
 
             if (IndexPartConverter.GetHighBits(type, 1) == IndexPartConverter.GetHighBits(DataTypes.PositiveFixNum, 1))

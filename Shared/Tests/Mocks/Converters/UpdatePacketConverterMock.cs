@@ -74,23 +74,21 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
                 throw ExceptionHelper.InvalidMapLength(length, 4);
             }
 
-            var keyConverter = TarantoolContext.Instance.UintConverter;
-
             uint spaceId = uint.MaxValue;
             uint indexId = uint.MaxValue;
             TarantoolTuple? tuple = null;
             UpdateOperation[] updateOperations = new UpdateOperation[0];
             for (var i = 0; i < length; i++)
             {
-                Key key = (Key)(keyConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+                Key key = (Key)(TarantoolContext.Instance.KeyConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
 
                 switch (key)
                 {
                     case Key.SpaceId:
-                        spaceId = (uint)(keyConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+                        spaceId = (uint)(TarantoolContext.Instance.KeyConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
                         break;
                     case Key.IndexId:
-                        indexId = (uint)(keyConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+                        indexId = (uint)(TarantoolContext.Instance.KeyConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
                         break;
                     case Key.Key:
                         tuple = (TarantoolTuple)(TarantoolMockContext.Instanse.TupleConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());

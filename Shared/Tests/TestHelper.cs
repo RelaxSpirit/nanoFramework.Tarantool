@@ -29,13 +29,15 @@ namespace nanoFramework.Tarantool.Tests
         /// <param name="writeStreamBufferSize">Write buffer size. Default 8192 bytes.</param>
         /// <param name="readStreamBufferSize">Read buffer size. Default 8192 bytes.</param>
         /// <param name="userData">User name and password. Default <see langword="null"/></param>
+        /// <param name="isRunToMock">Use Mock <see cref="Tarantool"/> stream. Default value is <see langword="true"/></param>
         /// <returns>New <see cref="ClientOptions"/> instance.</returns>
         internal static ClientOptions GetClientOptions(
             bool isReadSchemaOnConnect,
             bool isReadBoxInfoOnConnect,
             int writeStreamBufferSize = 8192,
             int readStreamBufferSize = 8192,
-            string? userData = null)
+            string? userData = null,
+            bool isRunToMock = true)
         {
             string replicationSource = $"{TarantoolHostIp}:3301";
 
@@ -50,13 +52,16 @@ namespace nanoFramework.Tarantool.Tests
             clientOptions.ConnectionOptions.WriteThrottlePeriodInMs = 0;
 #if NANOFRAMEWORK_1_0
             clientOptions.ConnectionOptions.WriteStreamBufferSize = writeStreamBufferSize > 512 ? 512 : writeStreamBufferSize;
-            clientOptions.ConnectionOptions.ReadStreamBufferSize = readStreamBufferSize > 512 ? 512 : readStreamBufferSize;
-            clientOptions.GetNetworkStream = TarantoolMockContext.Instanse.GetTarantoolStreamMock;
-            
+            clientOptions.ConnectionOptions.ReadStreamBufferSize = readStreamBufferSize > 512 ? 512 : readStreamBufferSize;     
 #else
             clientOptions.ConnectionOptions.WriteStreamBufferSize = writeStreamBufferSize;
             clientOptions.ConnectionOptions.ReadStreamBufferSize = readStreamBufferSize;
 #endif
+            if (isRunToMock)
+            {
+                clientOptions.GetNetworkStream = TarantoolMockContext.Instanse.GetTarantoolStreamMock;
+            }
+
             return clientOptions;
         }
 
@@ -67,8 +72,7 @@ namespace nanoFramework.Tarantool.Tests
         /// <returns>Checked <see cref="Tarantool"/> data response.</returns>
         internal static DataResponse CheckResponseData(this DataResponse? dataResponse)
         {
-            Assert.IsNotNull(dataResponse);
-            Assert.IsNotNull(dataResponse.Data);
+            Assert.IsNotNull(dataResponse?.Data);
             return dataResponse;
         }
     }

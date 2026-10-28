@@ -8,12 +8,12 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Data
     internal class DataResponseMock : DataResponse
     {
 #nullable enable
-        internal DataResponseMock(object? data, SqlInfo sqlInfo) : base(data, sqlInfo)
+        internal DataResponseMock(object? data, SqlInfo sqlInfo) : base(data, new FieldMetadata[0], sqlInfo)
         {
             TestData = data;
         }
 
-        internal DataResponseMock(object? data) : base(data, SqlInfo.Empty)
+        internal DataResponseMock(object? data) : base(data, new FieldMetadata[0], SqlInfo.Empty)
         {
             TestData = data;
         }

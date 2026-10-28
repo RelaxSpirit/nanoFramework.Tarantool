@@ -16,7 +16,7 @@ namespace nanoFramework.Tarantool.Converters
     {
         private static void Write(StringSpliceOperation value, IMessagePackWriter writer)
         {
-            writer.WriteArrayHeader(5);
+            writer.WriteArrayHeader(5u);
 
             TarantoolContext.Instance.StringConverter.Write(value.OperationType, writer);
             TarantoolContext.Instance.IntConverter.Write(value.FieldNumber, writer);

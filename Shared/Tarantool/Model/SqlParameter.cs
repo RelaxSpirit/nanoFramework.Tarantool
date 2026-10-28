@@ -4,6 +4,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using nanoFramework.MessagePack;
+using nanoFramework.MessagePack.Exceptions;
 using nanoFramework.MessagePack.Stream;
 
 namespace nanoFramework.Tarantool.Model
@@ -58,7 +59,7 @@ namespace nanoFramework.Tarantool.Model
                 TarantoolContext.Instance.StringConverter.Write(_name, writer);
             }
 
-            ConverterContext.GetConverter(_typeValue).Write(_value, writer);
+            (ConverterContext.GetConverter(_typeValue) ?? throw new ConverterNotFoundException(_typeValue)).Write(_value, writer);
         }
     }
 }

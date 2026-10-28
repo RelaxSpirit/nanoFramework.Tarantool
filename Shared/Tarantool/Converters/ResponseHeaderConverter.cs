@@ -21,11 +21,11 @@ namespace nanoFramework.Tarantool.Converters
         {
             writer.WriteMapHeader(3u);
 
-            TarantoolContext.Instance.UintConverter.Write(Key.Code, writer);
-            TarantoolContext.Instance.UintConverter.Write((uint)value.Code, writer);
-            TarantoolContext.Instance.UintConverter.Write(Key.Sync, writer);
+            TarantoolContext.Instance.KeyConverter.Write(Key.Code, writer);
+            TarantoolContext.Instance.KeyConverter.Write(value.Code, writer);
+            TarantoolContext.Instance.KeyConverter.Write(Key.Sync, writer);
             TarantoolContext.Instance.RequestIdConverter.Write(value.RequestId, writer);
-            TarantoolContext.Instance.UintConverter.Write(Key.SchemaId, writer);
+            TarantoolContext.Instance.KeyConverter.Write(Key.SchemaId, writer);
             TarantoolContext.Instance.UlongConverter.Write(value.SchemaId, writer);
         }
 
@@ -45,12 +45,12 @@ namespace nanoFramework.Tarantool.Converters
 
             for (int i = 0; i < length; i++)
             {
-                var key = (Key)(TarantoolContext.Instance.UintConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+                var key = (Key)(TarantoolContext.Instance.KeyConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
 
                 switch (key)
                 {
                     case Key.Code:
-                        code = (CommandCode)(TarantoolContext.Instance.UintConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+                        code = (CommandCode)(TarantoolContext.Instance.KeyConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
                         break;
                     case Key.Sync:
                         sync = (RequestId)(TarantoolContext.Instance.RequestIdConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());

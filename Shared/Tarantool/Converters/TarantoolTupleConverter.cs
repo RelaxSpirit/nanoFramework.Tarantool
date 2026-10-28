@@ -8,6 +8,7 @@ using System.IO;
 using nanoFramework.MessagePack;
 using nanoFramework.MessagePack.Converters;
 using nanoFramework.MessagePack.Stream;
+using nanoFramework.Tarantool.Dto;
 using nanoFramework.Tarantool.Helpers;
 using nanoFramework.Tarantool.Model;
 
@@ -18,33 +19,11 @@ namespace nanoFramework.Tarantool.Converters
     /// </summary>
     internal class TarantoolTupleConverter : IConverter
     {
-        private readonly Type[] _tupleItemTypes;
-        private readonly IConverter[] _converters = new IConverter[0];
-
         /// <summary>
         /// Initializes a new instance of the <see cref="TarantoolTupleConverter"/> class.
         /// </summary>
         internal TarantoolTupleConverter()
         {
-#pragma warning disable IDE0300 // Simplify collection initialization
-            _tupleItemTypes = new Type[0];
-#pragma warning restore IDE0300 // Simplify collection initialization
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TarantoolTupleConverter"/> class.
-        /// </summary>
-        /// <param name="tupleItemTypes"><see cref="Tarantool"/> tuple items types.</param>
-        internal TarantoolTupleConverter(params Type[] tupleItemTypes)
-        {
-            _tupleItemTypes = tupleItemTypes;
-
-            _converters = new IConverter[_tupleItemTypes.Length];
-
-            for (int i = 0; i < _tupleItemTypes.Length; i++)
-            {
-                _converters[i] = ConverterContext.GetConverter(_tupleItemTypes[i]);
-            }
         }
 
 #nullable enable
@@ -60,7 +39,7 @@ namespace nanoFramework.Tarantool.Converters
             }
         }
 
-        private void Write(TarantoolTuple? value, IMessagePackWriter writer)
+        private static void Write(TarantoolTuple? value, IMessagePackWriter writer)
         {
             if (value == null)
             {
@@ -70,32 +49,24 @@ namespace nanoFramework.Tarantool.Converters
 
             writer.WriteArrayHeader((uint)value.Length);
 
-            if (value.Length == _tupleItemTypes.Length)
-            {
-                for (int i = 0; i < _tupleItemTypes.Length; i++)
-                {
-                    var converter = ConverterContext.GetConverter(_tupleItemTypes[i]);
+            Type[] tupleItemTypes = value.GetItemTypes();
 
-                    if (converter != null)
-                    {
-                        converter.Write(value[i], writer);
-                    }
-                    else
-                    {
-                        WriteItem(value[i], writer);
-                    }
-                }
-            }
-            else
+            for (int i = 0; i < value.Length; i++)
             {
-                for (int i = 0; i < value.Length; i++)
+                var converter = ConverterContext.GetConverter(tupleItemTypes[i]);
+
+                if (converter != null)
+                {
+                    converter.Write(value[i], writer);
+                }
+                else
                 {
                     WriteItem(value[i], writer);
                 }
             }
         }
 
-        public TarantoolTuple? Read(IMessagePackReader reader)
+        internal static TarantoolTuple? Read(IMessagePackReader reader, TarantoolTupleType? tarantoolTupleType = null)
         {
             var messagePackToken = reader.ReadToken() ?? throw ExceptionHelper.ActualValueIsNullReference();
 
@@ -114,18 +85,18 @@ namespace nanoFramework.Tarantool.Converters
             {
                 object?[] tupleObjects;
 
-                if (_tupleItemTypes.Length > 0)
+                if (tarantoolTupleType != null && tarantoolTupleType.TupleTypes.Length > 0)
                 {
-                    if (actual != _tupleItemTypes.Length)
+                    if (actual != tarantoolTupleType.TupleTypes.Length)
                     {
-                        throw ExceptionHelper.InvalidArrayLength((uint)_tupleItemTypes.Length, actual);
+                        throw ExceptionHelper.InvalidArrayLength((uint)tarantoolTupleType.TupleTypes.Length, actual);
                     }
 
                     tupleObjects = new object[actual];
 
                     for (int i = 0; i < actual; i++)
                     {
-                        var converter = _converters[i];
+                        var converter = ConverterContext.GetConverter(tarantoolTupleType.TupleTypes[i]);
 
                         if (converter != null)
                         {
@@ -134,7 +105,7 @@ namespace nanoFramework.Tarantool.Converters
                         else
                         {
                             var arraySegment = messagePackToken.ReadToken() ?? throw ExceptionHelper.ActualValueIsNullReference();
-                            tupleObjects[i] = MessagePackSerializer.Deserialize(_tupleItemTypes[i], (byte[])arraySegment);
+                            tupleObjects[i] = MessagePackSerializer.Deserialize(tarantoolTupleType.TupleTypes[i], (byte[])arraySegment);
                         }
                     }
                 }

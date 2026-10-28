@@ -19,10 +19,10 @@ namespace nanoFramework.Tarantool.Converters
         {
             writer.WriteMapHeader(2u);
 
-            TarantoolContext.Instance.UintConverter.Write(Key.Code, writer);
-            TarantoolContext.Instance.UintConverter.Write(value.Code, writer);
+            TarantoolContext.Instance.KeyConverter.Write(Key.Code, writer);
+            TarantoolContext.Instance.KeyConverter.Write(value.Code, writer);
 
-            TarantoolContext.Instance.UintConverter.Write(Key.Sync, writer);
+            TarantoolContext.Instance.KeyConverter.Write(Key.Sync, writer);
             TarantoolContext.Instance.RequestIdConverter.Write(value.RequestId, writer);
         }
 

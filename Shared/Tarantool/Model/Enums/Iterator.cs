@@ -13,70 +13,70 @@ namespace nanoFramework.Tarantool.Model.Enums
         /// If an index key is equal to a search value, it matches.
         /// Tuples are returned in ascending order by index key. This is the default.
         /// </summary>
-        Eq = 0,
+        Eq = 0u,
 
         /// <summary>
         /// Matching is the same as for box.index.EQ. Tuples are returned in descending order by index key.
         /// </summary>
-        Req = 1,
+        Req = 1u,
 
         /// <summary>
         /// All tuples.
         /// </summary>
-        All = 2,
+        All = 2u,
 
         /// <summary>
         /// The comparison operator is ‘&lt;’ (less than).
         /// If an index key is less than a search value, it matches.
         /// Tuples are returned in descending order by index key.
         /// </summary>
-        Lt = 3,
+        Lt = 3u,
 
         /// <summary>
         /// The comparison operator is ‘&lt;=’ (less than or equal to).
         /// If an index key is less than or equal to a search value, it matches.
         /// Tuples are returned in descending order by index key.
         /// </summary>
-        Le = 4,
+        Le = 4u,
 
         /// <summary>
         /// The comparison operator is ‘&gt;=’ (greater than or equal to).
         /// If an index key is greater than or equal to a search value, it matches.
         /// Tuples are returned in ascending order by index key.
         /// </summary>
-        Ge = 5,
+        Ge = 5u,
 
         /// <summary>
         /// The comparison operator is ‘&gt;’ (greater than).
         /// If an index key is greater than a search value, it matches.
         /// Tuples are returned in ascending order by index key.
         /// </summary>
-        Gt = 6,
+        Gt = 6u,
 
         /// <summary>
         /// All bits of the value are set in the key.
         /// </summary>
-        BitsAllSet = 7,
+        BitsAllSet = 7u,
 
         /// <summary>
         /// At least one bit of the value is set.
         /// </summary>
-        BitsAnySet = 8,
+        BitsAnySet = 8u,
 
         /// <summary>
         /// No bits are set.
         /// </summary>
-        BitsAllNotSet = 9,
+        BitsAllNotSet = 9u,
 
         /// <summary>
         /// Overlaps the rectangle or box.
         /// </summary>
-        Overlaps = 10,
+        Overlaps = 10u,
 
         /// <summary>
         /// Neighbors the rectangle or box.
         /// </summary>
-        Neighbour = 11,
+        Neighbour = 11u,
 
         /// <summary>
         /// No iterator code.

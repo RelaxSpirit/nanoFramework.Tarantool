@@ -19,14 +19,13 @@ namespace nanoFramework.Tarantool.Converters
 #nullable enable
         public static void Write(CallRequest value, [NotNull] IMessagePackWriter writer)
         {
-            var tupleConverter = TarantoolContext.Instance.GetTarantoolTupleConverter(value.Tuple);
-            writer.WriteMapHeader(2);
+            writer.WriteMapHeader(2u);
 
-            TarantoolContext.Instance.UintConverter.Write(Key.FunctionName, writer);
+            TarantoolContext.Instance.KeyConverter.Write(Key.FunctionName, writer);
             TarantoolContext.Instance.StringConverter.Write(value.FunctionName, writer);
 
-            TarantoolContext.Instance.UintConverter.Write(Key.Tuple, writer);
-            tupleConverter.Write(value.Tuple, writer);
+            TarantoolContext.Instance.KeyConverter.Write(Key.Tuple, writer);
+            TarantoolContext.Instance.TarantoolTupleConverter.Write(value.Tuple, writer);
         }
 
         public virtual object? Read([NotNull] IMessagePackReader reader)

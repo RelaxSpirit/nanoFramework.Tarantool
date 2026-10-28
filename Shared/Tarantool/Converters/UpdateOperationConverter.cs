@@ -5,6 +5,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using nanoFramework.MessagePack;
 using nanoFramework.MessagePack.Converters;
+using nanoFramework.MessagePack.Exceptions;
 using nanoFramework.MessagePack.Stream;
 using nanoFramework.Tarantool.Model.UpdateOperations;
 
@@ -17,13 +18,13 @@ namespace nanoFramework.Tarantool.Converters
     {
         private static void Write(UpdateOperation value, IMessagePackWriter writer)
         {
-            writer.WriteArrayHeader(3);
+            writer.WriteArrayHeader(3u);
 
             TarantoolContext.Instance.StringConverter.Write(value.OperationType, writer);
             TarantoolContext.Instance.IntConverter.Write(value.FieldNumber, writer);
             if (value.Argument != null)
             {
-                ConverterContext.GetConverter(value.Argument.GetType()).Write(value.Argument, writer);
+                (ConverterContext.GetConverter(value.Argument.GetType()) ?? throw new ConverterNotFoundException(value.Argument.GetType())).Write(value.Argument, writer);
             }
             else
             {

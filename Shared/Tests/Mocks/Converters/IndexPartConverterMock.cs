@@ -18,7 +18,7 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
         {
             if (value is IndexPart indexPart)
             {
-                writer.WriteMapHeader(2);
+                writer.WriteMapHeader(2u);
 
                 var uintConverter = TarantoolContext.Instance.UintConverter;
                 var indexPartTypeConverter = TarantoolContext.Instance.FieldTypeConverter;

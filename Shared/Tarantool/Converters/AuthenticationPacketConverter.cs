@@ -19,14 +19,14 @@ namespace nanoFramework.Tarantool.Converters
 #nullable enable
         private static void Write(AuthenticationRequest value, IMessagePackWriter writer)
         {
-            writer.WriteMapHeader(2);
+            writer.WriteMapHeader(2u);
 
-            TarantoolContext.Instance.UintConverter.Write(Key.Username, writer);
+            TarantoolContext.Instance.KeyConverter.Write(Key.Username, writer);
             TarantoolContext.Instance.StringConverter.Write(value.Username, writer);
 
-            TarantoolContext.Instance.UintConverter.Write(Key.Tuple, writer);
+            TarantoolContext.Instance.KeyConverter.Write(Key.Tuple, writer);
 
-            writer.WriteArrayHeader(2);
+            writer.WriteArrayHeader(2u);
             TarantoolContext.Instance.StringConverter.Write("chap-sha1", writer);
             TarantoolContext.Instance.BytesConverter.Write(value.Scramble, writer);
         }

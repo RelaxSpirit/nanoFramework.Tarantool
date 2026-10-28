@@ -17,15 +17,13 @@ namespace nanoFramework.Tarantool.Converters
     {
         public static void Write(EvalRequest value, IMessagePackWriter writer)
         {
-            var tupleConverter = TarantoolContext.Instance.GetTarantoolTupleConverter(value.Tuple);
+            writer.WriteMapHeader(2u);
 
-            writer.WriteMapHeader(2);
-
-            TarantoolContext.Instance.UintConverter.Write(Key.Expression, writer);
+            TarantoolContext.Instance.KeyConverter.Write(Key.Expression, writer);
             TarantoolContext.Instance.StringConverter.Write(value.Expression, writer);
 
-            TarantoolContext.Instance.UintConverter.Write(Key.Tuple, writer);
-            tupleConverter.Write(value.Tuple, writer);
+            TarantoolContext.Instance.KeyConverter.Write(Key.Tuple, writer);
+            TarantoolContext.Instance.TarantoolTupleConverter.Write(value.Tuple, writer);
         }
 
 #nullable enable

@@ -20,17 +20,17 @@ namespace nanoFramework.Tarantool.Converters
         {
             writer.WriteMapHeader(3u);
 
-            TarantoolContext.Instance.UintConverter.Write(Key.SqlQueryText, writer);
+            TarantoolContext.Instance.KeyConverter.Write(Key.SqlQueryText, writer);
             TarantoolContext.Instance.StringConverter.Write(value.Query, writer);
 
-            TarantoolContext.Instance.UintConverter.Write(Key.SqlParameters, writer);
+            TarantoolContext.Instance.KeyConverter.Write(Key.SqlParameters, writer);
             writer.WriteArrayHeader((uint)value.Parameters.Length);
             foreach (var parameter in value.Parameters)
             {
                 parameter.Write(writer);
             }
 
-            TarantoolContext.Instance.UintConverter.Write(Key.SqlOptions, writer);
+            TarantoolContext.Instance.KeyConverter.Write(Key.SqlOptions, writer);
 
             ConverterContext.NullConverter.Write(null, writer);
         }

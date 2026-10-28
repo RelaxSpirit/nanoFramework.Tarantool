@@ -148,25 +148,25 @@ namespace nanoFramework.Tarantool.Client
         public DataResponse? Insert(TarantoolTuple tuple)
         {
             var insertRequest = new InsertRequest(Id, tuple);
-            return LogicalConnection?.SendRequest(insertRequest, Timeout.InfiniteTimeSpan, TarantoolContext.Instance.GetTarantoolTupleArrayType((TarantoolTupleType)tuple.GetType()));
+            return LogicalConnection?.SendRequest(insertRequest, Timeout.InfiniteTimeSpan, TarantoolContext.GetTarantoolTupleArrayType((TarantoolTupleType)tuple.GetType()));
         }
 
         public DataResponse? Select(TarantoolTuple selectKey, TarantoolTupleType? tarantoolTupleType = null)
         {
             var selectRequest = new SelectRequest(Id, Schema.PrimaryIndexId, uint.MaxValue, 0, Iterator.Eq, selectKey);
-            return LogicalConnection?.SendRequest(selectRequest, Timeout.InfiniteTimeSpan, tarantoolTupleType != null ? TarantoolContext.Instance.GetTarantoolTupleArrayType(tarantoolTupleType) : null);
+            return LogicalConnection?.SendRequest(selectRequest, Timeout.InfiniteTimeSpan, tarantoolTupleType != null ? TarantoolContext.GetTarantoolTupleArrayType(tarantoolTupleType) : null);
         }
         
         public DataResponse? Replace(TarantoolTuple tuple, TarantoolTupleType? tarantoolTupleType = null)
         {
             var replaceRequest = new ReplaceRequest(Id, tuple);
-            return LogicalConnection?.SendRequest(replaceRequest, Timeout.InfiniteTimeSpan, tarantoolTupleType == null ? TarantoolContext.Instance.GetTarantoolTupleArrayType((TarantoolTupleType)tuple.GetType()) : TarantoolContext.Instance.GetTarantoolTupleArrayType(tarantoolTupleType));
+            return LogicalConnection?.SendRequest(replaceRequest, Timeout.InfiniteTimeSpan, tarantoolTupleType == null ? TarantoolContext.GetTarantoolTupleArrayType((TarantoolTupleType)tuple.GetType()) : TarantoolContext.GetTarantoolTupleArrayType(tarantoolTupleType));
         }
 
         public DataResponse? Update(TarantoolTuple key, UpdateOperation[] updateOperations, TarantoolTupleType? tarantoolTupleType = null)
         {
             var updateRequest = new UpdateRequest(Id, Schema.PrimaryIndexId, key, updateOperations);
-            return LogicalConnection?.SendRequest(updateRequest, Timeout.InfiniteTimeSpan, tarantoolTupleType != null ? (Type)TarantoolContext.Instance.GetTarantoolTupleArrayType(tarantoolTupleType) : null);
+            return LogicalConnection?.SendRequest(updateRequest, Timeout.InfiniteTimeSpan, tarantoolTupleType != null ? (Type)TarantoolContext.GetTarantoolTupleArrayType(tarantoolTupleType) : null);
         }
 
         public DataResponse? Delete(TarantoolTuple key, TarantoolTupleType? tarantoolTupleType = null)
@@ -224,7 +224,7 @@ namespace nanoFramework.Tarantool.Client
         private DataResponse? Get(TarantoolTuple key, TarantoolTupleType? tarantoolTupleType = null)
         {
             var selectRequest = new SelectRequest(Id, Schema.PrimaryIndexId, 1, 0, Iterator.Eq, key);
-            return LogicalConnection?.SendRequest(selectRequest, Timeout.InfiniteTimeSpan, tarantoolTupleType != null ? (Type)TarantoolContext.Instance.GetTarantoolTupleArrayType(tarantoolTupleType) : null);
+            return LogicalConnection?.SendRequest(selectRequest, Timeout.InfiniteTimeSpan, tarantoolTupleType != null ? (Type)TarantoolContext.GetTarantoolTupleArrayType(tarantoolTupleType) : null);
         }
 
 #nullable enable

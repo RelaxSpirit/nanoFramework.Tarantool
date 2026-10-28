@@ -13,9 +13,7 @@ namespace nanoFramework.Tarantool.Benchmark.Benchmarks
     [IterationCount(10)]
     public class TarantoolContextBenchmarks
     {
-        private readonly TarantoolContext _tarantoolContext = TarantoolContext.Instance;
         private readonly BenchmarkContext _benchmarkContext = BenchmarkContext.Instance;
-        private readonly Type _stringType = typeof(string);
 
         /// <summary>
         /// <see cref="TarantoolContext.GetTypeArrayTypesFullName"/> benchmark method.
@@ -32,7 +30,7 @@ namespace nanoFramework.Tarantool.Benchmark.Benchmarks
         [Benchmark]
         public void GetTarantoolTupleType()
         {
-            _tarantoolContext.GetTarantoolTupleType(_benchmarkContext.TestTypes);
+            TarantoolContext.GetTarantoolTupleType(_benchmarkContext.TestTypes);
         }
 
         /// <summary>
@@ -41,52 +39,7 @@ namespace nanoFramework.Tarantool.Benchmark.Benchmarks
         [Benchmark]
         public void GetTarantoolTupleArrayType()
         {
-            _tarantoolContext.GetTarantoolTupleArrayType(_benchmarkContext.TestTarantoolTupleType);
-        }
-
-        /// <summary>
-        /// <see cref="TarantoolContext.GetTarantoolTupleConverter"/> benchmark method.
-        /// </summary>
-        [Benchmark]
-        public void GetTarantoolTupleConverterByTuple()
-        {
-            _tarantoolContext.GetTarantoolTupleConverter(_benchmarkContext.TestTarantoolTuple);
-        }
-
-        /// <summary>
-        /// <see cref="TarantoolContext.GetTarantoolTupleConverter"/> benchmark method.
-        /// </summary>
-        [Benchmark]
-        public void GetTarantoolTupleConverterByType()
-        {
-            _tarantoolContext.GetTarantoolTupleConverter(_benchmarkContext.TestTarantoolTupleTypeForConverter);
-        }
-
-        /// <summary>
-        /// <see cref="TarantoolContext.GetDataResponseDataTypeConverter"/> benchmark method.
-        /// </summary>
-        [Benchmark]
-        public void GetDataResponseDataTypeConverterByType()
-        {
-            _tarantoolContext.GetDataResponseDataTypeConverter(_stringType);
-        }
-
-        /// <summary>
-        /// <see cref="TarantoolContext.GetDataResponseDataTypeConverter"/> benchmark method.
-        /// </summary>
-        [Benchmark]
-        public void GetDataResponseDataTypeConverterByTupleType()
-        {
-            _tarantoolContext.GetDataResponseDataTypeConverter(_benchmarkContext.TestTarantoolTupleType);
-        }
-
-        /// <summary>
-        /// <see cref="TarantoolContext.GetDataResponseDataTypeConverter"/> benchmark method.
-        /// </summary>
-        [Benchmark]
-        public void GetDataResponseDataTypeConverterByTupleArrayType()
-        {
-            _tarantoolContext.GetDataResponseDataTypeConverter(_benchmarkContext.TestTarantoolTupleArrayType);
+            TarantoolContext.GetTarantoolTupleArrayType(_benchmarkContext.TestTarantoolTupleType);
         }
     }
 }

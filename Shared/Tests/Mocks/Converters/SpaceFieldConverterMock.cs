@@ -18,7 +18,7 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
         {
             if (value is ISpaceField spaceField)
             {
-                writer.WriteMapHeader(2);
+                writer.WriteMapHeader(2u);
                 var stringConverter = TarantoolContext.Instance.StringConverter;
                 var typeConverter = TarantoolContext.Instance.FieldTypeConverter;
 

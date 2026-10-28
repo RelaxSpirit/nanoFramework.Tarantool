@@ -5,8 +5,6 @@
 using System;
 using nanoFramework.TestFramework;
 #endif
-using nanoFramework.Tarantool.Client.Interfaces;
-using nanoFramework.Tarantool.Dto;
 using nanoFramework.Tarantool.Model;
 
 namespace nanoFramework.Tarantool.Tests
@@ -26,10 +24,9 @@ namespace nanoFramework.Tarantool.Tests
             using (var box = TarantoolContext.Connect(TestHelper.GetClientOptions(true, false)))
             {
                 Assert.AreNotEqual(0, box.Schema.Spaces.Count);
-                Assert.IsNotNull(box.Schema["bands"] as ISpace);
 
                 var index = box.Schema["bands"]["secondary"];
-                var responseTupleType = TarantoolContext.Instance.GetTarantoolTupleType(typeof(int), typeof(string), typeof(uint));
+                var responseTupleType = TarantoolContext.GetTarantoolTupleType(typeof(int), typeof(string), typeof(uint));
 
                 var responseTuple = index.MinTuple(responseTupleType);
                 Assert.IsNotNull(responseTuple);
@@ -54,10 +51,9 @@ namespace nanoFramework.Tarantool.Tests
             using (var box = TarantoolContext.Connect(TestHelper.GetClientOptions(true, false)))
             {
                 Assert.AreNotEqual(0, box.Schema.Spaces.Count);
-                Assert.IsNotNull(box.Schema["bands"] as ISpace);
 
                 var index = box.Schema["bands"]["secondary"];
-                var responseTupleType = TarantoolContext.Instance.GetTarantoolTupleType(typeof(int), typeof(string), typeof(uint));
+                var responseTupleType = TarantoolContext.GetTarantoolTupleType(typeof(int), typeof(string), typeof(uint));
 
                 var responseTuple = index.MaxTuple(responseTupleType);
                 Assert.IsNotNull(responseTuple);

@@ -180,15 +180,16 @@ namespace nanoFramework.Tarantool.Tests
                 {
                     var executeSqlResult = box.ExecuteSql("create table sql_test(id int primary key, name text)").CheckResponseData();
                     isTableCreate = true;
-                    Assert.IsNotNull(executeSqlResult.SqlInfo);
+
+                    Assert.IsNotNull(executeSqlResult);
                     Assert.AreEqual(1, executeSqlResult.SqlInfo.RowCount);
 
                     executeSqlResult = box.ExecuteSql("insert into sql_test values (1, 'asdf'), (2, 'zxcv'), (3, 'qwer')").CheckResponseData();
-                    Assert.IsNotNull(executeSqlResult.SqlInfo);
+                    Assert.IsNotNull(executeSqlResult);
                     Assert.AreEqual(3, executeSqlResult.SqlInfo.RowCount);
 
                     executeSqlResult = box.ExecuteSql("update sql_test set name = '1234' where id = 2").CheckResponseData();
-                    Assert.IsNotNull(executeSqlResult.SqlInfo);
+                    Assert.IsNotNull(executeSqlResult);
                     Assert.AreEqual(1, executeSqlResult.SqlInfo.RowCount);
 
                     executeSqlResult = box.ExecuteSql("SELECT * FROM sql_test WHERE id = $1", typeof(TarantoolTuple[]), new SqlParameter(2, "$1")).CheckResponseData();
@@ -212,7 +213,6 @@ namespace nanoFramework.Tarantool.Tests
         {
             Assert.IsNotNull(box);
             Assert.IsTrue(box.IsConnected);
-            Assert.IsNotNull(box.Schema);
             Assert.IsTrue(box.Schema.Spaces.Count > 0);
             Assert.IsTrue(box.Schema["_space"].Indices.Count > 0);
         }

@@ -24,14 +24,13 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
             }
 
             var uintConverter = TarantoolContext.Instance.UintConverter;
-            var keyConverter = uintConverter;
 
             uint spaceId = uint.MaxValue;
             uint indexId = uint.MaxValue;
             TarantoolTuple? keyTuple = null;
             for (var i = 0; i < length; i++)
             {
-                Key key = (Key)(keyConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+                Key key = (Key)(TarantoolContext.Instance.KeyConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
 
                 switch (key)
                 {
