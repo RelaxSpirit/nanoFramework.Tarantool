@@ -28,7 +28,7 @@ jobs:
   
     - name: Download nanoFramework Build component
       shell: pwsh
-      run: Invoke-WebRequest -Uri https://github.com/nanoframework/nf-Visual-Studio-extension/releases/download/v2022.12.1.49/nanoFramework.Tools.VS2022.Extension.vsix -OutFile C:\Temp\nanoFramework.Tools.VS2022.Extension.zip
+      run: Invoke-WebRequest -Uri https://github.com/nanoframework/nf-Visual-Studio-extension/releases/download/v2022.14.3.3/nanoFramework.Tools.VS2022.Extension.vsix -OutFile C:\Temp\nanoFramework.Tools.VS2022.Extension.zip
 
     - name: UnZip nanoFramework Build component
       shell: pwsh
