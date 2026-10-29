@@ -25,7 +25,7 @@ jobs:
       uses: microsoft/setup-msbuild@v3
       with:
         msbuild-architecture: x64
-        vs-version: '[2022,18.0)'
+        vs-version: '[2022,2026)'
 
    #- name: Download nanoFramework Build component
    #   shell: pwsh
