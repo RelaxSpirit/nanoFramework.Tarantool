@@ -19,7 +19,7 @@ namespace nanoFramework.Tarantool.Benchmark
         private readonly ClientOptions _clientOptions;
         private readonly TarantoolTuple _tarantoolTuple = TarantoolTuple.Create("krowemarFonan");
         private readonly CallRequest _callRequest;
-        private IBox _box;
+        private readonly IBox _box;
 
         private BenchmarkContext()
         {
@@ -55,13 +55,13 @@ namespace nanoFramework.Tarantool.Benchmark
 
         internal Type[] TestTypes { get; } = new Type[] { typeof(string), typeof(uint), typeof(int) };
 
-        internal TarantoolTupleType TestTarantoolTupleType { get; } = TarantoolContext.Instance.GetTarantoolTupleType(typeof(string), typeof(int), typeof(uint));
+        internal TarantoolTupleType TestTarantoolTupleType { get; } = TarantoolContext.GetTarantoolTupleType(typeof(string), typeof(int), typeof(uint));
 
         internal TarantoolTuple TestTarantoolTuple { get; } = TarantoolTuple.Create(typeof(int), typeof(string), typeof(uint));
 
-        internal TarantoolTupleType TestTarantoolTupleTypeForConverter { get; } = TarantoolContext.Instance.GetTarantoolTupleType(typeof(uint), typeof(string), typeof(int));
+        internal TarantoolTupleType TestTarantoolTupleTypeForConverter { get; } = TarantoolContext.GetTarantoolTupleType(typeof(uint), typeof(string), typeof(int));
 
-        internal TarantoolTupleArrayType TestTarantoolTupleArrayType { get; } = TarantoolContext.Instance.GetTarantoolTupleArrayType(TarantoolContext.Instance.GetTarantoolTupleType(typeof(uint), typeof(int), typeof(string)));
+        internal TarantoolTupleArrayType TestTarantoolTupleArrayType { get; } = TarantoolContext.GetTarantoolTupleArrayType(TarantoolContext.GetTarantoolTupleType(typeof(uint), typeof(int), typeof(string)));
 
         internal void BoxDisconnect()
         {

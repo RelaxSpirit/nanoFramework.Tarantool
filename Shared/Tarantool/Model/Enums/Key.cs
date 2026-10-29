@@ -11,132 +11,132 @@ namespace nanoFramework.Tarantool.Model.Enums
         /// <summary>
         /// Code request key type.
         /// </summary>
-        Code = 0x00,
+        Code = 0x00u,
 
         /// <summary>
         /// Sync key type.
         /// </summary>
-        Sync = 0x01,
+        Sync = 0x01u,
 
         /// <summary>
         /// Schema id request key type.
         /// </summary>
-        SchemaId = 0x05,
+        SchemaId = 0x05u,
 
         /// <summary>
         /// Space id request key type.
         /// </summary>
-        SpaceId = 0x10,
+        SpaceId = 0x10u,
 
         /// <summary>
         /// Index id request key type.
         /// </summary>
-        IndexId = 0x11,
+        IndexId = 0x11u,
 
         /// <summary>
         /// Limit request key type.
         /// </summary>
-        Limit = 0x12,
+        Limit = 0x12u,
 
         /// <summary>
         /// Offset request key type.
         /// </summary>
-        Offset = 0x13,
+        Offset = 0x13u,
 
         /// <summary>
         /// Iterator request key type.
         /// </summary>
-        Iterator = 0x14,
+        Iterator = 0x14u,
 
         /// <summary>
         /// Key request type.
         /// </summary>
-        Key = 0x20,
+        Key = 0x20u,
 
         /// <summary>
         /// Tuple request key type.
         /// </summary>
-        Tuple = 0x21,
+        Tuple = 0x21u,
 
         /// <summary>
         /// Function name request key type.
         /// </summary>
-        FunctionName = 0x22,
+        FunctionName = 0x22u,
 
         /// <summary>
         /// User name request key type.
         /// </summary>
-        Username = 0x23,
+        Username = 0x23u,
 
         /// <summary>
         /// Expression request key type.
         /// </summary>
-        Expression = 0x27,
+        Expression = 0x27u,
 
         /// <summary>
         /// Ops request key type.
         /// </summary>
-        Ops = 0x28,
+        Ops = 0x28u,
 
         /// <summary>
         /// Field name <see cref="Tarantool"/> version 2.0.4 request key type.
         /// </summary>
-        FieldName_2_0_4 = 0x29,
+        FieldName_2_0_4 = 0x29u,
 
         /// <summary>
         /// Field name <see cref="Tarantool"/> version before 2.0.4 request key type.
         /// </summary>
-        FieldName = 0x0,
+        FieldName = 0x0u,
 
         /// <summary>
         /// Data response key type.
         /// </summary>
-        Data = 0x30,
+        Data = 0x30u,
 
         /// <summary>
         /// Error <see cref="Tarantool"/> version 2.4 response key type.
         /// </summary>
-        Error24 = 0x31,
+        Error24 = 0x31u,
 
         /// <summary>
         /// Metadate response key type.
         /// </summary>
-        Metadata = 0x32,
+        Metadata = 0x32u,
 
         /// <summary>
         /// Error response key type.
         /// </summary>
-        Error = 0x52,
+        Error = 0x52u,
 
         /// <summary>
         /// Sql query text key type.
         /// </summary>
-        SqlQueryText = 0x40,
+        SqlQueryText = 0x40u,
 
         /// <summary>
         /// Sql query parameters key type.
         /// </summary>
-        SqlParameters = 0x41,
+        SqlParameters = 0x41u,
 
         /// <summary>
         /// Sql options key type.
         /// </summary>
-        SqlOptions = 0x42,
+        SqlOptions = 0x42u,
 
         /// <summary>
         /// Sql info key type.
         /// </summary>
-        SqlInfo = 0x42,
+        SqlInfo = 0x42u,
 
         /// <summary>
         /// Sql info <see cref="Tarantool"/> version 2.0.4 key type.
         /// </summary>
-        SqlInfo_2_0_4 = 0x43,
+        SqlInfo_2_0_4 = 0x43u,
 
         /// <summary>
         /// Sql row count <see cref="Tarantool"/> version 2.0.4 key type.
         /// </summary>
-        SqlRowCount_2_0_4 = 0x44,
+        SqlRowCount_2_0_4 = 0x44u,
 
         /// <summary>
         /// Sql row count key type.
@@ -146,7 +146,7 @@ namespace nanoFramework.Tarantool.Model.Enums
         /// <summary>
         /// Server id replication key type.
         /// </summary>
-        ServerId = 0x02,
+        ServerId = 0x02u,
 
         /// <summary>
         /// Lns replication key type.
@@ -156,21 +156,26 @@ namespace nanoFramework.Tarantool.Model.Enums
         /// <summary>
         /// Timestamp replication key type.
         /// </summary>
-        Timestamp = 0x04,
+        Timestamp = 0x04u,
 
         /// <summary>
         /// Server uuid replication key type.
         /// </summary>
-        ServerUuid = 0x24,
+        ServerUuid = 0x24u,
 
         /// <summary>
         /// Cluster uuid replication key type.
         /// </summary>
-        ClusterUuid = 0x25,
+        ClusterUuid = 0x25u,
 
         /// <summary>
         /// Vclock replication key type.
         /// </summary>
-        Vclock = 0x26,
+        Vclock = 0x26u,
+
+        /// <summary>
+        /// No key code.
+        /// </summary>
+        _ = uint.MaxValue
     }
 }

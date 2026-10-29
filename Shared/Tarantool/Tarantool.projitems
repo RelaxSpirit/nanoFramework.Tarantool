@@ -46,6 +46,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Converters\IndexPartConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\IndexTypeConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\InsertReplacePacketConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\KeyConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\PacketSizeConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\PingPacketConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\RequestHeaderConverter.cs" />

@@ -29,14 +29,14 @@ namespace nanoFramework.Tarantool.Converters
 
             for (var i = 0; i < length; i++)
             {
-                var dataKey = (Key)(TarantoolContext.Instance.UintConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+                var dataKey = (Key)(TarantoolContext.Instance.KeyConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
                 switch (dataKey)
                 {
                     case Key.SqlInfo:
-                        sqlInfo = ReadSqlInfo(reader, TarantoolContext.Instance.UintConverter, TarantoolContext.Instance.IntConverter);
+                        sqlInfo = ReadSqlInfo(reader);
                         break;
                     case Key.SqlInfo_2_0_4:
-                        sqlInfo = ReadSqlInfo(reader, TarantoolContext.Instance.UintConverter, TarantoolContext.Instance.IntConverter);
+                        sqlInfo = ReadSqlInfo(reader);
                         break;
                     default:
                         throw ExceptionHelper.UnexpectedKey(dataKey, Key.Data, Key.Metadata);
@@ -46,7 +46,7 @@ namespace nanoFramework.Tarantool.Converters
             return new SqlInfoResponse(sqlInfo);
         }
 
-        internal static SqlInfo ReadSqlInfo(IMessagePackReader reader, IConverter keyConverter, IConverter intConverter)
+        internal static SqlInfo ReadSqlInfo(IMessagePackReader reader)
         {
             SqlInfo result = SqlInfo.Empty;
 
@@ -58,14 +58,14 @@ namespace nanoFramework.Tarantool.Converters
 
             for (var i = 0; i < length; i++)
             {
-                var keyValue = (Key)(keyConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+                var keyValue = (Key)(TarantoolContext.Instance.KeyConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
                 switch (keyValue)
                 {
                     case Key.SqlRowCount:
-                        result = new SqlInfo((int)(intConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference()));
+                        result = new SqlInfo((int)(TarantoolContext.Instance.IntConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference()));
                         break;
                     case Key.SqlRowCount_2_0_4:
-                        result = new SqlInfo((int)(intConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference()));
+                        result = new SqlInfo((int)(TarantoolContext.Instance.IntConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference()));
                         break;
                     default:
                         reader.SkipToken();

@@ -18,17 +18,16 @@ namespace nanoFramework.Tarantool.Converters
 #nullable enable
         public static void Write(DeleteRequest value, IMessagePackWriter writer)
         {
-            var selectKeyConverter = TarantoolContext.Instance.GetTarantoolTupleConverter(value.Key);
-            writer.WriteMapHeader(3);
+            writer.WriteMapHeader(3u);
 
-            TarantoolContext.Instance.UintConverter.Write(Key.SpaceId, writer);
+            TarantoolContext.Instance.KeyConverter.Write(Key.SpaceId, writer);
             TarantoolContext.Instance.UintConverter.Write(value.SpaceId, writer);
 
-            TarantoolContext.Instance.UintConverter.Write(Key.IndexId, writer);
+            TarantoolContext.Instance.KeyConverter.Write(Key.IndexId, writer);
             TarantoolContext.Instance.UintConverter.Write(value.IndexId, writer);
 
-            TarantoolContext.Instance.UintConverter.Write(Key.Key, writer);
-            selectKeyConverter.Write(value.Key, writer);
+            TarantoolContext.Instance.KeyConverter.Write(Key.Key, writer);
+            TarantoolContext.Instance.TarantoolTupleConverter.Write(value.Key, writer);
         }
 
         public virtual object? Read([NotNull] IMessagePackReader reader)

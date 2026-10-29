@@ -5,7 +5,6 @@
 using System;
 #endif
 using System.Diagnostics.CodeAnalysis;
-using nanoFramework.MessagePack;
 using nanoFramework.MessagePack.Stream;
 using nanoFramework.Tarantool.Model;
 
@@ -35,12 +34,12 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Data
             {
                 if (value is BoxInfo box)
                 {
-                    writer.WriteArrayHeader(1);
-                    writer.WriteMapHeader(6);
+                    writer.WriteArrayHeader(1u);
+                    writer.WriteMapHeader(6u);
 
                     var stringConverter = TarantoolContext.Instance.StringConverter;
-                    var longConverter = ConverterContext.GetConverter(typeof(long));
-                    var boolConverter = ConverterContext.GetConverter(typeof(bool));
+                    var longConverter = TarantoolContext.Instance.LongConverter;
+                    var boolConverter = TarantoolContext.Instance.BoolConverter;
 
                     stringConverter.Write("id", writer);
                     longConverter.Write(box.Id, writer);

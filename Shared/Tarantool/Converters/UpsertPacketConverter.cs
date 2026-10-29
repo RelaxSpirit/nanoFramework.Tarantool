@@ -5,6 +5,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using nanoFramework.MessagePack;
 using nanoFramework.MessagePack.Converters;
+using nanoFramework.MessagePack.Exceptions;
 using nanoFramework.MessagePack.Stream;
 using nanoFramework.Tarantool.Model.Enums;
 using nanoFramework.Tarantool.Model.Requests;
@@ -18,22 +19,20 @@ namespace nanoFramework.Tarantool.Converters
     {
         private static void Write(UpsertRequest value, IMessagePackWriter writer)
         {
-            writer.WriteMapHeader(3);
+            writer.WriteMapHeader(3u);
 
-            var tupleConverter = TarantoolContext.Instance.GetTarantoolTupleConverter(value.Tuple);
-
-            TarantoolContext.Instance.UintConverter.Write(Key.SpaceId, writer);
+            TarantoolContext.Instance.KeyConverter.Write(Key.SpaceId, writer);
             TarantoolContext.Instance.UintConverter.Write(value.SpaceId, writer);
 
-            TarantoolContext.Instance.UintConverter.Write(Key.Tuple, writer);
-            tupleConverter.Write(value.Tuple, writer);
+            TarantoolContext.Instance.KeyConverter.Write(Key.Tuple, writer);
+            TarantoolContext.Instance.TarantoolTupleConverter.Write(value.Tuple, writer);
 
-            TarantoolContext.Instance.UintConverter.Write(Key.Ops, writer);
+            TarantoolContext.Instance.KeyConverter.Write(Key.Ops, writer);
             writer.WriteArrayHeader((uint)value.UpdateOperations.Length);
 
             foreach (var updateOperation in value.UpdateOperations)
             {
-                ConverterContext.GetConverter(updateOperation.GetType()).Write(updateOperation, writer);
+                (ConverterContext.GetConverter(updateOperation.GetType()) ?? throw new ConverterNotFoundException(updateOperation.GetType())).Write(updateOperation, writer);
             }
         }
 

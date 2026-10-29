@@ -23,7 +23,6 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
                 throw ExceptionHelper.InvalidMapLength(length, 2);
             }
 
-            var keyConverter = TarantoolContext.Instance.UintConverter;
             var requestIdConverter = TarantoolContext.Instance.RequestIdConverter;
             var codeConverter = TarantoolContext.Instance.UintConverter;
 
@@ -32,7 +31,7 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
 
             for (var i = 0; i < length; i++)
             {
-                Key key = (Key)(keyConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+                Key key = (Key)(TarantoolContext.Instance.KeyConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
                 switch (key)
                 {
                     case Key.Code:

@@ -19,7 +19,7 @@ namespace nanoFramework.Tarantool.Converters
         public static void Write(ErrorResponse value, IMessagePackWriter writer)
         {
             writer.WriteMapHeader(1u);
-            TarantoolContext.Instance.UintConverter.Write(Key.Error24, writer);
+            TarantoolContext.Instance.KeyConverter.Write(Key.Error24, writer);
             TarantoolContext.Instance.StringConverter.Write(value.ErrorMessage, writer);
         }
 
@@ -30,7 +30,7 @@ namespace nanoFramework.Tarantool.Converters
 
             for (var i = 0; i < length; i++)
             {
-                var errorKey = (Key)(TarantoolContext.Instance.UintConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+                var errorKey = (Key)(TarantoolContext.Instance.KeyConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
 
                 switch (errorKey)
                 {

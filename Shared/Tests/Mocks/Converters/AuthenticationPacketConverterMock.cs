@@ -22,7 +22,6 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
                 throw ExceptionHelper.InvalidMapLength(length, 2);
             }
 
-            var keyConverter = TarantoolContext.Instance.UintConverter;
             var bytesConverter = TarantoolContext.Instance.BytesConverter;
             var stringConverter = TarantoolContext.Instance.StringConverter;
 
@@ -30,7 +29,7 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
             byte[] scramble = new byte[0];
             for (var i = 0; i < length; i++)
             {
-                Key key = (Key)(keyConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
+                Key key = (Key)(TarantoolContext.Instance.KeyConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference());
 
                 switch (key)
                 {

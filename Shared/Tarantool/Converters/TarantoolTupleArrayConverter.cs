@@ -13,27 +13,23 @@ namespace nanoFramework.Tarantool.Converters
 {
     internal class TarantoolTupleArrayConverter : IConverter
     {
-        private readonly TarantoolTupleType _tupleType;
-        private readonly TarantoolTupleConverter _tupleConverter;
-
-        internal TarantoolTupleArrayConverter(TarantoolTupleType tupleType)
-        {
-            _tupleType = tupleType;
-            _tupleConverter = (TarantoolTupleConverter)TarantoolContext.Instance.GetTarantoolTupleConverter(_tupleType);
-        }
-
 #nullable enable
-        public object? Read([NotNull] IMessagePackReader reader)
+        internal static TarantoolTuple[] Read(IMessagePackReader reader, TarantoolTupleArrayType? tarantoolTupleArrayType = null)
         {
             var length = reader.ReadArrayLength();
             TarantoolTuple[] tarantoolTuples = new TarantoolTuple[length];
 
             for (int i = 0; i < length; i++)
             {
-                tarantoolTuples[i] = _tupleConverter.Read(reader) ?? throw ExceptionHelper.ActualValueIsNullReference();
+                tarantoolTuples[i] = TarantoolTupleConverter.Read(reader, (TarantoolTupleType?)tarantoolTupleArrayType?.GetElementType()) ?? throw ExceptionHelper.ActualValueIsNullReference();
             }
 
             return tarantoolTuples;
+        }
+
+        public object? Read([NotNull] IMessagePackReader reader)
+        {
+            return Read(reader, null);
         }
 
         public void Write(object? value, [NotNull] IMessagePackWriter writer)
@@ -44,7 +40,7 @@ namespace nanoFramework.Tarantool.Converters
 
                 foreach (TarantoolTuple tuple in tuples)
                 {
-                    TarantoolContext.Instance.GetTarantoolTupleConverter(tuple).Write(tuple, writer);
+                    TarantoolContext.Instance.TarantoolTupleConverter.Write(tuple, writer);
                 }
             }
             else

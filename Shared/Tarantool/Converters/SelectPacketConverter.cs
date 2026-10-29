@@ -18,34 +18,32 @@ namespace nanoFramework.Tarantool.Converters
     {
         public static void Write(SelectRequest value, IMessagePackWriter writer)
         {
-            writer.WriteMapHeader(6);
+            writer.WriteMapHeader(6u);
             
-            TarantoolContext.Instance.UintConverter.Write(Key.SpaceId, writer);
+            TarantoolContext.Instance.KeyConverter.Write(Key.SpaceId, writer);
             TarantoolContext.Instance.UintConverter.Write(value.SpaceId, writer);
 
-            TarantoolContext.Instance.UintConverter.Write(Key.IndexId, writer);
+            TarantoolContext.Instance.KeyConverter.Write(Key.IndexId, writer);
             TarantoolContext.Instance.UintConverter.Write(value.IndexId, writer);
 
-            TarantoolContext.Instance.UintConverter.Write(Key.Limit, writer);
+            TarantoolContext.Instance.KeyConverter.Write(Key.Limit, writer);
             TarantoolContext.Instance.UintConverter.Write(value.Limit, writer);
 
-            TarantoolContext.Instance.UintConverter.Write(Key.Offset, writer);
+            TarantoolContext.Instance.KeyConverter.Write(Key.Offset, writer);
             TarantoolContext.Instance.UintConverter.Write(value.Offset, writer);
 
-            TarantoolContext.Instance.UintConverter.Write(Key.Iterator, writer);
-            TarantoolContext.Instance.UintConverter.Write(value.Iterator, writer);
+            TarantoolContext.Instance.KeyConverter.Write(Key.Iterator, writer);
+            TarantoolContext.Instance.KeyConverter.Write(value.Iterator, writer);
 
-            TarantoolContext.Instance.UintConverter.Write(Key.Key, writer);
+            TarantoolContext.Instance.KeyConverter.Write(Key.Key, writer);
 
             if (value.SelectKey != null)
             {
-                var selectKeyConverter = TarantoolContext.Instance.GetTarantoolTupleConverter(value.SelectKey);
-                selectKeyConverter.Write(value.SelectKey, writer);
+                TarantoolContext.Instance.TarantoolTupleConverter.Write(value.SelectKey, writer);
             }
             else
             {
-                var selectKeyConverter = TarantoolContext.Instance.GetTarantoolTupleConverter(TarantoolTuple.Empty);
-                selectKeyConverter.Write(TarantoolTuple.Empty, writer);
+                TarantoolContext.Instance.TarantoolTupleConverter.Write(TarantoolTuple.Empty, writer);
             }
         }
 

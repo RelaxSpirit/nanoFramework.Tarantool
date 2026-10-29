@@ -29,7 +29,7 @@ namespace nanoFramework.Tarantool.Model
         {
             _tupleItemTypes = new Type[0];
             _items = new object[0];
-            _tarantoolTupleType = TarantoolContext.Instance.GetTarantoolTupleType(_tupleItemTypes);
+            _tarantoolTupleType = TarantoolContext.GetTarantoolTupleType(_tupleItemTypes);
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace nanoFramework.Tarantool.Model
                 _items[i] = tupleObjects[i];
             }
 
-            _tarantoolTupleType = TarantoolContext.Instance.GetTarantoolTupleType(_tupleItemTypes);
+            _tarantoolTupleType = TarantoolContext.GetTarantoolTupleType(_tupleItemTypes);
         }
 
         /// <summary>
@@ -154,6 +154,11 @@ namespace nanoFramework.Tarantool.Model
         public new Type GetType()
         {
             return _tarantoolTupleType;
+        }
+
+        internal Type[] GetItemTypes()
+        {
+            return _tupleItemTypes;
         }
 
         internal object[] GetItems()

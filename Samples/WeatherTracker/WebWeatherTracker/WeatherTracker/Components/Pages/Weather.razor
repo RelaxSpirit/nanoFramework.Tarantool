@@ -46,7 +46,7 @@ else
 @code {
     private WeatherForecast[]? forecasts;
     private ISpace? space;
-    private TarantoolTupleType responseTarantoolTupleType = TarantoolContext.Instance.GetTarantoolTupleType(typeof(ulong), typeof(string), typeof(DateTime), typeof(double), typeof(double));
+    private TarantoolTupleType responseTarantoolTupleType = TarantoolContext.GetTarantoolTupleType(typeof(ulong), typeof(string), typeof(DateTime), typeof(double), typeof(double));
 
     protected override async Task OnInitializedAsync()
     {

@@ -18,7 +18,7 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
         {
             if (value is EmptyResponse)
             {
-                writer.WriteMapHeader(0);
+                writer.WriteMapHeader(0u);
             }
             else
             {

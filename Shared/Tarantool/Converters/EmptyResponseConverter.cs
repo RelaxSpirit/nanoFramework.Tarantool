@@ -28,7 +28,7 @@ namespace nanoFramework.Tarantool.Converters
 
             if (length == 1)
             {
-                var intKey = TarantoolContext.Instance.UintConverter.Read(reader);
+                var intKey = TarantoolContext.Instance.KeyConverter.Read(reader);
 
                 if (intKey != null)
                 {

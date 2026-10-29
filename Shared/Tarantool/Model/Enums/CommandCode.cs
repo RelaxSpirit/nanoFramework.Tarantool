@@ -11,82 +11,82 @@ namespace nanoFramework.Tarantool.Model.Enums
         /// <summary>
         /// Select request.
         /// </summary>
-        Select = 0x01,
+        Select = 0x01u,
 
         /// <summary>
         /// Insert request.
         /// </summary>
-        Insert = 0x02,
+        Insert = 0x02u,
 
         /// <summary>
         /// Replace request.
         /// </summary>
-        Replace = 0x03,
+        Replace = 0x03u,
 
         /// <summary>
         /// Update request.
         /// </summary>
-        Update = 0x04,
+        Update = 0x04u,
 
         /// <summary>
         /// Delete request.
         /// </summary>
-        Delete = 0x05,
+        Delete = 0x05u,
 
         /// <summary>
         /// Request old <see cref="Tarantool"/> version (before 1.7).
         /// </summary>
-        OldCall = 0x06,
+        OldCall = 0x06u,
 
         /// <summary>
         /// User authorization request.
         /// </summary>
-        Auth = 0x07,
+        Auth = 0x07u,
 
         /// <summary>
         /// Eval request.
         /// </summary>
-        Eval = 0x08,
+        Eval = 0x08u,
 
         /// <summary>
         /// Upsert request.
         /// </summary>
-        Upsert = 0x09,
+        Upsert = 0x09u,
 
         /// <summary>
         /// Call function request.
         /// </summary>
-        Call = 0x0A,
+        Call = 0x0Au,
 
         /// <summary>
         /// Execute request.
         /// </summary>
-        Execute = 0x0B,
+        Execute = 0x0Bu,
 
         /// <summary>
         /// Ping request.
         /// </summary>
-        Ping = 0x40,
+        Ping = 0x40u,
 
         /// <summary>
         /// No error response.
         /// </summary>
-        Ok = 0x00,
+        Ok = 0x00u,
 
         /// <summary>
         /// Error response. Mask code.
         /// </summary>
-        ErrorMask = 0x8000,
+        ErrorMask = 0x8000u,
 
         /// <summary>
         /// Join replication code.
         /// </summary>
-        Join = 0x41,
+        Join = 0x41u,
 
         /// <summary>
         /// Subscribe replication code.
         /// </summary>
-        Subscribe = 0x42,
+        Subscribe = 0x42u,
 
         /// <summary>
         /// No command code.

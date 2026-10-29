@@ -7,6 +7,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using nanoFramework.MessagePack;
 using nanoFramework.MessagePack.Converters;
+using nanoFramework.MessagePack.Exceptions;
 using nanoFramework.MessagePack.Stream;
 using nanoFramework.Tarantool.Converters;
 using nanoFramework.Tarantool.Tests.Mocks.Data;
@@ -20,14 +21,14 @@ namespace nanoFramework.Tarantool.Tests.Mocks.Converters
         {
             if (value is SpaceMock space) 
             {
-                writer.WriteArrayHeader(7);
+                writer.WriteArrayHeader(7u);
 
                 var uintConverter = TarantoolContext.Instance.UintConverter;
                 var stringConverter = TarantoolContext.Instance.StringConverter;
                 var engineConverter = TarantoolContext.Instance.StorageEngineConverter;
-                IConverter fieldConverter = ConverterContext.GetConverter(typeof(SpaceFieldMock[]));
+                IConverter fieldConverter = ConverterContext.GetConverter(typeof(SpaceFieldMock[])) ?? throw new ConverterNotFoundException(typeof(SpaceFieldMock[]));
 
-        uintConverter.Write(space.Id, writer);
+                uintConverter.Write(space.Id, writer);
                 ConverterContext.NullConverter.Write(null, writer);
                 stringConverter.Write(space.Name, writer);
                 engineConverter.Write(space.Engine, writer);

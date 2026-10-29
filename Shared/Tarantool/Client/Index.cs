@@ -65,7 +65,7 @@ namespace nanoFramework.Tarantool.Client
 
             if (responseType != null)
             {
-                return LogicalConnection?.SendRequest(selectRequest, Timeout.InfiniteTimeSpan, TarantoolContext.Instance.GetTarantoolTupleArrayType(responseType));
+                return LogicalConnection?.SendRequest(selectRequest, Timeout.InfiniteTimeSpan, TarantoolContext.GetTarantoolTupleArrayType(responseType));
             }
             else
             {
@@ -85,7 +85,7 @@ namespace nanoFramework.Tarantool.Client
 
             if (responseType != null)
             {
-                return LogicalConnection?.SendRequest(selectRequest, Timeout.InfiniteTimeSpan, TarantoolContext.Instance.GetTarantoolTupleArrayType(responseType));
+                return LogicalConnection?.SendRequest(selectRequest, Timeout.InfiniteTimeSpan, TarantoolContext.GetTarantoolTupleArrayType(responseType));
             }
             else
             {
@@ -99,7 +99,7 @@ namespace nanoFramework.Tarantool.Client
 
             if (responseType != null)
             {
-                return LogicalConnection?.SendRequest(deleteRequest, Timeout.InfiniteTimeSpan, TarantoolContext.Instance.GetTarantoolTupleArrayType(responseType));
+                return LogicalConnection?.SendRequest(deleteRequest, Timeout.InfiniteTimeSpan, TarantoolContext.GetTarantoolTupleArrayType(responseType));
             }
             else
             {
@@ -117,7 +117,7 @@ namespace nanoFramework.Tarantool.Client
 
             if (responseType != null)
             {
-                return LogicalConnection?.SendRequest(updateRequest, Timeout.InfiniteTimeSpan, TarantoolContext.Instance.GetTarantoolTupleArrayType(responseType));
+                return LogicalConnection?.SendRequest(updateRequest, Timeout.InfiniteTimeSpan, TarantoolContext.GetTarantoolTupleArrayType(responseType));
             }
             else
             {

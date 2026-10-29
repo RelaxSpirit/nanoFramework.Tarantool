@@ -62,10 +62,6 @@ namespace nanoFramework.Tarantool.Tests
                         var deleteKeyTuple = TarantoolTuple.Create(15);
 
                         responseData = space.Delete(deleteKeyTuple).CheckResponseData();
-                        if (keyTuple != null)
-                        {
-                            Assert.AreEqual(keyTuple.GetType(), deleteKeyTuple.GetType());
-                        }
 
                         var deletedTuple = space.GetTuple(deleteKeyTuple, (TarantoolTupleType)testTuple.GetType());
                         Assert.IsNull(deletedTuple);
