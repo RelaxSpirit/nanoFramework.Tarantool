@@ -25,19 +25,6 @@ jobs:
       uses: microsoft/setup-msbuild@v3
       with:
         msbuild-architecture: x64
-        #vs-version: '[17,18)'
-
-   #- name: Download nanoFramework Build component
-   #   shell: pwsh
-   #   run: Invoke-WebRequest -Uri https://github.com/nanoframework/nf-Visual-Studio-extension/releases/download/v2022.14.3.3/nanoFramework.Tools.VS2022.Extension.vsix -OutFile C:\Temp\nanoFramework.Tools.VS2022.Extension.zip
-
-    #- name: UnZip nanoFramework Build component
-    #  shell: pwsh
-    #  run: Expand-Archive -LiteralPath C:\Temp\nanoFramework.Tools.VS2022.Extension.zip -DestinationPath C:\Temp\nf-extension\
-
-    #- name: Copy nanoFramework build files to msbuild location
-    #  shell: pwsh
-    #  run: Copy-Item -Path "C:\Temp\nf-extension\`$MSBuild\nanoFramework" -Destination "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild" -Recurse
 
     - name: .NET nanoFramework build components installer
       uses: nanoframework/nanobuild@v1.20
@@ -66,8 +53,8 @@ jobs:
         runSettings: '.\NFUnitTest\nano.runsettings'
         artifactName: 'unit_test_results'
       
-    # - name: .NET Unit Tests
-    #  run: vstest.console.exe NFUnitTest\bin\Release\NFUnitTest.dll /Settings:NFUnitTest\nano.runsettings
+    - name: .NET Unit Tests
+      run: vstest.console.exe Net.Tarantool.Tests\bin\Release\net9.0\Net.Tarantool.Tests.dll
 
     - name: Generate a NuGet package
       run: nuget pack nanoFramework.Tarantool.nuspec -properties version="${{env.NBGV_NuGetPackageVersion}}" -properties commit="${{env.NBGV_GitCommitId}}"
@@ -80,4 +67,4 @@ jobs:
         user: ${{ secrets.NUGET_USER }}
       
     - name: Push Package to NuGet.org
-      run: nuget push nf.Tarantool.${{env.NBGV_NuGetPackageVersion}}.nupkg -ApiKey ${{steps.login.outputs.NUGET_ORG_API_KEY}} -src https://api.nuget.org/v3/index.json
+      run: nuget push nf.Tarantool.${{env.NBGV_NuGetPackageVersion}}.nupkg -ApiKey ${{steps.login.outputs.NUGET_API_KEY}} -src https://api.nuget.org/v3/index.json
