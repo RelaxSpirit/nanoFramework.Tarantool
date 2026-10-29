@@ -25,18 +25,21 @@ jobs:
       uses: microsoft/setup-msbuild@v2
       with:
         msbuild-architecture: x64
-  
-    - name: Download nanoFramework Build component
-      shell: pwsh
-      run: Invoke-WebRequest -Uri https://github.com/nanoframework/nf-Visual-Studio-extension/releases/download/v2022.14.3.3/nanoFramework.Tools.VS2022.Extension.vsix -OutFile C:\Temp\nanoFramework.Tools.VS2022.Extension.zip
 
-    - name: UnZip nanoFramework Build component
-      shell: pwsh
-      run: Expand-Archive -LiteralPath C:\Temp\nanoFramework.Tools.VS2022.Extension.zip -DestinationPath C:\Temp\nf-extension\
+   #- name: Download nanoFramework Build component
+   #   shell: pwsh
+   #   run: Invoke-WebRequest -Uri https://github.com/nanoframework/nf-Visual-Studio-extension/releases/download/v2022.14.3.3/nanoFramework.Tools.VS2022.Extension.vsix -OutFile C:\Temp\nanoFramework.Tools.VS2022.Extension.zip
 
-    - name: Copy nanoFramework build files to msbuild location
-      shell: pwsh
-      run: Copy-Item -Path "C:\Temp\nf-extension\`$MSBuild\nanoFramework" -Destination "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild" -Recurse
+    #- name: UnZip nanoFramework Build component
+    #  shell: pwsh
+    #  run: Expand-Archive -LiteralPath C:\Temp\nanoFramework.Tools.VS2022.Extension.zip -DestinationPath C:\Temp\nf-extension\
+
+    #- name: Copy nanoFramework build files to msbuild location
+    #  shell: pwsh
+    #  run: Copy-Item -Path "C:\Temp\nf-extension\`$MSBuild\nanoFramework" -Destination "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild" -Recurse
+
+    - name: .NET nanoFramework build components installer
+      uses: nanoframework/nanobuild@v1.14
 
     - name: Cache nanoFramework NuGet packages
       uses: actions/cache@v4
@@ -57,7 +60,7 @@ jobs:
       run: msbuild /p:Configuration=Release /p:Platform="Any CPU"
 
     - name: nanoFramework Unit Tests
-      uses: CCSWE-nanoFramework/vstest-nanoframework@v1
+      uses: CCSWE-nanoFramework/vstest-nanoframework@v1.0.11
       with:
         runSettings: '.\NFUnitTest\nano.runsettings'
         artifactName: 'unit_test_results'
