@@ -54,7 +54,11 @@ jobs:
         artifactName: 'unit_test_results'
       
     - name: .NET Unit Tests
-      run: vstest.console.exe Net.Tarantool.Tests\bin\Release\net9.0\Net.Tarantool.Tests.dll
+      uses: microsoft/vstest-action@v1.0.0
+      with: 
+        testAssembly: Net.Tarantool.Tests.dll
+        searchFolder: ./Net.Tarantool.Tests/bin/Release/net9.0/
+        runInParallel: true
 
     - name: Generate a NuGet package
       run: nuget pack nanoFramework.Tarantool.nuspec -properties version="${{env.NBGV_NuGetPackageVersion}}" -properties commit="${{env.NBGV_GitCommitId}}"
